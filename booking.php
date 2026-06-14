@@ -1,32 +1,23 @@
 <?php
 require_once __DIR__ . '/config.php';
-
 try {
     $pdo = getDB();
 } catch (Exception $e) {
     die("Sistem sedang dalam pemeliharaan. Silakan coba beberapa saat lagi.");
 }
-
-// === HANDLER API BACK-END DENGAN 5 TABEL ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     header('Content-Type: application/json');
     $data = json_decode(file_get_contents('php://input'), true);
-    
-    // 1. Ambil jadwal yang sudah dibooking
     if ($_GET['action'] === 'get_booked_slots') {
         $fieldId = filter_var($data['field_id'] ?? '', FILTER_VALIDATE_INT);
         $date    = $data['date'] ?? '';
-
-        // Validasi format tanggal YYYY-MM-DD
         if (!$fieldId || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             echo json_encode(['booked' => []]);
             exit;
         }
-
         $stmt = $pdo->prepare("SELECT JAM_MULAI FROM Jadwal WHERE ID_LAPANGAN = ? AND TANGGAL = ? AND STATUS_JADWAL = 'TIDAK'");
         $stmt->execute([$fieldId, $date]);
         $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
         $bookedSlots = [];
         foreach ($bookings as $b) {
             $slots = explode(',', $b['JAM_MULAI']);
@@ -37,21 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
         echo json_encode(['booked' => array_unique($bookedSlots)]);
         exit;
     }
-
-    // 2. Proses Insert Booking ke 5 Tabel
     if ($_GET['action'] === 'submit_booking') {
         try {
-            // ==========================================
-            // VALIDASI INPUT LENGKAP
-            // ==========================================
             $errors = [];
-
-            // -- Validasi Field ID --
             $fieldId = filter_var($data['field_id'] ?? '', FILTER_VALIDATE_INT);
             if (!$fieldId) {
                 $errors['field'] = 'Pilih lapangan terlebih dahulu.';
             } else {
-                // Cek lapangan ada di database dan ambil harga dari DB
                 $stmtLap = $pdo->prepare("SELECT ID_LAPANGAN, HARGA_PER_JAM FROM Lapangan WHERE ID_LAPANGAN = ?");
                 $stmtLap->execute([$fieldId]);
                 $lapanganData = $stmtLap->fetch(PDO::FETCH_ASSOC);
@@ -59,8 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                     $errors['field'] = 'Lapangan tidak ditemukan di database.';
                 }
             }
-
-            // -- Validasi Tanggal --
             $date = trim($data['date'] ?? '');
             if (!$date) {
                 $errors['date'] = 'Tanggal bermain wajib diisi.';
@@ -78,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                     }
                 }
             }
-
             $reqSlots = $data['slots'] ?? [];
             if (!is_array($reqSlots) || empty($reqSlots)) {
                 $errors['slots'] = 'Pilih minimal 1 slot jam bermain.';
@@ -90,13 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                         break;
                     }
                 }
-                // Pastikan semua slot unik
                 $reqSlots = array_map('intval', array_unique($reqSlots));
                 if (count($reqSlots) > 16) {
                     $errors['slots'] = 'Maksimal 16 slot jam per booking.';
                 }
             }
-
             $nama = trim($data['name'] ?? '');
             if (!$nama) {
                 $errors['name'] = 'Nama lengkap wajib diisi.';
@@ -107,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
             } elseif (!preg_match('/^[a-zA-Z\s\'\.\-]+$/u', $nama)) {
                 $errors['name'] = 'Nama hanya boleh berisi huruf, spasi, titik, dan tanda hubung.';
             }
-
             $email = trim($data['email'] ?? '');
             if (!$email) {
                 $errors['email'] = 'Alamat email wajib diisi.';
@@ -116,23 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
             } elseif (mb_strlen($email) > 150) {
                 $errors['email'] = 'Email maksimal 150 karakter.';
             }
-
             $notelp = trim($data['phone'] ?? '');
             if (!$notelp) {
                 $errors['phone'] = 'Nomor telepon wajib diisi.';
             } else {
-                // Bersihkan karakter non-digit kecuali + di awal
                 $cleanPhone = preg_replace('/[^0-9+]/', '', $notelp);
                 if (!preg_match('/^(\+62|62|08)\d{8,13}$/', $cleanPhone)) {
                     $errors['phone'] = 'Format nomor telepon tidak valid (contoh: 08xx-xxxx-xxxx atau +62xxx).';
                 }
             }
-
             $payTypeRaw = trim($data['pay_type'] ?? '');
             if (!in_array($payTypeRaw, ['dp', 'lunas'])) {
                 $errors['pay_type'] = 'Pilih tipe pembayaran: Lunas atau DP 50%.';
             }
-
             if (!empty($errors)) {
                 $firstError = reset($errors);
                 echo json_encode([
@@ -142,14 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                 ]);
                 exit;
             }
-
-            // ==========================================
-            // CEK RACE CONDITION DI TABEL JADWAL
-            // ==========================================
             $stmt = $pdo->prepare("SELECT JAM_MULAI FROM Jadwal WHERE ID_LAPANGAN = ? AND TANGGAL = ? AND STATUS_JADWAL = 'TIDAK'");
             $stmt->execute([$fieldId, $date]);
             $existingBookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
             $bookedSlots = [];
             foreach ($existingBookings as $b) {
                 $slots = explode(',', $b['JAM_MULAI']);
@@ -157,32 +125,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                     $bookedSlots[] = (int)trim($s);
                 }
             }
-
             foreach ($reqSlots as $s) {
                 if (in_array((int)$s, $bookedSlots)) {
                     throw new Exception("Maaf, slot jam " . sprintf("%02d:00", $s) . " baru saja dipesan oleh orang lain.");
                 }
             }
-
-            // Kalkulasi Harga dari DATABASE (bukan hardcoded)
             $pricePerHour = (int)$lapanganData['HARGA_PER_JAM'];
             $actualTotalPrice = $pricePerHour * count($reqSlots);
-            
             $code = 'MF-' . strtoupper(substr(md5(uniqid('', true)), 0, 6)); 
-
-            // ==========================================
-            // MEMULAI TRANSAKSI UNTUK 5 TABEL
-            // ==========================================
             $pdo->beginTransaction();
-
-            // 1. TABEL PELANGGAN (data mentah ke DB, tanpa htmlspecialchars)
             $stmt = $pdo->prepare("SELECT ID_PELANGGAN FROM Pelanggan WHERE U_EMAIL = ?");
             $stmt->execute([$email]);
             $pelanggan = $stmt->fetch(PDO::FETCH_ASSOC);
-
             if ($pelanggan) {
                 $id_pelanggan = $pelanggan['ID_PELANGGAN'];
-                // Update nama & telepon jika berubah
                 $pdo->prepare("UPDATE Pelanggan SET U_NAMA = ?, U_NOTELP = ? WHERE ID_PELANGGAN = ?")
                     ->execute([$nama, $notelp, $id_pelanggan]);
             } else {
@@ -191,41 +147,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                 $stmt->execute([$nama, $email, $dummyPassword, $notelp]);
                 $id_pelanggan = $pdo->lastInsertId();
             }
-
-            // 2. TABEL JADWAL
             sort($reqSlots);
             $slotsStr = implode(',', $reqSlots);
             $endSlotsArr = array_map(function($val) { return $val + 1; }, $reqSlots);
             $endSlotsStr = implode(',', $endSlotsArr);
-
             $stmt = $pdo->prepare("INSERT INTO Jadwal (ID_LAPANGAN, TANGGAL, JAM_MULAI, JAM_SELESAI, STATUS_JADWAL) VALUES (?, ?, ?, ?, 'TIDAK')");
             $stmt->execute([$fieldId, $date, $slotsStr, $endSlotsStr]);
             $id_jadwal = $pdo->lastInsertId();
-
-            // 3. TABEL BOOKING (termasuk TEAM_NAME dan NOTES)
             $payType = strtoupper($payTypeRaw);
             $teamName = trim($data['team'] ?? '');
             $notes    = trim($data['notes'] ?? '');
-            // Batasi panjang
             $teamName = mb_substr($teamName, 0, 100);
             $notes    = mb_substr($notes, 0, 1000);
-
             $stmt = $pdo->prepare("INSERT INTO Booking (ID_BOOKING, ID_PELANGGAN, TANGGAL_BOOKING, STATUS_BOOKING, ID_JADWAL, TEAM_NAME, NOTES) VALUES (?, ?, NOW(), ?, ?, ?, ?)");
             $stmt->execute([$code, $id_pelanggan, $payType, $id_jadwal, $teamName ?: null, $notes ?: null]);
-
-            // 4. TABEL PEMBAYARAN
             $stmt = $pdo->prepare("INSERT INTO Pembayaran (ID_BOOKING, TANGGAL_BAYAR, METODE_PEMBAYARAN, STATUS_PEMBAYARAN) VALUES (?, NOW(), 'TRANSFER', 'PENDING')");
             $stmt->execute([$code]);
-
             $pdo->commit();
-            // ==========================================
-            
             echo json_encode([
                 'success'      => true, 
                 'code'         => $code,
                 'actual_price' => $actualTotalPrice 
             ]);
-
         } catch(Exception $e) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -242,7 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Book Arena</title>
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -384,7 +326,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:f
 .step-item.active .step-num::before {
   background: #0d0e12;
 }
-/* Done state */
 .step-item.done .step-num {
   background: var(--green);
   color: var(--green);
@@ -393,7 +334,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:f
 .step-item.done .step-num::before {
   background: #0d0e12;
 }
-/* Hover effect for all steps */
 .step-item.active {
   cursor: default !important;
 }
@@ -579,22 +519,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:f
 .btn-next:not(:disabled){animation:pulse-green 2.5s infinite;}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:rgba(0,255,136,.15);}
-
-/* Reactive Grid & 3D Tilt */
 .bg-grid {
   transition: opacity 0.3s;
   -webkit-mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 20%);
   mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 20%);
   opacity: 0.7;
 }
-
 .fc {
   transform-style: preserve-3d;
   will-change: transform;
   transition: transform 0.4s ease-out, border-color 0.3s;
 }
-
-/* Efek Glare  */
 .fc::after {
   content: '';
   position: absolute;
@@ -606,8 +541,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:f
   z-index: 5;
 }
 .fc:hover::after { opacity: 1; }
-
-/* ── Form Validation Errors ────────────────────── */
 .form-error{
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;color:var(--red);
   margin-top:4px;display:none;align-items:center;gap:5px;
@@ -629,7 +562,6 @@ body, a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .
 a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-back {
   cursor: pointer !important;
 }
-/* Premium Info Lapangan Styling */
 .info-lapangan-card {
   margin-top: 24px;
   background: rgba(17, 19, 24, 0.45);
@@ -712,8 +644,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
   color: var(--gray2);
   line-height: 1.4;
 }
-
-/* PRELOADER SPINNER */
 #site-preloader {
   position: fixed; inset: 0; background: var(--black); z-index: 99999;
   display: flex; align-items: center; justify-content: center;
@@ -755,7 +685,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
 </style>
 </head>
 <body>
-<!-- PRELOADER SPINNER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
@@ -764,20 +693,17 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
 </div>
 <div id="noise"></div>
 <div class="bg-grid"></div>
-
 <div id="success-overlay">
   <div class="success-card">
     <div class="success-corner tl"></div>
     <div class="success-corner tr"></div>
     <div class="success-corner bl"></div>
     <div class="success-corner br"></div>
-    
     <div class="success-card-content">
       <h2 class="success-title">BOOKING MENUNGGU PEMBAYARAN!</h2>
       <p class="success-sub">Selesaikan pembayaran manual via transfer bank. Setelah transfer, kirimkan bukti ke WhatsApp kami.</p>
       <div class="success-code" id="booking-code">MF-000000</div>
       <div class="success-detail" id="success-detail"></div>
-      
       <div style="background:var(--card2); padding:14px; text-align:left; margin-bottom:20px; border:1px solid rgba(255,182,0,.3);">
         <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;font-weight:700;">Instruksi Pembayaran</div>
         <div style="margin-bottom:10px;">
@@ -802,13 +728,11 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         <div id="payment-timer" style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;color:var(--red);margin-bottom:8px;text-shadow:0 0 10px rgba(255,59,92,.4);">05:00</div>
         <div id="payment-timer-msg" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;color:var(--gray2);">Jika dalam 5 menit belum melakukan pembayaran, booking otomatis dibatalkan.</div>
       </div>
-
       <div style="display:flex;gap:8px;justify-content:center">
         <button onclick="window.location.reload()" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--black);background:var(--green);border:none;padding:12px 24px;">Selesai & Tutup</button>
       </div>
     </div> </div>
 </div>
-
 <nav>
   <a href="index.php" class="logo">MINI<em>FUT</em></a>
   <div class="nav-step-indicator" id="stepIndicator">STEP 1 / 4 — PILIH LAPANGAN</div>
@@ -817,10 +741,8 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
     <span class="nav-back-clone">← Kembali ke Beranda</span>
   </a>
 </nav>
-
 <div class="booking-wrap">
   <div class="booking-main">
-
     <div class="steps-bar">
       <div class="step-item" onclick="goStep(1)">
         <div class="step-num active" id="sn1">1</div>
@@ -842,11 +764,9 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         <span class="step-label" id="sl4">Data Diri</span>
       </div>
     </div>
-
     <div id="step1">
       <div class="sec-label">⬡ Step 01</div>
       <div class="sec-title">PILIH LAPANGAN</div>
-
       <div class="field-cards">
         <div class="fc" id="fc-1" onclick="selectField('1')">
           <div class="fc-sel-mark">✓</div>
@@ -897,19 +817,16 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
           </div>
         </div>
       </div>
-
       <div class="field-detail" id="field-detail">
         <div class="fd-layout">
           <div class="fd-imgs" id="fd-imgs"></div>
           <div class="fd-info-list" id="fd-info"></div>
         </div>
       </div>
-
       <div class="action-row">
         <button class="btn-next" id="btn1" onclick="goStep(2)" disabled>Lanjut: Pilih Tanggal →</button>
       </div>
     </div>
-
     <div id="step2">
       <div class="sec-label">⬡ Step 02</div>
       <div class="sec-title">PILIH TANGGAL</div>
@@ -926,31 +843,24 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         <button class="btn-next" id="btn2" onclick="goStep(3)" disabled>Lanjut: Pilih Jam →</button>
       </div>
     </div>
-
     <div id="step3">
       <div class="sec-label">⬡ Step 03</div>
       <div class="sec-title">PILIH JAM SESI</div>
-
       <div class="time-legend">
         <div class="tleg-item"><div class="tleg-dot avail"></div>Tersedia</div>
         <div class="tleg-item"><div class="tleg-dot sel"></div>Dipilih</div>
         <div class="tleg-item"><div class="tleg-dot booked"></div>Sudah Dipesan</div>
       </div>
-
       <p class="multi-note" style="margin-bottom:16px;">Anda dapat memilih <span>lebih dari satu jam</span> dengan langsung mengklik kotak-kotak yang tersedia secara bebas.</p>
-
       <div class="time-grid" id="timeGrid"></div>
-
       <div class="action-row" style="margin-top:20px;">
         <button class="btn-back" onclick="goStep(2)">← Kembali</button>
         <button class="btn-next" id="btn3" onclick="goStep(4)" disabled>Lanjut: Data Diri →</button>
       </div>
     </div>
-
     <div id="step4">
       <div class="sec-label">⬡ Step 04</div>
       <div class="sec-title">DATA PEMESANAN</div>
-
       <form id="bookForm" onsubmit="return false;">
         <div class="form-grid">
           <div class="form-group">
@@ -973,7 +883,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             <label class="form-label">Nama Tim / Komunitas</label>
             <input type="text" class="form-input" id="f-tim" placeholder="Opsional — nama tim kamu" maxlength="100">
           </div>
-          
           <div class="form-group full" style="margin-top:8px;">
             <label class="form-label">Tipe Pembayaran *</label>
             <div style="display:flex; gap:20px; margin-top:6px;">
@@ -988,7 +897,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             </div>
             <p class="form-note" id="dp-note" style="display:none; color:var(--amber); margin-top:8px;">*Sisa pembayaran wajib dilunasi di lokasi sebelum bermain.</p>
           </div>
-
           <div class="form-group full" style="margin-top:8px;">
             <label class="form-label">Catatan Tambahan</label>
             <textarea class="form-input" id="f-catatan" rows="3" placeholder="Permintaan khusus, keperluan tambahan, dll..." style="resize:vertical;" maxlength="1000"></textarea>
@@ -1002,15 +910,12 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
           </div>
         </div>
       </form>
-
       <div class="action-row">
         <button class="btn-back" onclick="goStep(3)">← Kembali</button>
         <button class="btn-next" id="btn4" onclick="submitBooking()" disabled>Konfirmasi Booking</button>
       </div>
     </div>
-
   </div>
-
   <div class="booking-sidebar">
     <div class="sidebar-title">Ringkasan</div>
     <div class="summary-block" id="sum-field-block">
@@ -1024,7 +929,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
     <div class="summary-block" id="sum-total-block" style="display:none">
       <div class="sum-row"><span class="sum-key">Harga per Jam</span><span class="sum-val" id="sum-perjam">—</span></div>
       <div class="sum-row" id="row-subtotal" style="display:none; margin-top:8px;"><span class="sum-key">Total Harga</span><span class="sum-val" id="sum-subtotal">—</span></div>
-      
       <div class="sum-row" id="row-dp" style="display:none; margin-top:8px;"><span class="sum-key">DP (50%)</span><span class="sum-val" id="sum-dp-val" style="color:var(--amber);">—</span></div>
       <div class="sum-row" id="row-sisa" style="display:none;"><span class="sum-key">Sisa di Lokasi</span><span class="sum-val" id="sum-sisa-val">—</span></div>
       <div class="sum-divider"></div>
@@ -1033,7 +937,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         <span class="sum-total-val" id="sum-total">—</span>
       </div>
     </div>
-    <!-- INFO LAPANGAN CONTAINER -->
     <div class="info-lapangan-card">
       <div class="info-header">
         <i class="bi bi-info-circle-fill"></i>
@@ -1049,7 +952,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             <div class="info-desc">Pelunasan sisa biaya sewa dapat dilakukan langsung di lokasi.</div>
           </div>
         </div>
-
         <div class="info-item">
           <div class="info-icon-wrapper">
             <i class="bi bi-clock-history"></i>
@@ -1059,7 +961,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             <div class="info-desc">Harap hadir di lokasi minimal 15 menit sebelum sesi dimulai.</div>
           </div>
         </div>
-
         <div class="info-item warning">
           <div class="info-icon-wrapper">
             <i class="bi bi-ban"></i>
@@ -1069,7 +970,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             <div class="info-desc">Dilarang membawa makanan atau minuman dari luar area MiniFut.</div>
           </div>
         </div>
-
         <div class="info-item">
           <div class="info-icon-wrapper">
             <i class="bi bi-cup-hot"></i>
@@ -1079,7 +979,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
             <div class="info-desc">Tersedia area Restaurant & Café serta Ruang Ganti bersih.</div>
           </div>
         </div>
-
         <div class="info-item">
           <div class="info-icon-wrapper">
             <i class="bi bi-geo-alt-fill"></i>
@@ -1091,8 +990,6 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         </div>
       </div>
     </div>
-
-    <!-- BANTUAN CARD -->
     <div style="margin-top:12px;padding:16px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);border-radius:12px;display:flex;align-items:center;gap:14px;backdrop-filter:blur(10px);">
       <div style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:50%;color:var(--white);">
         <i class="bi bi-telephone-fill" style="font-size:0.9rem;"></i>
@@ -1104,10 +1001,8 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
     </div>
   </div>
 </div>
-
 <script>
 
-/* ═══ DATA ═══ */
 const FIELDS={
   '1':{name:'LAPANGAN 1',type:'Rumput Sintetis Pro',price:1000000,cap:'16-20 Pemain (8v8 / 10v10)',surface:'Rumput Sintetis Grade Pro',lighting:'LED Penuh',location:'Outdoor',imgs:['https://images.unsplash.com/photo-1602432141202-e8b683524997?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHNvY2NlciUyMGdyYXNzfGVufDB8fDB8fHww','https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c29jY2VyJTIwZ3Jhc3N8ZW58MHx8MHx8fDA%3D']},
   '2':{name:'LAPANGAN 2',type:'Rumput Sintetis Premium Elite',price:1200000,cap:'16-20 Pemain (8v8 / 10v10)',surface:'Rumput Sintetis Grade Premium',lighting:'LED Penuh',location:'Outdoor + Tribun Penonton',imgs:['https://images.unsplash.com/photo-1502481686408-d428268c24ff?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNvY2NlciUyMGdyYXNzfGVufDB8fDB8fHww','https://images.unsplash.com/photo-1517769798-ff41bc33467e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNvY2NlciUyMGdyYXNzfGVufDB8fDB8fHww']},
@@ -1118,17 +1013,13 @@ const fieldDetail={
   '2':{info:[['Kapasitas','16-20 Pemain'],['Jenis Rumput','Sintetis Premium Elite'],['Pencahayaan','LED Standar Kompetisi'],['Fasilitas','Tribun, Ruang Ganti, Toilet, Restaurant, Parkir Luas']]},
   '3':{info:[['Kapasitas','16-20 Pemain'],['Jenis Rumput','Sintetis Grade Pro'],['Pencahayaan','LED Standar Kompetisi'],['Fasilitas','Ruang Ganti, Toilet, Restaurant, Parkir Luas']]},
 };
-
 let state={field:null,date:null,slots:[],step:1,calYear:0,calMonth:0};
 const NOW=new Date(); state.calYear=NOW.getFullYear(); state.calMonth=NOW.getMonth();
 
-// === MENGHUBUNGKAN FETCH API DATABASE MYSQL === //
 let currentBookedSlots = [];
-
 async function fetchAndRenderTimeGrid() {
   const grid = document.getElementById('timeGrid');
   grid.innerHTML = '<div style="color:var(--green); grid-column:1/-1; text-align:center; padding: 20px;">Memuat jadwal dari database...</div>';
-  
   try {
     let res = await fetch('?action=get_booked_slots', {
       method: 'POST',
@@ -1143,25 +1034,20 @@ async function fetchAndRenderTimeGrid() {
   }
   renderTimeGridSync();
 }
-
 function renderTimeGridSync(){
   const grid=document.getElementById('timeGrid');grid.innerHTML='';
   const booked=currentBookedSlots;
-
   const now=new Date();
   const todayStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const isToday=state.date===todayStr;
   const currentHour=now.getHours();
-
   for(let h=8;h<=23;h++){
     const isBooked=booked.includes(h);
     const isPastHour=isToday&&h<=currentHour;
     const isSel=state.slots.includes(h);
     const label=`${String(h).padStart(2,'0')}:00 – ${String(h+1).padStart(2,'0')}:00`;
     const price=`Rp ${FIELDS[state.field].price.toLocaleString('id-ID')}`;
-    
     let cls='time-slot '+(isBooked||isPastHour?'booked':(isSel?'sel avail':'avail'));
-    
     grid.innerHTML+=`<div class="${cls}" id="ts-${h}" onclick="toggleSlot(${h})">
       <div class="ts-time">${label}</div>
       <div class="ts-price">${price}</div>
@@ -1169,7 +1055,6 @@ function renderTimeGridSync(){
     </div>`;
   }
 }
-
 function toggleSlot(h){
   if(currentBookedSlots.includes(h))return;
   const now=new Date();
@@ -1181,33 +1066,26 @@ function toggleSlot(h){
   document.getElementById('btn3').disabled = state.slots.length === 0;
   updateSidebarTime();
 }
-
 const stepLabels=['','PILIH LAPANGAN','PILIH TANGGAL','PILIH JAM','DATA DIRI'];
 function goStep(n){
   if(n===state.step)return;
   if(n===2&&!state.field)return;
   if(n===3&&!state.date)return;
   if(n===4&&state.slots.length===0)return;
-
   if (n === 1 && state.step !== 1) {
     state.field = null;
     state.date = null;
     state.slots = [];
-    
     document.querySelectorAll('.fc').forEach(f => f.classList.remove('selected'));
     document.getElementById('field-detail').classList.remove('open');
-    
     document.getElementById('sum-field-block').innerHTML = '<div class="sum-empty">Belum ada lapangan dipilih</div>';
     document.getElementById('sum-dt-block').style.display = 'none';
     document.getElementById('sum-total-block').style.display = 'none';
-    
     document.getElementById('btn1').disabled = true;
   }
-
   document.getElementById('step'+state.step).style.display='none';
   document.getElementById('step'+n).style.display='block';
   state.step=n;
-
   [1,2,3,4].forEach(i=>{
     const sn=document.getElementById('sn'+i),sl=document.getElementById('sl'+i),sc=document.getElementById('sc'+i);
     const item=sn ? sn.parentElement : null;
@@ -1226,9 +1104,7 @@ function goStep(n){
     if(sc&&i<n)sc.classList.add('done');
     else if(sc)sc.classList.remove('done');
   });
-
   document.getElementById('stepIndicator').textContent=`STEP ${n} / 4 — ${stepLabels[n]}`;
-
   if(n===2){
     renderCalendar();
     document.getElementById('btn2').disabled = !state.date;
@@ -1240,7 +1116,6 @@ function goStep(n){
   if(n===4)setupFormListeners();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function selectField(id){
   state.field=id;state.date=null;state.slots=[];
   ['1','2','3'].forEach(f=>{ document.getElementById('fc-'+f).classList.toggle('selected',f===id); });
@@ -1251,7 +1126,6 @@ function selectField(id){
   updateSidebarField(id);
   document.getElementById('btn1').disabled=false;
 }
-
 function updateSidebarField(id){
   const fd=FIELDS[id];
   document.getElementById('sum-field-block').innerHTML=`
@@ -1263,44 +1137,35 @@ function updateSidebarField(id){
     <div class="sum-row"><span class="sum-key">Kapasitas</span><span class="sum-val">${fd.cap}</span></div>
     <div class="sum-row"><span class="sum-key">Harga</span><span class="sum-val green">Rp ${fd.price.toLocaleString('id-ID')}/jam</span></div>`;
 }
-
 const MONTHS=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-
 function changeMonth(d){
   state.calMonth+=d;
   if(state.calMonth>11){state.calMonth=0;state.calYear++;}
   if(state.calMonth<0){state.calMonth=11;state.calYear--;}
   renderCalendar();
 }
-
 function renderCalendar(){
   document.getElementById('calMonth').textContent=`${MONTHS[state.calMonth]} ${state.calYear}`;
   const grid=document.getElementById('calGrid');
   grid.innerHTML=DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
-  
   const first=new Date(state.calYear,state.calMonth,1).getDay();
   const days=new Date(state.calYear,state.calMonth+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
-  
   for(let i=0;i<first;i++)grid.innerHTML+=`<div class="cal-day empty"></div>`;
-  
   for(let d=1;d<=days;d++){
     const date=new Date(state.calYear,state.calMonth,d);
     const isPast=date<today;
     const isToday=date.toDateString()===today.toDateString();
     const dateStr=`${state.calYear}-${String(state.calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isSel=state.date===dateStr;
-    
     let cls='cal-day';
     if(isPast) cls+=' past'; else cls+=' available';
     if(isToday) cls+=' today';
     if(isSel) cls+=' selected';
-    
     grid.innerHTML+=`<div class="${cls}" onclick="selectDate('${dateStr}',this)">${d}</div>`;
   }
 }
-
 function selectDate(dateStr,el){
   state.date=dateStr;state.slots=[];
   document.querySelectorAll('.cal-day').forEach(d=>d.classList.remove('selected'));
@@ -1312,7 +1177,6 @@ function selectDate(dateStr,el){
   document.getElementById('btn2').disabled=false;
   updateSidebarTime();
 }
-
 function updateSidebarTime(){
   if(state.slots.length===0){
     document.getElementById('sum-time').textContent='—';
@@ -1327,58 +1191,47 @@ function updateSidebarTime(){
   document.getElementById('sum-total-block').style.display='block';
   updatePaymentUI();
 }
-
 function updatePaymentUI() {
   if(state.slots.length === 0) return;
   const price = FIELDS[state.field].price;
   const total = price * state.slots.length;
   const payTypeEle = document.querySelector('input[name="pay_type"]:checked');
   const payType = payTypeEle ? payTypeEle.value : 'lunas';
-
   document.getElementById('sum-perjam').textContent = `Rp ${price.toLocaleString('id-ID')}`;
-
   if(payType === 'dp') {
     document.getElementById('dp-note').style.display = 'block';
-    
     if(document.getElementById('row-subtotal')) {
         document.getElementById('row-subtotal').style.display = 'flex';
         document.getElementById('sum-subtotal').textContent = `Rp ${total.toLocaleString('id-ID')}`;
     }
-    
     document.getElementById('row-dp').style.display = 'flex';
     document.getElementById('row-sisa').style.display = 'flex';
     document.getElementById('sum-total-label').textContent = 'TOTAL DP DIBAYAR (50%)';
-    
     const dp = total / 2;
     document.getElementById('sum-dp-val').textContent = `Rp ${dp.toLocaleString('id-ID')}`;
     document.getElementById('sum-sisa-val').textContent = `Rp ${dp.toLocaleString('id-ID')}`;
     document.getElementById('sum-total').textContent = `Rp ${dp.toLocaleString('id-ID')}`;
   } else {
     document.getElementById('dp-note').style.display = 'none';
-    
     if(document.getElementById('row-subtotal')) {
         document.getElementById('row-subtotal').style.display = 'none';
     }
-    
     document.getElementById('row-dp').style.display = 'none';
     document.getElementById('row-sisa').style.display = 'none';
     document.getElementById('sum-total-label').textContent = 'TOTAL BIAYA';
     document.getElementById('sum-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
   }
 }
-
 function setupFormListeners(){
   ['f-nama','f-telp','f-email','f-agree'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.addEventListener('change',checkForm);
     if(el)el.addEventListener('input',checkForm);
-    // Tambah event blur untuk validasi saat user pindah field
     if(el)el.addEventListener('blur',()=>checkForm(true));
   });
   checkForm();
 }
 
-// Helper untuk set/clear error pada field
 function setFieldError(inputId, errorId, msg){
   const input=document.getElementById(inputId);
   const err=document.getElementById(errorId);
@@ -1397,14 +1250,12 @@ function setFieldValid(inputId, errorId){
   if(err){err.textContent='';err.classList.remove('show');}
   if(input){input.classList.remove('input-error');input.classList.add('input-valid');}
 }
-
 function checkForm(showErrors=false){
   const nama=document.getElementById('f-nama').value.trim();
   const telp=document.getElementById('f-telp').value.trim();
   const email=document.getElementById('f-email').value.trim();
   const agree=document.getElementById('f-agree').checked;
   let allValid=true;
-
   if(!nama){
     if(showErrors) setFieldError('f-nama','err-nama','Nama lengkap wajib diisi.');
     allValid=false;
@@ -1417,7 +1268,6 @@ function checkForm(showErrors=false){
   } else {
     setFieldValid('f-nama','err-nama');
   }
-
   const cleanPhone=telp.replace(/[^0-9+]/g,'');
   if(!telp){
     if(showErrors) setFieldError('f-telp','err-telp','Nomor telepon wajib diisi.');
@@ -1428,7 +1278,6 @@ function checkForm(showErrors=false){
   } else {
     setFieldValid('f-telp','err-telp');
   }
-
   if(!email){
     if(showErrors) setFieldError('f-email','err-email','Alamat email wajib diisi.');
     allValid=false;
@@ -1438,8 +1287,7 @@ function checkForm(showErrors=false){
   } else {
     setFieldValid('f-email','err-email');
   }
-
-  // Validasi Agreement
+  
   const errAgree=document.getElementById('err-agree');
   if(!agree){
     if(showErrors && errAgree){errAgree.textContent='Anda harus menyetujui syarat & ketentuan.';errAgree.classList.add('show');}
@@ -1447,26 +1295,20 @@ function checkForm(showErrors=false){
   } else {
     if(errAgree){errAgree.textContent='';errAgree.classList.remove('show');}
   }
-
   document.getElementById('btn4').disabled=!allValid;
   return allValid;
 }
 
-// === SUBMIT BOOKING MENGGUNAKAN FETCH KE DATABASE === //
 async function submitBooking(){
-  // Re-validasi form sebelum submit
   if(!checkForm(true)) return;
-
   const btn = document.getElementById('btn4');
   const originalText = btn.innerHTML;
   btn.innerHTML = "Memproses...";
   btn.disabled = true;
-
   const fd=FIELDS[state.field];
   const sorted=[...state.slots].sort((a,b)=>a-b);
   const total=fd.price*sorted.length;
   const payType = document.querySelector('input[name="pay_type"]:checked').value;
-  
   const payload = {
       field_id: state.field,
       date: state.date,
@@ -1479,7 +1321,6 @@ async function submitBooking(){
       total_price: total,
       notes: document.getElementById('f-catatan').value.trim()
   };
-
   try {
     let res = await fetch('?action=submit_booking', {
         method: 'POST',
@@ -1487,22 +1328,16 @@ async function submitBooking(){
         body: JSON.stringify(payload)
     });
     let data = await res.json();
-    
     if(data.success) {
       const serverTotal = data.actual_price ? data.actual_price : total;
-
       const dt=new Date(state.date+'T00:00:00');
       const dayNames=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
       const MONTHS2=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-      
       const dateLabel=`${dayNames[dt.getDay()]}, ${dt.getDate()} ${MONTHS2[dt.getMonth()]} ${dt.getFullYear()}`;
       const timeLabel = sorted.map(h => `${String(h).padStart(2,'0')}:00`).join(', ');
-      
       let transferAmount = serverTotal, sisaAmount = 0;
       if(payType === 'dp') { transferAmount = serverTotal / 2; sisaAmount = serverTotal / 2; }
-      
       document.getElementById('booking-code').textContent = data.code; 
-      
       document.getElementById('success-detail').innerHTML=`
         <div class="success-detail-row"><span class="sdk">Lapangan</span><span class="sdv">${fd.name}</span></div>
         <div class="success-detail-row"><span class="sdk">Tanggal</span><span class="sdv">${dateLabel}</span></div>
@@ -1512,19 +1347,14 @@ async function submitBooking(){
           <span class="sdk">Total Harga Lapangan</span>
           <span class="sdv" style="color:var(--white);font-family:'Orbitron',monospace;font-size:1rem;">Rp ${serverTotal.toLocaleString('id-ID')}</span>
         </div>`;
-        
       document.getElementById('transfer-amount').textContent = `Rp ${transferAmount.toLocaleString('id-ID')}`;
-      
       if(payType === 'dp') {
         document.getElementById('sisa-bayar-info').style.display = 'block';
         document.getElementById('sisa-amount').textContent = `Rp ${sisaAmount.toLocaleString('id-ID')}`;
       } else {
         document.getElementById('sisa-bayar-info').style.display = 'none';
       }
-        
       document.getElementById('success-overlay').classList.add('show');
-
-      // Confetti hanya saat sukses
       confetti({
         particleCount: 150,        
         spread: 100,              
@@ -1533,23 +1363,18 @@ async function submitBooking(){
         zIndex: 6000,              
         disableForReducedMotion: true
       });
-
-      // Timer hanya saat sukses
       let timeLeft = 300; 
       const timerDisplay = document.getElementById('payment-timer');
       const timerMsg = document.getElementById('payment-timer-msg');
-      
       timerDisplay.textContent = "05:00";
       timerDisplay.style.color = "var(--red)";
       timerDisplay.style.textShadow = "0 0 10px rgba(255,59,92,.4)";
       timerMsg.innerHTML = "Jika dalam 5 menit belum melakukan pembayaran, booking otomatis dibatalkan.";
-      
       const timerInterval = setInterval(() => {
         timeLeft--;
         let m = Math.floor(timeLeft / 60);
         let s = Math.floor(timeLeft % 60);
         timerDisplay.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           timerDisplay.textContent = "00:00";
@@ -1558,9 +1383,7 @@ async function submitBooking(){
           timerMsg.innerHTML = "Waktu pembayaran telah habis. <br><span style='color:var(--red);font-weight:700;'>Booking otomatis dibatalkan.</span>";
         }
       }, 1000);
-
     } else {
-      // Tampilkan error per-field dari server jika ada
       if(data.errors){
         const fieldMap={name:'f-nama',email:'f-email',phone:'f-telp'};
         const errMap={name:'err-nama',email:'err-email',phone:'err-telp'};
@@ -1578,36 +1401,26 @@ async function submitBooking(){
       btn.disabled = false;
   }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // 1. REACTIVE GRID BACKGROUND
   document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
     document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
   });
-
-  // 2. 3D TILT EFFECT PADA KARTU LAPANGAN
+  
   const cards = document.querySelectorAll('.fc');
   cards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left; // x position within the element.
-      const y = e.clientY - rect.top;  // y position within the element.
-      
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -10; // Max tilt 10 deg
+      const rotateX = ((y - centerY) / centerY) * -10;
       const rotateY = ((x - centerX) / centerX) * 10;
-      
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      
-      // Update glare position
       card.style.setProperty('--x', `${x}px`);
       card.style.setProperty('--y', `${y}px`);
     });
-    
     card.addEventListener('mouseleave', () => {
       card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
       card.style.setProperty('--x', `50%`);
@@ -1615,49 +1428,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. CYBERPUNK SYNTH SOUNDS (Web Audio API)
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
   function playBeep(freq, type, duration, vol) {
     if(audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    
     osc.type = type; 
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    
     gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    
     osc.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    
     osc.start();
     osc.stop(audioCtx.currentTime + duration);
   }
-
   const hoverElements = document.querySelectorAll('button, .fc, .step-item, .time-slot, .cal-day');
   hoverElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
       playBeep(800, 'sine', 0.05, 0.02); 
     });
   });
-
   document.addEventListener('click', (e) => {
     const el = e.target.closest('button, .fc, .time-slot.avail, .cal-day.available');
     if(el) {
       if(el.id === 'btn4') {
-        // Suara sukses saat submit
         playBeep(440, 'sine', 0.1, 0.1);
         setTimeout(() => playBeep(660, 'sine', 0.2, 0.1), 100);
         setTimeout(() => playBeep(880, 'triangle', 0.4, 0.15), 200);
       } else {
-        // Suara klik biasa
         playBeep(1200, 'square', 0.08, 0.03);
       }
     }
   });
-
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>

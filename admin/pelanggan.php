@@ -1,34 +1,24 @@
 <?php
 $pageTitle = 'Pelanggan';
 require_once __DIR__ . '/_header.php';
-
 $pdo   = getDB();
 $alert = '';
-
-// ── Tambahkan kolom FOTO_PROFIL jika belum ada ──────────
 try { $pdo->query("SELECT FOTO_PROFIL FROM Pelanggan LIMIT 1"); }
 catch (PDOException) { $pdo->exec("ALTER TABLE Pelanggan ADD COLUMN FOTO_PROFIL VARCHAR(255) NULL"); }
-
-// ── CRUD Actions ─────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-
-    // ── TAMBAH ──
     if ($action === 'tambah') {
         $nama     = trim($_POST['nama']     ?? '');
         $email    = trim($_POST['email']    ?? '');
         $notelp   = trim($_POST['notelp']   ?? '');
         $password = $_POST['password']      ?? '';
         $foto     = null;
-
         $errArr = [];
         if (!$nama)   $errArr[] = 'Nama tidak boleh kosong.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errArr[] = 'Format email tidak valid.';
         if (!preg_match('/^[0-9+\-\s]{8,20}$/', $notelp)) $errArr[] = 'Nomor telepon tidak valid.';
         if (mb_strlen($password) < 6) $errArr[] = 'Password minimal 6 karakter.';
-
         if (empty($errArr)) {
-            // Cek email duplikat
             $cek = $pdo->prepare("SELECT ID_PELANGGAN FROM Pelanggan WHERE U_EMAIL=?");
             $cek->execute([$email]);
             if ($cek->fetch()) {
@@ -47,19 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alert = 'error|' . implode(' ', $errArr);
         }
     }
-
-    // ── EDIT ──
     if ($action === 'edit') {
         $id     = (int)($_POST['id']     ?? 0);
         $nama   = trim($_POST['nama']    ?? '');
         $email  = trim($_POST['email']   ?? '');
         $notelp = trim($_POST['notelp']  ?? '');
         $pw     = $_POST['password']     ?? '';
-
         if ($id && $nama && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $fotoClause = '';
             $params = [$nama, $email, $notelp];
-
             if (!empty($_FILES['foto']['name'])) {
                 $up = uploadFoto($_FILES['foto'], 'profil');
                 if ($up) {
@@ -71,13 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $params[] = $up;
                 }
             }
-
             $pwClause = '';
             if (!empty($pw) && mb_strlen($pw) >= 6) {
                 $pwClause = ', U_PASSWORD=?';
                 $params[] = password_hash($pw, PASSWORD_DEFAULT);
             }
-
             $params[] = $id;
             $pdo->prepare("UPDATE Pelanggan SET U_NAMA=?,U_EMAIL=?,U_NOTELP=? $fotoClause $pwClause WHERE ID_PELANGGAN=?")
                 ->execute($params);
@@ -86,12 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alert = 'error|Data tidak lengkap atau email tidak valid.';
         }
     }
-
-    // ── HAPUS ──
     if ($action === 'hapus') {
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
-            // Cek booking terkait
             $cek = $pdo->prepare("SELECT COUNT(*) FROM Booking WHERE ID_PELANGGAN=?");
             $cek->execute([$id]);
             if ($cek->fetchColumn() > 0) {
@@ -107,41 +88,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-// ── Search & Pagination ──────────────────────────────────
 $search  = trim($_GET['search'] ?? '');
 $perPage = 10;
 $page    = max(1, (int)($_GET['page'] ?? 1));
 $offset  = ($page - 1) * $perPage;
-
 $where  = $search ? "WHERE U_NAMA LIKE ? OR U_EMAIL LIKE ? OR U_NOTELP LIKE ?" : '';
 $params = $search ? ["%$search%","%$search%","%$search%"] : [];
-
 $total = $pdo->prepare("SELECT COUNT(*) FROM Pelanggan $where");
 $total->execute($params);
 $totalRows  = (int)$total->fetchColumn();
 $totalPages = max(1, ceil($totalRows / $perPage));
-
 $stmt = $pdo->prepare("SELECT p.*, (SELECT COUNT(*) FROM Booking b WHERE b.ID_PELANGGAN=p.ID_PELANGGAN) as total_booking
                         FROM Pelanggan p $where ORDER BY p.ID_PELANGGAN DESC LIMIT $perPage OFFSET $offset");
 $stmt->execute($params);
 $pelangganList = $stmt->fetchAll();
-
-// Edit data
 $editData = null;
 if (isset($_GET['edit_id'])) {
     $s = $pdo->prepare("SELECT * FROM Pelanggan WHERE ID_PELANGGAN=?");
     $s->execute([(int)$_GET['edit_id']]);
     $editData = $s->fetch();
 }
-
 [$alertType, $alertMsg] = $alert ? explode('|', $alert, 2) : ['',''];
 ?>
-
 <?php if ($alertMsg): ?>
 <div class="alert alert-<?= $alertType==='success'?'success':'error' ?>"><?= e($alertMsg) ?></div>
 <?php endif; ?>
-
 <div class="table-card">
   <div class="table-header">
     <div class="table-title">Data Pelanggan</div>
@@ -155,7 +126,6 @@ if (isset($_GET['edit_id'])) {
       <button class="btn btn-green" onclick="openModal('modal-tambah')"><i class="bi bi-plus-lg"></i> Tambah Pelanggan</button>
     </div>
   </div>
-
   <table>
     <thead>
       <tr><th>Foto</th><th>Nama</th><th>Email</th><th>No. Telepon</th><th>Total Booking</th><th>Aksi</th></tr>
@@ -197,7 +167,6 @@ if (isset($_GET['edit_id'])) {
       <?php endif; ?>
     </tbody>
   </table>
-
   <?php if ($totalPages > 1): ?>
   <div class="pagination">
     <a href="?page=<?= max(1,$page-1) ?>&search=<?= urlencode($search) ?>" class="page-btn <?= $page<=1?'disabled':'' ?>">‹ Prev</a>
@@ -209,8 +178,6 @@ if (isset($_GET['edit_id'])) {
   </div>
   <?php endif; ?>
 </div>
-
-<!-- ── MODAL TAMBAH ──────────────────────────────────────── -->
 <div class="modal-overlay" id="modal-tambah">
   <div class="modal">
     <div class="modal-head">
@@ -253,7 +220,6 @@ if (isset($_GET['edit_id'])) {
     </div>
   </div>
 </div>
-
 <?php if ($editData): ?>
 <div class="modal-overlay open" id="modal-edit">
   <div class="modal">
@@ -265,7 +231,6 @@ if (isset($_GET['edit_id'])) {
       <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="action" value="edit">
         <input type="hidden" name="id"     value="<?= e($editData['ID_PELANGGAN']) ?>">
-
         <div style="text-align:center;margin-bottom:20px;">
           <?php if (!empty($editData['FOTO_PROFIL'])): ?>
           <img src="../<?= UPLOAD_URL . e($editData['FOTO_PROFIL']) ?>"
@@ -276,7 +241,6 @@ if (isset($_GET['edit_id'])) {
           </div>
           <?php endif; ?>
         </div>
-
         <div class="form-group">
           <label class="form-label">Ganti Foto Profil</label>
           <div class="upload-area">
@@ -309,14 +273,12 @@ if (isset($_GET['edit_id'])) {
   </div>
 </div>
 <?php endif; ?>
-
 <script>
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(function(el) {
   el.addEventListener('click', function(e) { if (e.target===el) el.classList.remove('open'); });
 });
-
 function previewAvatar(input, wrapId) {
   const wrap = document.getElementById(wrapId);
   if (input.files && input.files[0]) {
@@ -343,5 +305,4 @@ function previewAvatarImg(input, imgId) {
   }
 }
 </script>
-
 <?php require_once __DIR__ . '/_footer.php'; ?>

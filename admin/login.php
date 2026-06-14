@@ -1,24 +1,16 @@
 <?php
-// admin/login.php — Halaman Login Admin MiniFut
 require_once __DIR__ . '/../config.php';
 startSecureSession();
-
 if (isAdmin()) {
     header('Location: dashboard.php');
     exit;
 }
-
 $error = '';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-
-    // ── Kredensial admin disimpan di sini (ganti sesuai kebutuhan) ──
-    // Untuk keamanan produksi, simpan di database atau env file
     $ADMIN_USER = 'Khayr';
     $ADMIN_PASS = 'minifut107'; 
-
     if (empty($username) || empty($password)) {
         $error = 'Username dan password tidak boleh kosong.';
     } elseif ($username === $ADMIN_USER && $password === $ADMIN_PASS) {
@@ -29,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: dashboard.php');
         exit;
     } else {
-        // Tambah delay untuk mencegah brute-force
         sleep(1);
         $error = 'Username atau password salah.';
     }
@@ -41,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut Admin — Login</title>
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%23ffd700' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%23ffd700' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%23ffd700'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%23ffd700' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -54,12 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--black);color:var(--white);overflow:hidden;}
 
-/* Shader background */
 #shader-bg{position:fixed;inset:0;z-index:0;opacity:.55;}
 #shader-bg canvas{display:block;width:100%;height:100%;}
-
 .wrap{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
-
 .card-wrapper {
   position: relative;
   width: 100%;
@@ -71,7 +58,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   animation: slideUp .6s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-
 .card {
   width: 100%;
   background: rgba(12, 13, 16, 0.96);
@@ -82,7 +68,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   position: relative;
   z-index: 1;
 }
-
 .shine-border-bg {
   position: absolute;
   inset: 0;
@@ -109,7 +94,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   100% { transform: rotate(360deg); }
 }
 
-/* Admin badge */
 .admin-badge {
   display:inline-flex;align-items:center;gap:6px;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;
@@ -119,7 +103,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   margin-bottom:20px;
   box-shadow:0 0 10px rgba(255,215,0,0.1);
 }
-
 .logo-wrap{text-align:center;margin-bottom:32px;}
 .logo {
   font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;
@@ -128,7 +111,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   display: inline-block;
 }
 .logo em{color:var(--white);font-style:normal;}
-
 h2{
   font-family:'Orbitron',monospace;font-size:.95rem;font-weight:700;
   color:var(--white);margin-bottom:6px;
@@ -137,20 +119,17 @@ h2{
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;
   color:var(--gray2);margin-bottom:28px;
 }
-
 .alert-err{
   background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.2);
   border-radius:8px;padding:12px 16px;margin-bottom:24px;
   font-size:.8rem;color:#ff7096;
 }
-
 .field{margin-bottom:20px;}
 label{
   display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;
   font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
   color:var(--yellow);margin-bottom:8px;
 }
-
 input[type=text],input[type=password]{
   width:100%;background:rgba(255,255,255,.02);border:1px solid var(--border2);
   border-radius:8px;padding:13px 16px;
@@ -164,7 +143,6 @@ input:focus{
   box-shadow:0 0 16px rgba(255,215,0,.15), inset 0 0 4px rgba(255,215,0,.05);
 }
 input::placeholder{color:var(--gray);}
-
 .btn-submit{
   width:100%;margin-top:12px;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:800;
@@ -186,7 +164,6 @@ input::placeholder{color:var(--gray);}
   transform:translateY(-2px);
 }
 .btn-submit:active{transform:translateY(0);}
-
 .back-link {
   display:inline-block;text-align:center;margin-top:24px;width:100%;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;font-weight:700;
@@ -213,10 +190,8 @@ input::placeholder{color:var(--gray);}
   width: 80%;
   left: 10%;
 }
-
 @media(max-width:480px){.card{padding:36px 24px 28px;}}
 
-/* Preloader */
 #site-preloader {
   position: fixed; inset: 0; background: #060608; z-index: 9999;
   display: flex; align-items: center; justify-content: center;
@@ -257,7 +232,6 @@ input::placeholder{color:var(--gray);}
 </style>
 </head>
 <body>
-<!-- PRELOADER SPINNER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
@@ -277,14 +251,11 @@ input::placeholder{color:var(--gray);}
         <span class="admin-badge">⚙ Panel Admin</span>
       </div>
     </div>
-
     <h2>Admin Access</h2>
     <p class="sub">Masuk ke dashboard pengelolaan MiniFut</p>
-
     <?php if ($error): ?>
     <div class="alert-err">⚠ <?= e($error) ?></div>
     <?php endif; ?>
-
     <form method="POST" action="" novalidate>
       <div class="field">
         <label for="username">Username</label>
@@ -299,7 +270,6 @@ input::placeholder{color:var(--gray);}
       </div>
       <button type="submit" class="btn-submit">MASUK ADMIN</button>
     </form>
-
     <a href="../auth/login.php" class="back-link">Kembali ke login pelanggan</a>
     </div>
   </div>
@@ -336,7 +306,6 @@ input::placeholder{color:var(--gray);}
   (function anim(){requestAnimationFrame(anim);uni.time.value+=0.05;r.render(sc,cam);})();
 })();
 
-// Preloader load logic
 window.addEventListener('load', function() {
   setTimeout(function() {
     const preloader = document.getElementById('site-preloader');

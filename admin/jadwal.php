@@ -1,26 +1,20 @@
 <?php
 $pageTitle = 'Jadwal';
 require_once __DIR__ . '/_header.php';
-
 $pdo   = getDB();
 $alert = '';
-
-// Create
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-
     if ($action === 'tambah') {
         $lapanganId  = (int)($_POST['lapangan_id'] ?? 0);
         $tanggal     = $_POST['tanggal']  ?? '';
         $jamMulai    = trim($_POST['jam_mulai']  ?? '');
         $jamSelesai  = trim($_POST['jam_selesai'] ?? '');
         $status      = $_POST['status']  ?? 'YA';
-
         if ($lapanganId && $tanggal && $jamMulai && $jamSelesai) {
-            // Validasi: Batasan Jam Operasional 08:00 - 24:00
             if ((int)$jamMulai < 8 || (int)$jamSelesai > 24) {
                 $alert = 'error|Jam operasional hanya diperbolehkan antara pukul 08:00 hingga 24:00.';
-            } // Validasi: jam mulai harus sebelum jam selesai
+            } 
             elseif ((int)$jamMulai >= (int)$jamSelesai) {
                 $alert = 'error|Jam mulai harus lebih awal dari jam selesai.';
             } else {
@@ -32,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alert = 'error|Data tidak lengkap.';
         }
     }
-
     if ($action === 'edit') {
         $id         = (int)($_POST['id'] ?? 0);
         $tanggal    = $_POST['tanggal']   ?? '';
@@ -40,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $jamSelesai = trim($_POST['jam_selesai']  ?? '');
         $status     = $_POST['status']    ?? 'YA';
         if ($id && $tanggal && $jamMulai && $jamSelesai) {
-            // Validasi: Batasan Jam Operasional 08:00 - 24:00
             if ((int)$jamMulai < 8 || (int)$jamSelesai > 24) {
                 $alert = 'error|Jam operasional hanya diperbolehkan antara pukul 08:00 hingga 24:00.';
             } elseif ((int)$jamMulai >= (int)$jamSelesai) {
@@ -52,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-
     if ($action === 'hapus') {
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
@@ -67,24 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-// ── Lapangan list untuk form ─────────────────────────────
 $lapangans = $pdo->query("SELECT ID_LAPANGAN, NAMA_LAPANGAN FROM Lapangan ORDER BY ID_LAPANGAN")->fetchAll();
-
-// ── Search & Pagination ──────────────────────────────────
 $search  = trim($_GET['search'] ?? '');
 $perPage = 10;
 $page    = max(1, (int)($_GET['page'] ?? 1));
 $offset  = ($page - 1) * $perPage;
-
 $where  = $search ? "WHERE l.NAMA_LAPANGAN LIKE ? OR j.TANGGAL LIKE ? OR j.STATUS_JADWAL LIKE ?" : '';
 $params = $search ? ["%$search%","%$search%","%$search%"] : [];
-
 $totalStmt = $pdo->prepare("SELECT COUNT(*) FROM Jadwal j JOIN Lapangan l ON j.ID_LAPANGAN=l.ID_LAPANGAN $where");
 $totalStmt->execute($params);
 $totalRows  = (int)$totalStmt->fetchColumn();
 $totalPages = max(1, ceil($totalRows/$perPage));
-
 $stmt = $pdo->prepare(
     "SELECT j.*, l.NAMA_LAPANGAN FROM Jadwal j
      JOIN Lapangan l ON j.ID_LAPANGAN=l.ID_LAPANGAN
@@ -92,21 +76,17 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute($params);
 $jadwals = $stmt->fetchAll();
-
 $editData = null;
 if (isset($_GET['edit_id'])) {
     $s = $pdo->prepare("SELECT * FROM Jadwal WHERE ID_JADWAL=?");
     $s->execute([(int)$_GET['edit_id']]);
     $editData = $s->fetch();
 }
-
 [$alertType,$alertMsg] = $alert ? explode('|',$alert,2) : ['',''];
 ?>
-
 <?php if ($alertMsg): ?>
 <div class="alert alert-<?= $alertType==='success'?'success':'error' ?>"><?= e($alertMsg) ?></div>
 <?php endif; ?>
-
 <div class="table-card">
   <div class="table-header">
     <div class="table-title">Data Jadwal</div>
@@ -120,7 +100,6 @@ if (isset($_GET['edit_id'])) {
       <button class="btn btn-green" onclick="openModal('modal-tambah')"><i class="bi bi-plus-lg"></i> Tambah Jadwal</button>
     </div>
   </div>
-
   <table>
     <thead>
       <tr><th>ID</th><th>Lapangan</th><th>Tanggal</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Status</th><th>Aksi</th></tr>
@@ -154,7 +133,6 @@ if (isset($_GET['edit_id'])) {
       <?php endif; ?>
     </tbody>
   </table>
-
   <?php if ($totalPages > 1): ?>
   <div class="pagination">
     <a href="?page=<?= max(1,$page-1) ?>&search=<?= urlencode($search) ?>" class="page-btn <?= $page<=1?'disabled':'' ?>">‹ Prev</a>
@@ -166,7 +144,6 @@ if (isset($_GET['edit_id'])) {
   </div>
   <?php endif; ?>
 </div>
-
 <div class="modal-overlay" id="modal-tambah">
   <div class="modal">
     <div class="modal-head">
@@ -211,7 +188,6 @@ if (isset($_GET['edit_id'])) {
     </div>
   </div>
 </div>
-
 <?php if ($editData): ?>
 <div class="modal-overlay open" id="modal-edit">
   <div class="modal">
@@ -253,7 +229,6 @@ if (isset($_GET['edit_id'])) {
   </div>
 </div>
 <?php endif; ?>
-
 <script>
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -261,5 +236,4 @@ document.querySelectorAll('.modal-overlay').forEach(function(el) {
   el.addEventListener('click', function(e) { if(e.target===el) el.classList.remove('open'); });
 });
 </script>
-
 <?php require_once __DIR__ . '/_footer.php'; ?>

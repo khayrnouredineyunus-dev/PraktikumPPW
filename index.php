@@ -1,13 +1,10 @@
 <?php
-// ── AUTENTIKASI: Hanya pelanggan yang sudah login yang bisa akses halaman ini ──
 require_once __DIR__ . '/config.php';
 startSecureSession();
 if (!isLoggedIn()) {
     header('Location: auth/login.php');
     exit;
 }
-
-// Ambil data foto profil terbaru dari database berdasarkan ID pelanggan di session
 $user_foto = null;
 if (isset($_SESSION['user_id'])) {
     try {
@@ -16,7 +13,6 @@ if (isset($_SESSION['user_id'])) {
         $stmt_user->execute([$_SESSION['user_id']]);
         $user_foto = $stmt_user->fetchColumn();
     } catch (PDOException $e) {
-        // Gagal mengambil data, fallback otomatis ke inisial huruf nanti
     }
 }
 ?>
@@ -28,8 +24,6 @@ if (isset($_SESSION['user_id'])) {
 <meta name="robots" content="index, follow">
 <title>MiniFut — Premium Mini Soccer Arena Yogyakarta</title>
 <meta name="description" content="MiniFut is adalah arena mini soccer outdoor premium di Yogyakarta. Rumput sintetis berkualitas tinggi, pencahayaan LED penuh, and facilities terlengkap. Buka setiap hari 08.00–24.00 WIB.">
-
-<!-- Open Graph / Social Media Preview -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://minifut.id/">
 <meta property="og:title" content="MiniFut — Premium Mini Soccer Arena Yogyakarta">
@@ -39,17 +33,12 @@ if (isset($_SESSION['user_id'])) {
 <meta property="twitter:title" content="MiniFut — Premium Mini Soccer Arena Yogyakarta">
 <meta property="twitter:description" content="Arena mini soccer outdoor premium di Yogyakarta. Booking sekarang!">
 <meta property="twitter:image" content="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=1200&q=80">
-
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-
-<!-- Google Fonts Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
-
 :root {
   --black:   #060608; --dark:    #0c0d10; --card:    #111318; --card2:   #161820;
   --border:  rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
@@ -59,10 +48,8 @@ if (isset($_SESSION['user_id'])) {
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;min-height:100vh;}
-
 #noise{position:fixed;inset:0;opacity:.018;pointer-events:none;z-index:8000;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");}
-
 nav {
   position: fixed;
   top: 24px;
@@ -87,7 +74,6 @@ nav.stuck {
   background: rgba(6, 6, 8, 0.85);
   backdrop-filter: blur(28px) saturate(180%);
 }
-
 nav.shrunk {
   top: 36px;
   width: calc(100% - 160px);
@@ -99,14 +85,12 @@ nav.shrunk {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 255, 136, 0.05);
   padding: 0 24px;
 }
-
 @keyframes logo-wiggle {
   0% { transform: rotate(0deg); }
   25% { transform: rotate(-1deg); }
   75% { transform: rotate(1deg); }
   100% { transform: rotate(0deg); }
 }
-
 .logo {
   font-family: 'Orbitron', monospace;
   font-size: 1.5rem;
@@ -123,13 +107,11 @@ nav.shrunk {
   animation: logo-wiggle 0.25s ease-in-out 1;
   text-shadow: 0 0 15px var(--green);
 }
-
 nav.shrunk .logo {
   font-size: 1.15rem;
   letter-spacing: 3px;
 }
 
-/* Revamped Navbar Elements */
 .nav-left {
   display: flex;
   align-items: center;
@@ -175,7 +157,6 @@ nav.shrunk .logo {
 .nav-booking-link:hover .nav-booking-clone {
   transform: translateY(-100%);
 }
-
 .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
   display: inline-flex;
   align-items: center;
@@ -236,7 +217,6 @@ nav.shrunk .nav-booking-link {
 nav.shrunk .nav-slash {
   margin: 0 12px;
 }
-
 .nav-right {
   display: flex;
   align-items: center;
@@ -266,7 +246,6 @@ nav.shrunk .nav-slash {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
-
 .nav-btn-glow {
   display: inline-flex;
   align-items: center;
@@ -289,12 +268,10 @@ nav.shrunk .nav-slash {
   transform: translateY(-1.5px) scale(1.02);
   box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
 }
-
 nav.shrunk .nav-btn-dark, nav.shrunk .nav-btn-glow {
   padding: 6px 14px;
   font-size: 0.68rem;
 }
-
 .nav-user-wrapper {
   display: flex;
   align-items: center;
@@ -356,7 +333,6 @@ nav.shrunk .nav-btn-logout {
   padding: 4px 10px;
   font-size: 0.62rem;
 }
-
 @media (max-width: 767px) {
   .nav-slash, .nav-booking-link, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
     display: none;
@@ -375,7 +351,6 @@ nav.shrunk .nav-btn-logout {
     padding: 6px 14px;
     font-size: 0.68rem;
   }
-  
   nav.shrunk {
     top: 14px;
     width: calc(100% - 64px);
@@ -392,25 +367,20 @@ nav.shrunk .nav-btn-logout {
     letter-spacing: 2px;
   }
 }
-
 .container{max-width:1200px;margin:0 auto;padding:0 64px;}
 @media (max-width: 1024px) { .container{padding:0 24px;} }
 .sec-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
 .sec-title{font-family:'Anton',sans-serif;font-size:clamp(2.2rem,4.5vw,3.8rem);font-weight:400;line-height:0.95;color:var(--white);text-transform:uppercase;letter-spacing:0.5px;}
 .sec-sub{font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;color:var(--gray2);margin-top:12px;line-height:1.75;}
-
 .reveal{opacity:0;}
 
-/* Hero Section */
 .hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 
-/* Z-INDEX LAYER UNTUK HERO CANVAS */
 #shader-canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:0;}
 #three-canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:4;opacity:1;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,6,8,.85) 0%,rgba(6,6,8,.3) 60%,rgba(6,6,8,.7) 100%);z-index:2;pointer-events:none;}
 .hero-grid{display:none;}
 
-/* ══ HERO CONTENT — Heading Premium di Atas ══ */
 .hero-content {
   position: absolute;
   top: 36vh;
@@ -427,7 +397,6 @@ nav.shrunk .nav-btn-logout {
   padding: 0 24px;
 }
 
-/* Halo gelap lembut di belakang heading agar tetap kontras di atas canvas 3D */
 .hero-content::before {
   content: '';
   position: absolute;
@@ -441,7 +410,6 @@ nav.shrunk .nav-btn-logout {
   pointer-events: none;
 }
 
-/* Location label */
 .hero-location {
   position: absolute;
   bottom: 40px;
@@ -456,7 +424,7 @@ nav.shrunk .nav-btn-logout {
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--green);
-  opacity: 0; /* GSAP */
+  opacity: 0; 
   max-width: 180px;
   line-height: 1.6;
 }
@@ -474,7 +442,6 @@ nav.shrunk .nav-btn-logout {
   50%      { box-shadow: 0 0 16px rgba(0,255,136,.85), 0 0 28px rgba(0,255,136,.2); transform: scale(1.3); }
 }
 .hero-location-short { display: none; }
-
 .hero-title {
   font-family: 'Anton', sans-serif;
   font-weight: 400;
@@ -538,7 +505,6 @@ nav.shrunk .nav-btn-logout {
   50%      { transform: scale(1.4); opacity: .65; }
 }
 
-/* Garis aksen hijau di bawah judul */
 .hero-underline {
   width: clamp(70px, 9vw, 130px);
   height: 3px;
@@ -546,14 +512,13 @@ nav.shrunk .nav-btn-logout {
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, var(--green), transparent);
   transform: scaleX(0);
-  opacity: 0; /* GSAP */
+  opacity: 0; 
   animation: heroUnderlinePulse 3s ease-in-out infinite;
 }
 @keyframes heroUnderlinePulse {
   0%, 100% { box-shadow: 0 0 10px rgba(0,255,136,.3); }
   50%      { box-shadow: 0 0 22px rgba(0,255,136,.6); }
 }
-
 @media (max-width: 1024px) {
   .hero-content { top: 38vh; }
   .hero-content::before { height: 260px; }
@@ -599,7 +564,6 @@ nav.shrunk .nav-btn-logout {
   .hero-content { top: 42vh; }
   .hero-underline { margin-top: 0; }
 }
-
 .btn-p { clip-path:polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%); padding-right:52px;}
 .btn-s { 
   clip-path:polygon(18px 0, 100% 0, 100% 100%, 0 100%); 
@@ -615,14 +579,12 @@ nav.shrunk .nav-btn-logout {
   transition:background .3s; z-index:1; 
 }
 .btn-s:hover::before { background:var(--green); }
-
 .btn-p{font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--black);background:var(--green);border:none;padding:17px 44px;text-decoration:none;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0 100%);transition:all .3s;position:relative;overflow:hidden;}
 .btn-p::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.18);transform:translateX(-100%);transition:.3s;}
 .btn-p:hover::after{transform:translateX(0);}
 .btn-s{font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,255,136,.35);padding:17px 44px;text-decoration:none;transition:all .3s;}
 .btn-s:hover{border-color:var(--green);background:var(--glow-sm);}
 
-/* Soften edge button for main bottom CTA */
 .btn-soft {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .88rem;
@@ -650,14 +612,12 @@ nav.shrunk .nav-btn-logout {
   box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
   transform: translateY(-3px);
 }
-
 @media (max-width: 1024px) {
   .btn-p, .btn-s, .btn-soft { padding: 12px 24px; font-size: 0.75rem; }
   .btn-p { padding-right: 36px; clip-path:polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%); }
   .btn-s { padding-left: 36px; clip-path:polygon(14px 0, 100% 0, 100% 100%, 0 100%); margin-left: -4px; }
   .btn-s::before { width: 16px; clip-path:polygon(14px 0, 15.5px 0, 1.5px 100%, 0 100%); }
 }
-
 .fields-sec {
   padding: 120px 0;
   background: 
@@ -742,7 +702,6 @@ nav.shrunk .nav-btn-logout {
   vertical-align: baseline;
   box-shadow: 0 0 12px var(--glow);
 }
-
 .title-style-swapped .fields-bg-text {
   color: var(--white);
   -webkit-text-stroke: 1.5px var(--white);
@@ -772,7 +731,6 @@ nav.shrunk .nav-btn-logout {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
 }
-
 @media(max-width:768px){.fields-head{flex-direction:column;align-items:flex-start;gap:20px;}}
 .fields-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:3px;}
 .f-card{background:var(--card);border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .4s,border-color .3s;transform-style:preserve-3d;}
@@ -794,7 +752,6 @@ nav.shrunk .nav-btn-logout {
 .f-book-btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,255,136,.35);padding:8px 18px;text-decoration:none;transition:all .3s;}
 .f-book-btn:hover{background:var(--green);color:var(--black);}
 
-/* GALLERY */
 .gallery-sec{padding:100px 0;background:var(--dark);overflow:hidden;}
 .gallery-head{text-align:center;margin-bottom:52px;}
 .gallery-title-wrap {
@@ -841,7 +798,6 @@ nav.shrunk .nav-btn-logout {
   vertical-align: baseline;
   box-shadow: 0 0 15px var(--glow);
 }
-
 .pricing-title-wrap {
   position: relative;
   display: flex;
@@ -886,7 +842,6 @@ nav.shrunk .nav-btn-logout {
   vertical-align: baseline;
   box-shadow: 0 0 15px var(--glow);
 }
-
 .gallery-mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:320px 320px;gap:16px;max-width:1400px;margin:0 auto;padding:0 24px;}
 .g-item{
   position:relative;
@@ -937,13 +892,11 @@ nav.shrunk .nav-btn-logout {
   z-index:3;
 }
 .g-item:hover .g-label{opacity:1;transform:translateY(0);}
-
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
 #lb.open{opacity:1;pointer-events:all;}
 #lb img{max-width:82vw;max-height:82vh;object-fit:contain;border:1px solid rgba(0,255,136,.2);}
 #lb-close{position:absolute;top:28px;right:32px;font-size:1.4rem;color:var(--green);background:none;border:none;font-family:'Orbitron',monospace; transition:all 0.3s;}
 #lb-close:hover { color: var(--white); text-shadow: 0 0 10px var(--green); }
-
 .showcase-sec{padding:120px 0;background:var(--dark);overflow:hidden;}
 .showcase-head {
   text-align: left;
@@ -970,7 +923,6 @@ nav.shrunk .nav-btn-logout {
     grid-template-columns: 1fr;
   }
 }
-
 .sc-card {
   height: 340px;
   background: var(--card);
@@ -1047,10 +999,8 @@ nav.shrunk .nav-btn-logout {
 .sc-card-glow {
   display: none;
 }
-
 .pricing-sec{padding:120px 0;position:relative;}
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
-
 .p-card-wrapper {
   position: relative;
   border-radius: 16px;
@@ -1060,7 +1010,6 @@ nav.shrunk .nav-btn-logout {
   transform: translateY(-12px) scale(1.02);
   box-shadow: 0 20px 45px rgba(0, 255, 136, 0.18);
 }
-
 .shine-border-bg {
   position: absolute;
   inset: 0;
@@ -1086,12 +1035,10 @@ nav.shrunk .nav-btn-logout {
   animation: spin-shine 3s linear infinite;
   opacity: 0.6;
 }
-
 @keyframes spin-shine {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 .p-card{
   padding:40px;
   background:var(--card);
@@ -1108,7 +1055,6 @@ nav.shrunk .nav-btn-logout {
 .p-card.featured{background: #0d1612;}
 .p-card.featured:hover {background: #111e18;}
 .p-card.featured::before{content:'TERPOPULER';position:absolute;top:0;left:50%;transform:translate(-50%,-50%);font-family:'Plus Jakarta Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:3px;color:var(--black);background:var(--green);padding:4px 16px;white-space:nowrap;z-index:10;}
-
 .p-tag{font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
 .p-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white);margin-bottom:20px;text-transform:none;letter-spacing:0.5px;line-height:1.1;}
 .p-price{display:flex;align-items:baseline;gap:3px;margin-bottom:6px;}
@@ -1124,7 +1070,6 @@ nav.shrunk .nav-btn-logout {
 .p-card:hover .p-btn { background: var(--green); color: var(--black); box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: var(--green); }
 .p-card:hover .p-btn.solid { background: #00e676; box-shadow: 0 0 20px rgba(0,255,136,0.6); }
 .p-btn.solid{background:var(--green);color:var(--black);border-color:var(--green);}
-
 .values-sec{padding:130px 0;position:relative;overflow:hidden;}
 .values-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,.3),transparent);}
 .values-sec::after{content:'';position:absolute;bottom:-150px;left:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,136,.04) 0%,transparent 70%);pointer-events:none;}
@@ -1137,7 +1082,6 @@ nav.shrunk .nav-btn-logout {
 .val-num{font-family:'Anton',sans-serif;font-size:4rem;font-weight:400;color:transparent;-webkit-text-stroke:1px rgba(0,255,136,.12);position:absolute;top:16px;right:20px;line-height:1;}
 .val-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:14px;letter-spacing:1px;}
 .val-desc{font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;color:var(--gray2);line-height:1.75;}
-
 .awards-sec{padding:80px 0;background:var(--dark);overflow:hidden;position:relative;}
 .awards-sec::before,.awards-sec::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,.2),transparent);}
 .awards-sec::before{top:0;}.awards-sec::after{bottom:0;}
@@ -1149,13 +1093,11 @@ nav.shrunk .nav-btn-logout {
 .award-item:hover{border-color:rgba(0,255,136,.25);}
 .award-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);}
 .award-year{font-family:'Orbitron',monospace;font-size:.65rem;color:var(--green);}
-
 .cta-sec{padding:130px 0;background:var(--black);text-align:center;position:relative;overflow:hidden;}
 .cta-sec .fields-bg-text, .cta-sec .fields-fg-text { font-family: 'Plus Jakarta Sans', sans-serif !important; font-weight: 800; }
 .cta-title{font-family:'Anton',sans-serif;font-size:clamp(2.4rem,6vw,4.8rem);font-weight:400;color:var(--white);line-height:0.95;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;}
 .cta-title span{color:var(--green);}
 .cta-sub{font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;color:var(--gray2);margin-bottom:40px;}
-
 footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;z-index:6;background:var(--black);}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:56px;}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}}
@@ -1171,14 +1113,11 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(0,255,136,.15) }
 
-/* Keyboard accessibility: focus-visible ring */
 a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 3px;
 }
-
 .fields-sec, .gallery-sec, .showcase-sec, .pricing-sec, .cta-sec { position: relative; z-index: 1; }
-
 .gallery-sec::before, .showcase-sec::before, .pricing-sec::before, .cta-sec::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
   background:linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
@@ -1187,7 +1126,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
   background:linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
 }
-
 .cta-sec::after {
   content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   width:700px; height:350px; border-radius:50%;
@@ -1209,12 +1147,10 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   pointer-events: none;
   z-index: -1;
 }
-
 @media (max-width: 1024px) { 
   .gallery-mosaic { grid-template-columns: 1fr; grid-template-rows: auto; }
   .g-item:nth-child(n) { grid-column: 1 / -1 !important; grid-row: auto !important; height: 250px; }
 }
-
 .premium-showcase-container {
   background: var(--black);
   padding: 0;
@@ -1224,7 +1160,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   z-index: 5;
   height: 100vh;
   overflow: hidden;
-  
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1242,7 +1177,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   z-index: 1;
   pointer-events: none;
 }
-
 .premium-scroll-sec {
   position: absolute !important;
   inset: 0;
@@ -1256,11 +1190,9 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   justify-content: center;
   pointer-events: none;
 }
-
 .premium-scroll-sec * {
   pointer-events: auto;
 }
-
 #scroll-sec-hero {
   background: #060608 !important;
   z-index: 10;
@@ -1269,7 +1201,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
 #scroll-sec-2 { z-index: 20; }
 #scroll-sec-3 { z-index: 25; }
 
-/* Container utama untuk kerangka outline overlay (Bingkai Hijau) */
 #premium-border-frame {
   position: fixed;
   top: 16px; left: 16px; right: 16px; bottom: 16px;
@@ -1279,7 +1210,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   z-index: 998;
   box-shadow: 0 0 0 16px var(--green), 0 0 0 100vmax var(--green); 
 }
-
 #premium-pitch-bg {
   position: fixed;
   top: 16px; left: 16px; right: 16px; bottom: 16px;
@@ -1288,7 +1218,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   opacity: 0;
   z-index: 6;
 }
-
 .pitch-tactical-svg {
   position: absolute;
   inset: 0;
@@ -1298,7 +1227,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   opacity: 0.15;
   pointer-events: none;
 }
-
 .pitch-white-lines {
   position: absolute;
   inset: 4px;
@@ -1306,7 +1234,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   border-radius: 32px;
   z-index: 1; 
 }
-
 .pitch-corner-arc {
   position: absolute;
   width: 60px; height: 60px;
@@ -1319,7 +1246,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
 .pitch-corner-arc.tr { top: 0; right: 0; border-left-width: 4px; border-bottom-width: 4px; border-bottom-left-radius: 100%; }
 .pitch-corner-arc.bl { bottom: 0; left: 0; border-right-width: 4px; border-top-width: 4px; border-top-right-radius: 100%; }
 .pitch-corner-arc.br { bottom: 0; right: 0; border-left-width: 4px; border-top-width: 4px; border-top-left-radius: 100%; }
-
 @media (max-width: 1024px) {
   #premium-border-frame {
     top: 8px; left: 8px; right: 8px; bottom: 8px;
@@ -1343,7 +1269,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   .pitch-corner-arc.bl { border-right-width: 2px; border-top-width: 2px; }
   .pitch-corner-arc.br { border-left-width: 2px; border-top-width: 2px; }
 }
-
 .sc1-title-container {
   position: absolute;
   top: 50%; left: 50%;
@@ -1355,7 +1280,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   padding: 0 10%;
   pointer-events: none;
   z-index: 7;
-  
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1385,7 +1309,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   color: var(--green);
   text-shadow: 0 0 30px var(--glow), 0 0 60px rgba(0, 255, 136, 0.4);
 }
-
 @media (max-width: 1024px) {
   .sc1-title-container {
     flex-direction: column;
@@ -1418,7 +1341,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
     text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(0, 255, 136, 0.4);
   }
 }
-
 .ball-section-text { 
   position: absolute; 
   z-index: 10; 
@@ -1426,7 +1348,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   transform: translateY(-50%); 
   max-width: 380px; 
   opacity: 0; 
-  
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1646,7 +1567,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   height: 100%;
   transform: scale(1.4);
 }
-
 @media (max-width: 1024px) {
   .ball-section-text {
     max-width: 240px !important;
@@ -1678,13 +1598,11 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
     display: none !important;
   }
 }
-
 @media (max-width: 600px) {
   .ball-section-text {
     max-width: 170px !important;
   }
 }
-
 .scroll-ind.center {
   position: absolute;
   bottom: 40px;
@@ -1712,7 +1630,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   animation: scrollPulse 2.2s ease-in-out infinite;
 }
 @keyframes scrollPulse{0%,100%{opacity:.25; transform:translateY(0)} 50%{opacity:1; transform:translateY(8px)}}
-
 .fanwall-sec {
   padding: 110px 0;
   background: var(--black);
@@ -1742,7 +1659,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   z-index: 5;
   pointer-events: none;
 }
-
 .fanwall-sec::before {
   content: '';
   position: absolute;
@@ -1765,7 +1681,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   pointer-events: none;
   z-index: 0;
 }
-
 .fanwall-sec::after {
   content: '';
   position: absolute;
@@ -1779,7 +1694,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   pointer-events: none;
   z-index: 0;
 }
-
 .fanwall-neon-l,
 .fanwall-neon-r {
   position: absolute;
@@ -1810,7 +1724,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   0%   { opacity: 0.4; transform: rotate(32deg) translateX(0); }
   100% { opacity: 0.9; transform: rotate(32deg) translateX(-40px); }
 }
-
 .fanwall-track-wrap {
   position: relative;
   z-index: 1;
@@ -1818,7 +1731,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
 }
-
 .fanwall-track {
   display: flex;
   gap: 16px;
@@ -1831,17 +1743,14 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   animation-duration: 44s;
   margin-top: 16px;
 }
-
 .fanwall-track-wrap:hover .fanwall-track,
 .fanwall-track-wrap:hover .fanwall-track-rev {
   animation-play-state: paused;
 }
-
 @keyframes fanwallScroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
 .fw-card {
   flex-shrink: 0;
   position: relative;
@@ -1855,17 +1764,14 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   border-color: rgba(0,255,136,0.35);
   box-shadow: 0 12px 40px rgba(0,255,136,0.14), 0 0 0 1px rgba(0,255,136,0.1);
 }
-
 .fw-card.sz-s  { width: 200px; height: 260px; }
 .fw-card.sz-m  { width: 240px; height: 310px; }
 .fw-card.sz-l  { width: 200px; height: 260px; }
 .fw-card.sz-p  { width: 220px; height: 290px; }
-
 .fanwall-track-rev .fw-card.sz-s  { height: 240px; }
 .fanwall-track-rev .fw-card.sz-m  { height: 288px; }
 .fanwall-track-rev .fw-card.sz-l  { height: 240px; }
 .fanwall-track-rev .fw-card.sz-p  { height: 268px; }
-
 .fw-card img {
   width: 100%;
   height: 100%;
@@ -1878,7 +1784,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   filter: brightness(0.9) saturate(1.1);
   transform: scale(1.07);
 }
-
 .fw-card::before {
   content: '';
   position: absolute;
@@ -1890,7 +1795,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   pointer-events: none;
 }
 .fw-card:hover::before { opacity: 1; }
-
 .fw-card::after {
   content: '';
   position: absolute;
@@ -1902,7 +1806,6 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   z-index: 2;
 }
 .fw-card:hover::after { opacity: 1; }
-
 @media (max-width: 1024px) {
   .fanwall-sec { padding: 72px 0; }
   .fw-card.sz-s  { width: 150px; height: 195px; }
@@ -1922,7 +1825,6 @@ body, a, button, .f-card, .showcase-item, .g-item, .nav-cta, .nav-btn-dark, .nav
 a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link, .p-btn {
   cursor: pointer !important;
 }
-
 .gallery-sec, .pricing-sec, .values-sec {
   position: relative;
   overflow: hidden;
@@ -1935,7 +1837,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   z-index: 2;
 }
 
-/* 1. Monochrome Radial Spotlight (Galeri) */
 .bg-deco-spotlight {
   position: absolute;
   inset: 0;
@@ -1960,7 +1861,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   100% { transform: translate(30%, 80%); }
 }
 
-/* 4. Tactile Film Grain / Grunge Noise Overlay (Values) */
 .bg-deco-noise {
   position: absolute;
   inset: 0;
@@ -1970,7 +1870,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   z-index: 1;
 }
 
-/* Green glows scattered in values section representing lights refracting through glass cards */
 .values-glows {
   position: absolute;
   inset: 0;
@@ -1998,7 +1897,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   height: 350px;
 }
 
-/* Green Pricing Background Decorations (Grid + Blurs + Radial Glow) */
 .pricing-sec {
   position: relative;
   overflow: hidden;
@@ -2045,7 +1943,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   pointer-events: none;
 }
 
-/* ── IMAGE FULL-SCREEN SECTION ── */
 .image-sec {
   position: relative;
   width: 100%;
@@ -2119,7 +2016,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
 }
-
 .image-sep-top,
 .image-sep-bottom {
   position: absolute;
@@ -2131,13 +2027,12 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 }
 .image-sep-top { top: 0; }
 .image-sep-bottom { bottom: 0; }
-
 @media (max-width: 768px) {
   .image-sec { height: 50vh; min-height: 300px; }
   .image-content { padding: 0 24px; }
   .image-title { font-size: clamp(1.8rem, 6vw, 2.6rem); }
 }
-/* PRELOADER SPINNER */
+
 #site-preloader {
   position: fixed; inset: 0; background: var(--black); z-index: 99999;
   display: flex; align-items: center; justify-content: center;
@@ -2177,7 +2072,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   visibility: hidden;
 }
 
-/* ── LOCATION SECTION ── */
 .location-sec {
   padding: 120px 0;
   background: var(--dark);
@@ -2198,7 +2092,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
 }
-/* Scanline layer */
+
 .loc-scanlines {
   position: absolute;
   inset: 0;
@@ -2220,8 +2114,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   100% { background-position: 0 60px; }
 }
 
-
-/* Garis dekorasi vertikal di latar */
 .loc-grid-deco {
   position: absolute;
   inset: 0;
@@ -2240,7 +2132,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 .loc-grid-deco::before { left: 25%; }
 .loc-grid-deco::after  { right: 25%; }
 
-/* Layout 2 kolom */
 .loc-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2251,9 +2142,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   .loc-layout { grid-template-columns: 1fr; gap: 40px; }
 }
 
-/* Panel kiri: heading + info */
 .loc-left {}
-
 .loc-header {
   margin-bottom: 40px;
 }
@@ -2311,7 +2200,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   box-shadow: 0 0 12px var(--glow);
 }
 
-/* Tabs info */
 .loc-tabs {
   display: flex;
   gap: 0;
@@ -2352,11 +2240,9 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 }
 .loc-tab-btn:hover { color: var(--white); }
 
-/* Tab panels */
 .loc-panel { display: none; }
 .loc-panel.active { display: block; }
 
-/* Info rows */
 .loc-info-rows {
   display: flex;
   flex-direction: column;
@@ -2416,7 +2302,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   line-height: 1.4;
 }
 
-/* Jam operasional */
 .loc-hours-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2467,7 +2352,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   margin-top: 4px;
 }
 
-/* Kontak */
 .loc-contact-list {
   display: flex;
   flex-direction: column;
@@ -2524,9 +2408,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   font-weight: 500;
 }
 
-/* Panel kanan: Map */
 .loc-right {}
-
 .loc-map-wrapper {
   position: relative;
   border-radius: 16px;
@@ -2544,7 +2426,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   box-shadow: 0 20px 50px rgba(0,255,136,0.1);
 }
 
-/* Corner accents */
 .loc-map-corner {
   position: absolute;
   width: 20px; height: 20px;
@@ -2564,7 +2445,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 .loc-map-corner.tr { top: 10px; right: 10px; transform: scaleX(-1); }
 .loc-map-corner.bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
 .loc-map-corner.br { bottom: 10px; right: 10px; transform: scale(-1,-1); }
-
 .loc-map-iframe {
   width: 100%; height: 100%;
   border: none;
@@ -2576,7 +2456,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   filter: grayscale(0.5) invert(0.85) hue-rotate(160deg) contrast(0.95) brightness(0.85);
 }
 
-/* Overlay label atas map */
 .loc-map-label {
   position: absolute;
   top: 14px;
@@ -2612,7 +2491,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   color: var(--green);
 }
 
-/* CTA bawah map */
 .loc-map-cta {
   position: absolute;
   bottom: 14px;
@@ -2645,7 +2523,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   flex-shrink: 0;
 }
 
-/* Status bar bawah */
 .loc-status-bar {
   display: flex;
   align-items: center;
@@ -2688,10 +2565,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   .loc-tab-btn { padding: 10px 14px 12px; font-size: 0.65rem; }
 }
 
-/* Pindahkan hero-location ke hidden — section lokasi menggantikannya */
 .hero-location { display: none !important; }
 
-/* ── WEBGL LIQUID DISTORTION OVERLAY ── */
 #hero-gl-canvas {
   position: absolute;
   inset: 0;
@@ -2701,14 +2576,12 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   pointer-events: auto;
   display: block;
 }
-/* hero-content tetap di bawah canvas, tidak perlu pointer-events */
+
 #hero-content { pointer-events: none; }
 .hero-title { transition: opacity 0.8s ease; }
-
 </style>
 </head>
 <body>
-<!-- PRELOADER SPINNER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
@@ -2717,18 +2590,13 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 </div>
 <div id="noise"></div>
 <div id="lb"><button id="lb-close">✕</button><img id="lb-img" src="" alt=""></div>
-
-<!-- OUTLINE BINGKAI OVERLAY HIJAU (SCREEN BORDER MASK DI DEPAN BOLA) -->
 <div id="premium-border-frame"></div>
-
-<!-- DIAGRAM TAKTIS LAPANGAN & GARIS PUTIH (LATAR BACKGROUND DI BELAKANG BOLA) -->
 <div id="premium-pitch-bg">
   <svg class="pitch-tactical-svg" viewBox="0 0 1000 600" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M50,300 C150,100 350,100 500,300 C650,500 850,500 950,300" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-dasharray="8,8" />
     <path d="M100,50 C300,150 700,150 900,50" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="6,6" />
     <circle cx="500" cy="300" r="250" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-dasharray="10,10" />
   </svg>
-
   <div class="pitch-white-lines">
     <div class="pitch-corner-arc tl"></div>
     <div class="pitch-corner-arc tr"></div>
@@ -2736,10 +2604,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     <div class="pitch-corner-arc br"></div>
   </div>
 </div>
-
-<!-- CANVAS BOLA FIXED OVERLAY UNTUK ANIMASI SCROLL SHOWCASE (DI-SET VISIBLE OPACITY: 1) -->
 <canvas id="ball-scroll-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 8; opacity: 1; transition: opacity 0.4s;"></canvas>
-
 <nav id="nav">
   <div class="nav-left">
     <a href="#" class="logo">MINI<em>FUT</em></a>
@@ -2758,7 +2623,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <i class="bi bi-tiktok"></i>
     </a>
   </div>
-  
   <div class="nav-right">
     <?php if (isPelanggan()): ?>
       <div class="nav-user-wrapper">
@@ -2773,7 +2637,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             </div>
           </a>
         <?php endif; ?>
-        
         <a href="auth/logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar dari MiniFut Arena?')" class="nav-btn-logout">
           Logout
         </a>
@@ -2784,42 +2647,28 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     <?php endif; ?>
   </div>
 </nav>
-
-<!-- PINNED SHOWCASE CONTAINER UTAMA (MENCAKUP HERO DAN SECTION 2-4) -->
 <div class="premium-showcase-container">
-  <!-- Stadium Background Overlay for depth -->
   <div class="showcase-bg-stadium"></div>
-  <!-- SECTION 1: HERO (Pindah ke dalam container agar pin terintegrasi) -->
   <section class="premium-scroll-sec hero" id="scroll-sec-hero">
-    <!-- CANVAS ANIMATED GLOWING FLUID SHADER (BACKGROUND LAYER) -->
     <canvas id="shader-canvas"></canvas>
-    
-    <!-- CANVAS INTERACTIVE SOCCER STADIUM 3D (FOREGROUND LAYER) -->
     <canvas id="three-canvas"></canvas>
-    
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
-
     <div class="hero-content" id="hero-content">
       <div class="hero-underline"></div>
     </div>
-    <!-- WebGL liquid distortion canvas — renders over hero-content, captures mouse -->
     <canvas id="hero-gl-canvas" aria-hidden="true"></canvas>
     <div class="scroll-ind center">
       <span>Scroll Down</span>
       <div class="scroll-bar"></div>
     </div>
   </section>
-
-  <!-- SECTION 2: MINI FUT TEXT -->
   <section class="premium-scroll-sec" id="scroll-sec-1">
     <div class="sc1-title-container">
       <span class="sc1-title-left">MINI</span>
       <span class="sc1-title-right">FUT</span>
     </div>
   </section>
-
-  <!-- SECTION 3: RUMPUT PREMIUM -->
   <section class="premium-scroll-sec" id="scroll-sec-2">
     <div class="bst-grid-lines">
       <div class="grid-line"></div>
@@ -2848,8 +2697,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       </div>
     </div>
   </section>
-
-  <!-- SECTION 4: BOLA PREMIUM -->
   <section class="premium-scroll-sec" id="scroll-sec-3">
     <div class="bst-curved-bg">
       <svg viewBox="0 0 1000 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2887,15 +2734,11 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </section>
 </div>
-
-<!-- ── FAN WALL: DOKUMENTASI CUSTOMER ── -->
 <section class="fanwall-sec">
   <div class="fanwall-divider"></div>
   <div class="fanwall-bg-stadium"></div>
   <div class="fanwall-neon-l"></div>
   <div class="fanwall-neon-r"></div>
-
-  <!-- ROW 1 — scroll kiri -->
   <div class="fanwall-track-wrap">
     <div class="fanwall-track">
       <div class="fw-card sz-m"><img src="https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=600&q=80" alt="" loading="lazy"></div>
@@ -2906,7 +2749,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <div class="fw-card sz-s"><img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-p"><img src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-l"><img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&q=80" alt="" loading="lazy"></div>
-      
       <div class="fw-card sz-m"><img src="https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-s"><img src="https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-l"><img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&q=80" alt="" loading="lazy"></div>
@@ -2917,8 +2759,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <div class="fw-card sz-l"><img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&q=80" alt="" loading="lazy"></div>
     </div>
   </div>
-
-  <!-- ROW 2 — scroll kanan (reverse) -->
   <div class="fanwall-track-wrap">
     <div class="fanwall-track fanwall-track-rev">
       <div class="fw-card sz-s"><img src="https://i.pinimg.com/736x/4e/ef/d5/4eefd50c21b7c794e4f7f47f455c34c4.jpg" alt="" loading="lazy"></div>
@@ -2929,7 +2769,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <div class="fw-card sz-m"><img src="https://images.unsplash.com/photo-1486286701208-1d58e9338013?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHNvY2NlcnxlbnwwfHwwfHx8MA%3D%3D" alt="" loading="lazy"></div>
       <div class="fw-card sz-l"><img src="https://i.pinimg.com/1200x/6b/52/e4/6b52e43d320c6767c098f0822b3f7582.jpg" alt="" loading="lazy"></div>
       <div class="fw-card sz-p"><img src="https://images.unsplash.com/photo-1632300873131-1dd749c83f97?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fG1pbmklMjBzb2NjZXJ8ZW58MHx8MHx8fDA%3D" alt="" loading="lazy"></div>
-      <!-- duplikat untuk seamless loop -->
       <div class="fw-card sz-s"><img src="https://i.pinimg.com/736x/4e/ef/d5/4eefd50c21b7c794e4f7f47f455c34c4.jpg" alt="" loading="lazy"></div>
       <div class="fw-card sz-p"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c29jY2VyfGVufDB8fDB8fHww" alt="" loading="lazy"></div>
       <div class="fw-card sz-m"><img src="https://i.pinimg.com/736x/fe/1c/8e/fe1c8edfb341d4ad913bde066b59fcd1.jpg" alt="" loading="lazy"></div>
@@ -2941,8 +2780,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-<!-- ── END FAN WALL ── -->
-
 <section class="fields-sec" id="lapangan">
   <div class="container">
     <div class="fields-head reveal">
@@ -3021,8 +2858,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
-<!-- GALLERY -->
 <section class="gallery-sec" id="galeri">
   <div class="bg-deco-spotlight"><div class="spotlight-circle"></div></div>
   <div class="container">
@@ -3061,7 +2896,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
 <section class="showcase-sec" id="fasilitas">
   <div class="container">
     <div class="showcase-head reveal">
@@ -3072,7 +2906,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       </h2>
     </div>
     <div class="showcase-grid-layout">
-      <!-- Card 1 -->
       <div class="sc-card reveal">
         <div class="sc-card-img-wrap">
           <img src="assets/parkir.png" alt="Parkir" class="sc-card-img" loading="lazy">
@@ -3084,7 +2917,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         </div>
         <div class="sc-card-glow"></div>
       </div>
-      <!-- Card 2 -->
       <div class="sc-card reveal">
         <div class="sc-card-img-wrap">
           <img src="assets/cafe.png" alt="Cafe" class="sc-card-img" loading="lazy">
@@ -3096,7 +2928,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         </div>
         <div class="sc-card-glow"></div>
       </div>
-      <!-- Card 3 -->
       <div class="sc-card reveal">
         <div class="sc-card-img-wrap">
           <img src="https://i.pinimg.com/736x/5a/09/75/5a0975a1f56266edb107157f7158a6b3.jpg" alt="Ruang Ganti" class="sc-card-img" loading="lazy">
@@ -3108,7 +2939,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         </div>
         <div class="sc-card-glow"></div>
       </div>
-      <!-- Card 4 -->
       <div class="sc-card reveal">
         <div class="sc-card-img-wrap">
           <img src="https://i.pinimg.com/736x/d3/77/6e/d3776ef7e9e415c7d21822c9ebc1b51f.jpg" alt="Pencahayaan LED" class="sc-card-img" loading="lazy">
@@ -3123,8 +2953,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
-<!-- ── IMAGE: FULL-SCREEN HORIZONTAL IMAGE ── -->
 <section class="image-sec" id="image-banner">
   <div class="image-sep-top"></div>
   <img class="image-img" src="assets/image.jpeg" alt="Mini Soccer Action" loading="lazy">
@@ -3137,7 +2965,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   </div>
   <div class="image-sep-bottom"></div>
 </section>
-
 <section class="pricing-sec" id="harga">
   <div class="bg-pricing-blurs">
     <div class="pricing-blur-ellipse"></div>
@@ -3177,7 +3004,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <a href="booking.php" class="p-btn">Pilih Lapangan</a>
         </div>
       </div>
-      
       <div class="p-card-wrapper featured-wrapper reveal">
         <div class="shine-border-bg">
           <div class="p-card-shine featured-shine"></div>
@@ -3204,17 +3030,11 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
-<!-- ── LOCATION SECTION ── -->
 <section class="location-sec" id="lokasi">
-  <!-- Dekorasi background -->
   <div class="loc-scanlines"></div>
   <div class="loc-grid-deco"></div>
-
   <div class="container">
     <div class="loc-layout">
-
-      <!-- KOLOM KIRI: Info -->
       <div class="loc-left">
         <div class="loc-header reveal">
           <div class="loc-sup-label">
@@ -3226,15 +3046,11 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             <span class="loc-title-fg">LOKASI<span class="loc-green-dot"></span></span>
           </div>
         </div>
-
-        <!-- Tab navigasi -->
         <div class="loc-tabs reveal" id="locTabs">
           <button class="loc-tab-btn active" data-tab="alamat"><i class="bi bi-geo-alt-fill"></i> Alamat</button>
           <button class="loc-tab-btn" data-tab="jadwal"><i class="bi bi-clock-fill"></i> Jadwal</button>
           <button class="loc-tab-btn" data-tab="kontak"><i class="bi bi-telephone-fill"></i> Kontak</button>
         </div>
-
-        <!-- Panel: Alamat -->
         <div class="loc-panel active reveal" id="tab-alamat">
           <div class="loc-info-rows">
             <div class="loc-info-row">
@@ -3267,8 +3083,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             </div>
           </div>
         </div>
-
-        <!-- Panel: Jadwal -->
         <div class="loc-panel" id="tab-jadwal">
           <div class="loc-hours-grid">
             <div class="loc-hour-item">
@@ -3296,8 +3110,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             </div>
           </div>
         </div>
-
-        <!-- Panel: Kontak -->
         <div class="loc-panel" id="tab-kontak">
           <div class="loc-contact-list">
             <a href="https://wa.me/6281234567890" target="_blank" class="loc-contact-item">
@@ -3338,23 +3150,16 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           </div>
         </div>
       </div>
-
-      <!-- KOLOM KANAN: Map -->
       <div class="loc-right reveal">
         <div class="loc-map-wrapper">
-          <!-- Corner accents -->
           <div class="loc-map-corner tl"></div>
           <div class="loc-map-corner tr"></div>
           <div class="loc-map-corner bl"></div>
           <div class="loc-map-corner br"></div>
-
-          <!-- Label overlay -->
           <div class="loc-map-label">
             <span class="loc-map-label-dot"></span>
             <span class="loc-map-label-text">MiniFut · Live</span>
           </div>
-
-          <!-- Google Maps embed — Jl. Kaliurang Km 7.5 Sleman -->
           <iframe
             class="loc-map-iframe"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.4048!2d110.3905!3d-7.7494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59456e6fcc6d%3A0x6ebce4ad8cc92f5b!2sJl.%20Kaliurang%20No.KM.7%2C%20Sinduharjo%2C%20Kec.%20Ngaglik%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
@@ -3363,8 +3168,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             referrerpolicy="no-referrer-when-downgrade"
             title="Lokasi MiniFut Yogyakarta"
           ></iframe>
-
-          <!-- CTA buka Google Maps -->
           <div class="loc-map-cta">
             <a
               href="https://maps.google.com/?q=Jl.+Kaliurang+Km+7.5+Sinduharjo+Ngaglik+Sleman+Yogyakarta"
@@ -3379,8 +3182,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
             </a>
           </div>
         </div>
-
-        <!-- Status bar -->
         <div class="loc-status-bar reveal">
           <div class="loc-status-item">
             <div class="loc-status-indicator"></div>
@@ -3401,12 +3202,9 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           </a>
         </div>
       </div>
-
     </div>
   </div>
 </section>
-
-<!-- VALUES SECTION -->
 <section class="values-sec">
   <div class="bg-deco-noise"></div>
   <div class="values-glows">
@@ -3453,8 +3251,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
-<!-- ── GREEN-THEMED AWARDS MARQUEE DENGAN KONTEN INFORMATIF TENTANG ARENA ── -->
 <section class="awards-sec">
   <div class="awards-track">
     <div class="award-item"><div><div class="award-name">RUMPUT FIFA GRADE PRO</div><div class="award-year">Teknologi Sintetis Premium Teruji</div></div></div>
@@ -3485,8 +3281,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     <div class="award-item"><div><div class="award-name">SHOWER HANGAT & DINGIN</div><div class="award-year">Menyediakan Fasilitas yang Lengkap</div></div></div>
   </div>
 </section>
-
-<!-- SECTION CTA DENGAN BACKGROUND HITAM -->
 <section class="cta-sec">
   <div id="particles-js" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:0;"></div>
   <div class="container" style="position:relative;z-index:1">
@@ -3500,7 +3294,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </section>
-
 <footer>
   <div class="container">
     <div class="footer-grid">
@@ -3549,14 +3342,10 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     </div>
   </div>
 </footer>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
-<!-- LIBRARY GSAP & SCROLLTRIGGER -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
 <script>
 const ballVertS = `
   varying vec3 vNormal;varying vec3 vPos;varying vec3 vWorldPos;
@@ -3566,19 +3355,16 @@ const ballVertS = `
     vWorldPos=(modelMatrix*vec4(position,1.)).xyz;
     gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);
   }`;
-    
 const ballFragS = `
   uniform float uTime;
   varying vec3 vNormal;
   varying vec3 vPos;
   varying vec3 vWorldPos;
-
   // 3D hash for noise
   float hash3(vec3 p) {
     p = fract(p * vec3(127.1, 311.7, 74.7));
     return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
   }
-
   // 3D value noise
   float noise3(vec3 p) {
     vec3 i = floor(p);
@@ -3598,83 +3384,62 @@ const ballFragS = `
       u.z
     );
   }
-
   // Generates curved panel lines/grooves (FIFA star/curved geometry style)
   float getSoccerSeams(vec3 p) {
     float val1 = abs(sin(p.x * 3.14 + sin(p.y * 2.0)) * cos(p.z * 3.14));
     float val2 = abs(cos(p.y * 3.14 + sin(p.z * 2.0)) * sin(p.x * 3.14));
     float val3 = abs(sin(p.z * 3.14 + sin(p.x * 2.0)) * cos(p.y * 3.14));
-    
     float combined = val1 * val2 + val2 * val3 + val3 * val1;
     float seam = smoothstep(0.09, 0.04, combined);
-    
     float micro = smoothstep(0.03, 0.0, abs(sin(p.x * 8.0) * sin(p.y * 8.0) * sin(p.z * 8.0)) - 0.02);
     return clamp(seam + micro * 0.4, 0.0, 1.0);
   }
-
   // Modern FIFA sweeping graphics (neon green, dark teal, and black)
   vec3 getGraphics(vec3 p) {
     float angle = atan(p.y, p.x) + p.z * 1.5;
     float sweep1 = smoothstep(0.12, 0.0, abs(sin(angle * 2.0) - 0.35));
     float sweep2 = smoothstep(0.07, 0.0, abs(sin(angle * 2.0 + 1.5) - 0.65));
-    
     vec3 neonGreen = vec3(0.0, 1.0, 0.53);
     vec3 darkTeal = vec3(0.0, 0.35, 0.45);
-    
     return mix(vec3(0.0), neonGreen * sweep1 + darkTeal * sweep2, clamp(sweep1 + sweep2, 0.0, 1.0));
   }
-
   void main() {
     vec3 N = normalize(vNormal);
     vec3 pos = normalize(vPos);
-
     // 1. High-Frequency Pebbled Leather surface (noise-based bump)
     float pebbleCoord = 800.0;
     float pebble = noise3(pos * pebbleCoord);
-    
     pebble += 0.5 * noise3(pos * (pebbleCoord * 2.0));
     pebble += 0.25 * noise3(pos * (pebbleCoord * 4.0));
     pebble = pebble / 1.75;
-    
     vec3 perturbedN = normalize(N + (pebble - 0.5) * 0.07 * N);
-
     // 2. Seams mask (grooves)
     float seams = getSoccerSeams(pos);
-
     // 3. Base Leather color (Pearl White)
     vec3 baseLeather = vec3(0.96, 0.95, 0.92);
-
     // 4. FIFA sweeping graphic stripes
     vec3 graphics = getGraphics(pos);
-    
     vec3 color = mix(baseLeather, graphics, clamp(length(graphics) * 0.85, 0.0, 1.0));
     color = mix(color, vec3(0.15, 0.15, 0.15), seams);
-
     // 5. Lighting calculations
     vec3 viewDir = normalize(-vWorldPos + vec3(0.0, 0.0, 10.0));
     vec3 lightDir = normalize(vec3(3.0, 5.0, 6.0));
     vec3 halfDir = normalize(lightDir + viewDir);
-
     float diff = max(dot(perturbedN, lightDir), 0.0);
     float spec = pow(max(dot(perturbedN, halfDir), 0.0), 55.0) * 0.6;
     float rim = pow(1.0 - max(dot(N, viewDir), 0.0), 3.0) * 0.4;
-
     vec3 finalColor = color * 0.22                           // Ambient
                     + color * vec3(1.0, 0.98, 0.95) * diff * 0.95 // Diffuse
                     + vec3(1.0) * spec                           // Specular
                     + vec3(0.0, 1.0, 0.55) * rim;                // Branding green rim glow
-
     finalColor = pow(finalColor, vec3(0.9));
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
 
-// --- SINKRONISASI PROGRESS SCROLL GSAP KE THREEJS ---
 let heroScrollProgress = 0;
 let targetHeroScrollProgress = 0;
-
 gsap.registerPlugin(ScrollTrigger);
-
 document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link').forEach(btn => {
   btn.addEventListener('mousemove', e => {
     const rect = btn.getBoundingClientRect();
@@ -3686,18 +3451,15 @@ document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta, .nav-btn-dark, .
     gsap.to(btn, {x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)"});
   });
 });
-
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('nav');
   const showcase = document.querySelector('.premium-showcase-container');
   const showcaseRect = showcase.getBoundingClientRect();
-  
   if (window.scrollY > window.innerHeight - 100) {
     nav.classList.add('shrunk');
   } else {
     nav.classList.remove('shrunk');
   }
-
   if (showcaseRect.top <= 60 && showcaseRect.bottom >= 60) {
     nav.classList.add('showcase-active');
     nav.classList.remove('stuck');
@@ -3707,7 +3469,6 @@ window.addEventListener('scroll', () => {
   }
 }, {passive: true});
 
-/* --- GSAP FEATURE 2: SMOOTH SCROLL REVEAL (STAGGER BATCH) --- */
 gsap.set(".reveal", { y: 40, opacity: 0 });
 ScrollTrigger.batch(".reveal", {
   onEnter: batch => {
@@ -3717,12 +3478,6 @@ ScrollTrigger.batch(".reveal", {
   start: "top 85%"
 });
 
-/* ══════════════════════════════════════════════
-   HERO CONTENT — ENTRANCE ANIMATION
-   Eyebrow fade-in → title cinematic flip-up + blur-to-focus (stagger per kata)
-   → garis aksen menyala dari tengah
-   Delay: 0.5s (memberi ruang shader & stadium 3D untuk init)
-   ══════════════════════════════════════════════ */
 (function initHeroEntrance() {
   window.heroTextState = [
     { opacity: 0, y: 110, rotateX: -55, blur: 10 },
@@ -3730,9 +3485,7 @@ ScrollTrigger.batch(".reveal", {
     { opacity: 0, y: 110, rotateX: -55, blur: 10 }
   ];
   window.triggerHeroTextUpdate = true;
-
   gsap.set(".hero-underline", { scaleX: 0 });
-
   const heroEnterTl = gsap.timeline({ delay: 0.5 });
   heroEnterTl
     .to(window.heroTextState, {
@@ -3754,9 +3507,8 @@ ScrollTrigger.batch(".reveal", {
       ease: "power3.out"
     }, "-=0.5");
 })();
-/* ══ END HERO ENTRANCE ══ */
 
-/* ── IMAGE-SEC: Parallax image + text fade ── */
+
 gsap.to(".image-img", {
   scrollTrigger: {
     trigger: ".image-sec",
@@ -3767,7 +3519,6 @@ gsap.to(".image-img", {
   y: -80,
   ease: "none"
 });
-
 const tlImage = gsap.timeline({
   scrollTrigger: {
     trigger: ".image-sec",
@@ -3785,12 +3536,8 @@ tlImage.fromTo(".image-label",
   "-=0.5"
 );
 
-/* ══════════════════════════════════════════════
-   LOCATION SECTION — GSAP ANIMATIONS
-   ══════════════════════════════════════════════ */
 (function initLocationSection() {
-
-  /* 1. Title PINPOINT: teks outline masuk dari kiri, teks solid dari kanan */
+  
   const locTl = gsap.timeline({
     scrollTrigger: {
       trigger: ".location-sec",
@@ -3798,7 +3545,6 @@ tlImage.fromTo(".image-label",
       toggleActions: "play none none none"
     }
   });
-
   locTl
     .fromTo(".loc-title-bg",
       { x: -60, opacity: 0 },
@@ -3814,8 +3560,7 @@ tlImage.fromTo(".image-label",
       { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
       "<"
     );
-
-  /* 2. Info rows: stagger masuk dari bawah */
+  
   ScrollTrigger.create({
     trigger: ".location-sec",
     start: "top 65%",
@@ -3835,8 +3580,7 @@ tlImage.fromTo(".image-label",
       );
     }
   });
-
-  /* 3. Map wrapper: scale + fade masuk */
+  
   gsap.fromTo(".loc-map-wrapper",
     { scale: 0.94, opacity: 0 },
     {
@@ -3849,8 +3593,7 @@ tlImage.fromTo(".image-label",
       }
     }
   );
-
-  /* 4. Corner accents: stagger masuk */
+  
   gsap.fromTo(".loc-map-corner",
     { scale: 0, opacity: 0 },
     {
@@ -3862,8 +3605,7 @@ tlImage.fromTo(".image-label",
       }
     }
   );
-
-  /* 5. Status bar slide dari bawah */
+  
   gsap.fromTo(".loc-status-bar",
     { y: 30, opacity: 0 },
     {
@@ -3875,8 +3617,7 @@ tlImage.fromTo(".image-label",
       }
     }
   );
-
-  /* 6. Ambient glow parallax */
+  
   gsap.to(".loc-ambient",
     {
       y: -60,
@@ -3901,8 +3642,7 @@ tlImage.fromTo(".image-label",
       }
     }
   );
-
-  /* 7. Mouse-hover radial glow pada info-row */
+  
   document.querySelectorAll('.loc-info-row').forEach(row => {
     row.addEventListener('mousemove', e => {
       const rect = row.getBoundingClientRect();
@@ -3910,23 +3650,18 @@ tlImage.fromTo(".image-label",
       row.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
     });
   });
-
 })();
 
-/* ── TAB SWITCHING LOGIC untuk Location Section ── */
 (function initLocTabs() {
   const tabs = document.querySelectorAll('.loc-tab-btn');
   if (!tabs.length) return;
-
   tabs.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.tab;
-
-      // Update active tab button
+      
       tabs.forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
-
-      // Animate out current panel
+      
       const currentPanel = document.querySelector('.loc-panel.active');
       if (currentPanel) {
         gsap.to(currentPanel, {
@@ -3934,8 +3669,7 @@ tlImage.fromTo(".image-label",
           onComplete: () => {
             currentPanel.classList.remove('active');
             currentPanel.style.display = 'none';
-
-            // Animate in new panel
+            
             const nextPanel = document.getElementById('tab-' + target);
             if (nextPanel) {
               nextPanel.style.display = 'block';
@@ -3944,7 +3678,7 @@ tlImage.fromTo(".image-label",
                 { y: 16, opacity: 0 },
                 { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }
               );
-              // Re-trigger stagger for newly shown rows
+              
               if (target === 'alamat') {
                 gsap.fromTo(nextPanel.querySelectorAll('.loc-info-row'),
                   { y: 20, opacity: 0 },
@@ -3969,11 +3703,9 @@ tlImage.fromTo(".image-label",
   });
 })();
 
-/* ── FIX: Semua loc-panel non-active dimulai tersembunyi ── */
 document.querySelectorAll('.loc-panel:not(.active)').forEach(p => {
   p.style.display = 'none';
 });
-
 document.querySelectorAll('.sc-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
@@ -3981,23 +3713,19 @@ document.querySelectorAll('.sc-card').forEach(card => {
     const y = e.clientY - rect.top;
     card.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
     card.style.setProperty('--my', `${(y / rect.height) * 100}%`);
-    
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     const rotateX = ((y - centerY) / centerY) * -8;
     const rotateY = ((x - centerX) / centerX) * 8;
-    
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     card.style.transition = 'none';
   });
-  
   card.addEventListener('mouseleave', () => {
     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
     card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.4s ease';
   });
 });
 
-/* GALLERY LIGHTBOX LOGIC */
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img');
 document.querySelectorAll('.g-item').forEach(item=>{
   item.addEventListener('click',()=>{
@@ -4010,7 +3738,6 @@ document.querySelectorAll('.g-item').forEach(item=>{
 document.getElementById('lb-close').onclick=()=>lb.classList.remove('open');
 lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))lb.classList.remove('open');});
-
 const co=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;
   const el=e.target,target=+el.dataset.target,suffix=el.dataset.suffix||'';
@@ -4030,7 +3757,6 @@ const co=new IntersectionObserver(es=>es.forEach(e=>{
 }),{threshold:0.5});
 document.querySelectorAll('.counter').forEach(el=>co.observe(el));
 
-/* PARTICLES CTA LOGIC */
 if(typeof particlesJS !== 'undefined') {
   particlesJS("particles-js", {
     "particles": {
@@ -4050,7 +3776,6 @@ if(typeof particlesJS !== 'undefined') {
     "retina_detect": true
   });
 }
-
 document.querySelectorAll('.val-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
@@ -4059,19 +3784,15 @@ document.querySelectorAll('.val-card').forEach(card => {
   });
 });
 
-// --- 3D HERO SHADER BACKGROUND LOGIC (INTEGRATED PORT) ---
 (function initShaderBackground() {
   const canvas = document.getElementById('shader-canvas');
   if (!canvas) return;
-
   const _dpr = Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.0 : 1.5);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: _dpr <= 1, powerPreference: 'high-performance' });
   renderer.setPixelRatio(_dpr);
   renderer.setSize(window.innerWidth, window.innerHeight);
-
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
   const uniforms = {
     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
     time: { value: 0.0 },
@@ -4079,7 +3800,6 @@ document.querySelectorAll('.val-card').forEach(card => {
     yScale: { value: 0.5 },
     distortion: { value: 0.05 },
   };
-
   const vertexShader = `
     varying vec2 vUv;
     void main() {
@@ -4087,37 +3807,28 @@ document.querySelectorAll('.val-card').forEach(card => {
       gl_Position = vec4(position, 1.0);
     }
   `;
-
   const fragmentShader = `
     uniform vec2 resolution;
     uniform float time;
     uniform float xScale;
     uniform float yScale;
     uniform float distortion;
-
     void main() {
       vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
-      
       float d = length(p) * distortion;
-      
       float rx = p.x * (1.0 + d);
       float gx = p.x;
       float bx = p.x * (1.0 - d);
-
       float w1 = 0.05 / abs(p.y + sin((rx + time) * xScale) * yScale);
       float w2 = 0.05 / abs(p.y + sin((gx + time) * xScale) * yScale);
       float w3 = 0.05 / abs(p.y + sin((bx + time) * xScale) * yScale);
-      
       vec3 col1 = vec3(0.0, w1 * 0.5, w1 * 0.15);
       vec3 col2 = vec3(w2 * 0.15, w2 * 0.95, w2 * 0.3);
       vec3 col3 = vec3(0.0, w3 * 0.7, w3 * 0.5);
-      
       vec3 finalColor = col1 + col2 + col3;
-      
       gl_FragColor = vec4(finalColor, 1.0);
     }
   `;
-
   const geometry = new THREE.PlaneGeometry(2, 2);
   const material = new THREE.ShaderMaterial({
     vertexShader,
@@ -4126,10 +3837,8 @@ document.querySelectorAll('.val-card').forEach(card => {
     depthWrite: false,
     depthTest: false
   });
-
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
-
   function handleResize() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -4137,11 +3846,9 @@ document.querySelectorAll('.val-card').forEach(card => {
     uniforms.resolution.value.set(w, h);
   }
   window.addEventListener('resize', handleResize);
-
   let _shaderVisible = true;
   const _shaderObs = new IntersectionObserver(([entry]) => { _shaderVisible = entry.isIntersecting; }, { threshold: 0 });
   _shaderObs.observe(canvas);
-
   function animate() {
     requestAnimationFrame(animate);
     if (!_shaderVisible) return;
@@ -4151,18 +3858,15 @@ document.querySelectorAll('.val-card').forEach(card => {
   animate();
 })();
 
-// --- 3D HERO CANVAS LOGIC ---
 (function initHeroThree() {
   const canvas = document.getElementById('three-canvas');
   if (!canvas) return;
   const _heroDpr = Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.0 : 1.5);
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: _heroDpr <= 1, powerPreference: 'high-performance' });
   renderer.setPixelRatio(_heroDpr);
-
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
   let baseY = 8;
-
   function updateResponsive() {
     const w = canvas.parentElement.offsetWidth, h = canvas.parentElement.offsetHeight;
     renderer.setSize(w, h);
@@ -4171,43 +3875,34 @@ document.querySelectorAll('.val-card').forEach(card => {
     else { camera.position.z = 14; baseY = 8; }
     camera.updateProjectionMatrix();
   }
-
   window.addEventListener('resize', updateResponsive);
   updateResponsive();
-
   camera.position.set(0, baseY, camera.position.z);
   camera.lookAt(0, 0, 0);
-
   const fieldGeo = new THREE.PlaneGeometry(14, 9, 32, 20);
   const fieldMat = new THREE.MeshStandardMaterial({ color: 0x002211, roughness: 0.8, metalness: 0.05 });
   const field = new THREE.Mesh(fieldGeo, fieldMat);
   field.rotation.x = -Math.PI / 2;
   scene.add(field);
-
   function addLine(points, color = 0x00ff88, opacity = 0.5) {
     const geo = new THREE.BufferGeometry().setFromPoints(points);
     const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
     scene.add(new THREE.Line(geo, mat));
   }
-
   const bL = 7, bW = 4.5;
   addLine([new THREE.Vector3(-bL, 0.02, -bW), new THREE.Vector3(bL, 0.02, -bW), new THREE.Vector3(bL, 0.02, bW), new THREE.Vector3(-bL, 0.02, bW), new THREE.Vector3(-bL, 0.02, -bW)]);
   addLine([new THREE.Vector3(0, 0.02, -bW), new THREE.Vector3(0, 0.02, bW)]);
-  
   const circPts = [];
   for (let i = 0; i <= 64; i++) { const a = (i / 64) * Math.PI * 2; circPts.push(new THREE.Vector3(Math.cos(a) * 1.8, 0.02, Math.sin(a) * 1.8)); }
   addLine(circPts);
-  
   const dotGeo = new THREE.CircleGeometry(0.12, 16);
   const dotMat = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00ff88, emissiveIntensity: 0.8 });
   const dot = new THREE.Mesh(dotGeo, dotMat);
   dot.rotation.x = -Math.PI / 2;
   dot.position.y = 0.02;
   scene.add(dot);
-  
   addLine([new THREE.Vector3(-bL, 0.02, -1.5), new THREE.Vector3(-bL + 2, 0.02, -1.5), new THREE.Vector3(-bL + 2, 0.02, 1.5), new THREE.Vector3(-bL, 0.02, 1.5)]);
   addLine([new THREE.Vector3(bL, 0.02, -1.5), new THREE.Vector3(bL - 2, 0.02, -1.5), new THREE.Vector3(bL - 2, 0.02, 1.5), new THREE.Vector3(bL, 0.02, 1.5)]);
-  
   for (let side = -1; side <= 1; side += 2) {
     const arcPts = [];
     for (let i = 0; i <= 32; i++) {
@@ -4216,63 +3911,49 @@ document.querySelectorAll('.val-card').forEach(card => {
     }
     addLine(arcPts, 0x00ff88, 0.3);
   }
-
   const postGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.2, 8);
   const barGeo = new THREE.CylinderGeometry(0.03, 0.03, 2, 8);
   const postMat = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00ff88, emissiveIntensity: 0.8 });
-
   function addGoal(xPos) {
     const goal = new THREE.Group();
     const post1 = new THREE.Mesh(postGeo, postMat); post1.position.set(0, 0.6, -1); goal.add(post1);
     const post2 = new THREE.Mesh(postGeo, postMat); post2.position.set(0, 0.6, 1); goal.add(post2);
     const crossbar = new THREE.Mesh(barGeo, postMat); crossbar.rotation.x = Math.PI / 2; crossbar.position.set(0, 1.2, 0); goal.add(crossbar);
-
     const supportGeo = new THREE.CylinderGeometry(0.02, 0.02, 1.4, 8);
     const supportMat = new THREE.MeshStandardMaterial({ color: 0x00ff88, emissive: 0x00ff88, emissiveIntensity: 0.3, transparent: true, opacity: 0.6 });
     const dir = xPos > 0 ? 1 : -1;
-    
     const support1 = new THREE.Mesh(supportGeo, supportMat); support1.rotation.z = (Math.PI / 4) * dir; support1.position.set(0.5 * dir, 0.5, -1); goal.add(support1);
     const support2 = new THREE.Mesh(supportGeo, supportMat); support2.rotation.z = (Math.PI / 4) * dir; support2.position.set(0.5 * dir, 0.5, 1); goal.add(support2);
     const backBar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2, 8), supportMat); backBar.rotation.x = Math.PI / 2; backBar.position.set(1 * dir, 0, 0); goal.add(backBar);
     const netBottom1 = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1, 8), supportMat); netBottom1.rotation.z = Math.PI / 2; netBottom1.position.set(0.5 * dir, 0, -1); goal.add(netBottom1);
     const netBottom2 = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1, 8), supportMat); netBottom2.rotation.z = Math.PI / 2; netBottom2.position.set(0.5 * dir, 0, 1); goal.add(netBottom2);
-
     goal.position.set(xPos, 0, 0);
     scene.add(goal);
   }
-
   addGoal(-bL); addGoal(bL);
-
   scene.add(new THREE.AmbientLight(0x001a08, 2));
   const dirLight = new THREE.DirectionalLight(0x00ff88, 1.2); dirLight.position.set(5, 10, 5); scene.add(dirLight);
   const pointLight1 = new THREE.PointLight(0x00ff88, 2, 12); pointLight1.position.set(-4, 5, 0); scene.add(pointLight1);
   const pointLight2 = new THREE.PointLight(0x00cc66, 1.5, 12); pointLight2.position.set(4, 5, 0); scene.add(pointLight2);
-  
   [[-bL + 1, 4, -bW + 1], [bL - 1, 4, -bW + 1], [-bL + 1, 4, bW - 1], [bL - 1, 4, bW - 1]].forEach(([x, y, z]) => {
     const sl = new THREE.PointLight(0xffeedd, 0.6, 8);
     sl.position.set(x, y, z);
     scene.add(sl);
   });
-
   let mouseX = 0, mouseY = 0;
   document.addEventListener('mousemove', e => { mouseX = (e.clientX / window.innerWidth - 0.5) * 2; mouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
-
   let t = 0;
   let _heroVisible = true;
   const _heroObs = new IntersectionObserver(([entry]) => { _heroVisible = entry.isIntersecting; }, { threshold: 0 });
   _heroObs.observe(canvas);
-
   function animate() {
     requestAnimationFrame(animate);
     if (!_heroVisible) return;
     t += 0.01;
-
     heroScrollProgress += (targetHeroScrollProgress - heroScrollProgress) * 0.1;
-
     camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
     camera.position.y += (-mouseY * 1 + baseY - camera.position.y) * 0.02; 
     camera.lookAt(0, 0, 0);
-
     fieldMat.emissive = new THREE.Color(0x001a08);
     fieldMat.emissiveIntensity = 0.3 + Math.sin(t * 0.5) * 0.1;
     renderer.render(scene, camera);
@@ -4280,21 +3961,17 @@ document.querySelectorAll('.val-card').forEach(card => {
   animate();
 })();
 
-// --- 3D SHOWCASE MESH OVERLAY SCROLLING CANVAS LOGIC ---
 (function() {
   const canvasScroll = document.getElementById('ball-scroll-canvas');
   if (!canvasScroll) return;
-
   const _ballDpr = Math.min(window.devicePixelRatio, window.innerWidth <= 768 ? 1.0 : 1.5);
   const rendererS = new THREE.WebGLRenderer({ canvas: canvasScroll, antialias: _ballDpr <= 1, alpha: true, powerPreference: 'high-performance' });
   rendererS.setPixelRatio(_ballDpr);
   rendererS.toneMapping = THREE.ACESFilmicToneMapping;
   rendererS.toneMappingExposure = 1.2;
-
   const sceneS = new THREE.Scene();
   const cameraS = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
   cameraS.position.set(0, 0, 10);
-
   function resizeS() {
     rendererS.setSize(window.innerWidth, window.innerHeight);
     cameraS.aspect = window.innerWidth / window.innerHeight;
@@ -4302,26 +3979,21 @@ document.querySelectorAll('.val-card').forEach(card => {
   }
   window.addEventListener('resize', resizeS);
   resizeS();
-
   const _ballSegs = window.innerWidth <= 768 ? 32 : 48;
   const ballSGeo = new THREE.SphereGeometry(1.6, _ballSegs, _ballSegs);
   const ballSMat = new THREE.ShaderMaterial({ vertexShader: ballVertS, fragmentShader: ballFragS, uniforms: { uTime: { value: 0 } } });
   const scrollBall = new THREE.Mesh(ballSGeo, ballSMat);
-  
   scrollBall.position.set(0, 0, 0);
   scrollBall.scale.setScalar(1.0);
   sceneS.add(scrollBall);
-
   sceneS.add(new THREE.AmbientLight(0x001a0d, 2.5));
   const dlS = new THREE.DirectionalLight(0x00ff88, 1.8);
   dlS.position.set(3, 5, 6);
   sceneS.add(dlS);
-
-  // ── INTEGRASI INTERAKSI DRAG BOLA SECARA INTERAKTIF ──
+  
   let isDragging = false;
   let previousMousePosition = { x: 0, y: 0 };
   let targetRotation = { x: 0, y: 0 };
-
   let currentRotation = { x: 0, y: 0, z: 0 };
   let lastRx = 0;
   let lastRy = 0;
@@ -4329,15 +4001,12 @@ document.querySelectorAll('.val-card').forEach(card => {
   let targetRotX = 0;
   let targetRotY = 0;
   let targetRotZ = 0;
-
   function lerpAngle(current, target, speed) {
     let diff = target - current;
     diff = Math.atan2(Math.sin(diff), Math.cos(diff));
     return current + diff * speed;
   }
-
   const containerShowcase = document.querySelector('.premium-showcase-container');
-
   containerShowcase.addEventListener('mousedown', e => {
     e.preventDefault();
     isDragging = true;
@@ -4345,21 +4014,17 @@ document.querySelectorAll('.val-card').forEach(card => {
     targetRotation.x = scrollBall.rotation.x;
     targetRotation.y = scrollBall.rotation.y;
   });
-
   window.addEventListener('mousemove', e => {
     if (!isDragging) return;
     const deltaMove = {
       x: e.clientX - previousMousePosition.x,
       y: e.clientY - previousMousePosition.y
     };
-    
     targetRotation.y += deltaMove.x * 0.005;
     targetRotation.x += deltaMove.y * 0.005;
     previousMousePosition = { x: e.clientX, y: e.clientY };
   });
-
   window.addEventListener('mouseup', () => { isDragging = false; });
-
   containerShowcase.addEventListener('touchstart', e => {
     if (e.touches.length > 0) {
       e.preventDefault();
@@ -4369,21 +4034,17 @@ document.querySelectorAll('.val-card').forEach(card => {
       targetRotation.y = scrollBall.rotation.y;
     }
   }, { passive: false });
-
   window.addEventListener('touchmove', e => {
     if (!isDragging || e.touches.length === 0) return;
     const deltaMove = {
       x: e.touches[0].clientX - previousMousePosition.x,
       y: e.touches[0].clientY - previousMousePosition.y
     };
-    
     targetRotation.y += deltaMove.x * 0.005;
     targetRotation.x += deltaMove.y * 0.005;
     previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, { passive: true });
-
   window.addEventListener('touchend', () => { isDragging = false; });
-
   function getResponsiveParams() {
     const w = window.innerWidth;
     if (w <= 600) {
@@ -4396,8 +4057,7 @@ document.querySelectorAll('.val-card').forEach(card => {
       return { hero: 0.15, sec2: 0.95, sec3: 3.0, sec4: 3.0, xOffset: 1.3 };
     }
   }
-
-  // Status variabel pergerakan fisik bola
+  
   let initParams = getResponsiveParams();
   const ballState = {
     x: 0,
@@ -4408,14 +4068,12 @@ document.querySelectorAll('.val-card').forEach(card => {
     ry: 0,
     rz: 0
   };
-
   let responsiveScale = {
     hero: initParams.hero,
     sec2: initParams.sec2,
     sec3: initParams.sec3,
     sec4: initParams.sec4
   };
-
   let targetX = 3.5;
   function updateTargetX() {
     let params = getResponsiveParams();
@@ -4423,34 +4081,27 @@ document.querySelectorAll('.val-card').forEach(card => {
     responsiveScale.sec2 = params.sec2;
     responsiveScale.sec3 = params.sec3;
     responsiveScale.sec4 = params.sec4;
-
     const aspect = window.innerWidth / window.innerHeight;
     const visibleWidth = 2.0 * Math.tan((50 * Math.PI) / 360) * 10 * aspect;
-    
     targetX = (visibleWidth / 2) - params.xOffset;
   }
-  
   window.addEventListener('resize', () => {
     updateTargetX();
     ScrollTrigger.refresh();
   });
   updateTargetX();
-
   gsap.set(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 0 });
   gsap.set(".bst-curved-bg", { clipPath: "inset(0% 0% 0% 100%)" });
-
-  // Mengatur seksi absolut dalam tumpukan vertikal reel kontinu (Reel)
+  
   gsap.set(".premium-scroll-sec", { position: "absolute", inset: 0, opacity: 1, autoAlpha: 1 });
   gsap.set("#scroll-sec-hero", { yPercent: 0 });
   gsap.set("#scroll-sec-1", { yPercent: 100 });
   gsap.set("#scroll-sec-2", { yPercent: 200 });
   gsap.set("#scroll-sec-3", { yPercent: 300 });
-
-  // Inisialisasi awal koordinat teks specs
+  
   gsap.set("#bst-left", { opacity: 0, yPercent: -50, y: 35 });
   gsap.set("#bst-right", { opacity: 0, yPercent: -50, y: 35 });
-
-  // Timeline GSAP Pinning dengan transisi sliding vertikal bertumpuk
+  
   const ballScrollTl = gsap.timeline({
     scrollTrigger: {
       trigger: ".premium-showcase-container",
@@ -4460,21 +4111,21 @@ document.querySelectorAll('.val-card').forEach(card => {
       pin: true,
       anticipatePin: 1,
       onUpdate: (self) => {
-        // Hubungkan scroll progress awal (0% s/d 25%) langsung ke kemiringan / fade stadium Hero Section
+        
         targetHeroScrollProgress = Math.min(1.0, self.progress * 4.0);
-        // Pastikan canvas terlihat saat animasi aktif
+        
         if (self.progress > 0 && self.progress < 1) {
           canvasScroll.style.display = 'block';
         }
       },
       onLeave: () => {
-        // Force-hide bola saat scroll melewati section (scroll ke bawah)
+        
         canvasScroll.style.opacity = '0';
         ballState.opacity = 0;
         setTimeout(() => { canvasScroll.style.display = 'none'; }, 400);
       },
       onLeaveBack: () => {
-        // Force-hide bola saat scroll balik ke atas melewati section
+        
         canvasScroll.style.opacity = '0';
         ballState.opacity = 0;
         setTimeout(() => { canvasScroll.style.display = 'none'; }, 400);
@@ -4489,24 +4140,21 @@ document.querySelectorAll('.val-card').forEach(card => {
       }
     }
   });
-
   ballScrollTl
-    // ── JEDA DIAM AWAL: Hero tampil, bola diam melayang ──
+    
     .to({}, { duration: 1.0 })
-
-    // ── [1] HERO → SECTION 2 (MINI FUT) ──
-    // Sembunyikan heading (zoom-out + blur) dan scroll indicator smooth saat hero mulai transisi
+    
+    
     .to(["#hero-content", "#hero-gl-canvas"], { opacity: 0, y: -40, scale: 0.94, filter: "blur(10px)", duration: 0.6, ease: "power2.in" })
     .to(".scroll-ind.center", { opacity: 0, y: 12, duration: 0.4, ease: "power2.in" }, "<")
-
-    // Geser seluruh tumpukan seksi ke atas secara sinkron (Reel Effect)
+    
     .to("#scroll-sec-hero", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-1", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-2", { yPercent: 100, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-3", { yPercent: 200, duration: 2.0, ease: "power2.inOut" }, "<")
-    // Border frame & pitch lines muncul organik
+    
     .to(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 1, duration: 1.8, ease: "sine.out" }, "<0.2")
-    // Bola menggelinding masuk ke tengah, membesar alami (tepat 1 putaran maju)
+    
     .to(ballState, {
       x: 0,
       y: 0,
@@ -4515,17 +4163,15 @@ document.querySelectorAll('.val-card').forEach(card => {
       duration: 2.0,
       ease: "power2.out"
     }, "<0.1")
-
-    // JEDA DIAM DI SECTION 2
+    
     .to({}, { duration: 1.8 })
-
-    // ── [2] SECTION 2 → SECTION 3 (RUMPUT PREMIUM) ──
-    // Geser reel seksi berikutnya ke atas
+    
+    
     .to("#scroll-sec-hero", { yPercent: -200, duration: 2.0, ease: "power2.inOut" })
     .to("#scroll-sec-1", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-2", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-3", { yPercent: 100, duration: 2.0, ease: "power2.inOut" }, "<")
-    // Bola menggelinding secara horizontal ke sisi kanan (tepat 1 putaran ke kanan)
+    
     .to(ballState, {
       x: () => targetX,
       y: 0,
@@ -4535,21 +4181,19 @@ document.querySelectorAll('.val-card').forEach(card => {
       duration: 2.0,
       ease: "power2.inOut"
     }, "<")
-    // Tampilkan teks spesifikasi kiri
+    
     .to("#bst-left", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" }, "-=0.4")
-
-    // JEDA DIAM DI SECTION 3
+    
     .to({}, { duration: 2.0 })
-
-    // ── [3] SECTION 3 → SECTION 4 (BOLA PREMIUM) ──
-    // Sembunyikan teks kiri secara halus
+    
+    
     .to("#bst-left", { opacity: 0, y: -20, yPercent: -50, duration: 0.8, ease: "power2.in" })
-    // Geser reel seksi terakhir ke atas
+    
     .to("#scroll-sec-hero", { yPercent: -300, duration: 2.0, ease: "power2.inOut" }, "<0.2")
     .to("#scroll-sec-1", { yPercent: -200, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-2", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
     .to("#scroll-sec-3", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
-    // Bola menggelinding melintasi layar horizontal dari kanan ke kiri (tepat 1 putaran balik ke kiri)
+    
     .to(ballState, {
       x: () => -targetX,
       y: 0,
@@ -4559,23 +4203,21 @@ document.querySelectorAll('.val-card').forEach(card => {
       duration: 2.0,
       ease: "power2.inOut"
     }, "<")
-    // Animasi garis putus-putus muncul dari kanan ke kiri mengikuti transisi bola
+    
     .to(".bst-curved-bg", {
       clipPath: "inset(0% 0% 0% 0%)",
       duration: 2.0,
       ease: "power2.inOut"
     }, "<")
-    // Tampilkan teks spesifikasi kanan
+    
     .to("#bst-right", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" }, "-=0.5")
-
-    // JEDA DIAM DI SECTION 4
+    
     .to({}, { duration: 2.2 })
-
-    // ── [4] EXIT OUTRO ──
+    
     .to("#bst-right", { opacity: 0, y: -30, yPercent: -50, duration: 1.0, ease: "power2.in" })
     .to("#scroll-sec-3", { yPercent: -100, duration: 1.5, ease: "power2.in" }, "<0.2")
     .to(["#premium-border-frame", "#premium-pitch-bg", ".showcase-bg-stadium"], { opacity: 0, duration: 1.5, ease: "power2.in" }, "<")
-    // Bola menggelinding keluar ke arah bawah panggung halaman secara perlahan
+    
     .to(ballState, {
       opacity: 0,
       scale: () => window.innerWidth <= 768 ? 1.8 : 2.2,
@@ -4585,28 +4227,25 @@ document.querySelectorAll('.val-card').forEach(card => {
       duration: 1.4,
       ease: "power2.in"
     }, "<");
-
-  // Loop Render Animasi
+  
   let timeS = 0;
   let rotVelX = 0, rotVelY = 0, rotVelZ = 0;
-
   let _ballVisible = true;
-  let _ballExitFrames = 0; // Counter frame ekstra agar bola selesai exit sebelum render berhenti
+  let _ballExitFrames = 0; 
   const _ballObs = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting) {
       _ballVisible = true;
       _ballExitFrames = 0;
     } else {
-      // Beri 60 frame ekstra untuk menyelesaikan animasi exit
+      
       _ballVisible = false;
       _ballExitFrames = 60;
     }
   }, { threshold: 0 });
   _ballObs.observe(containerShowcase);
-
   function renderScrollBall() {
     requestAnimationFrame(renderScrollBall);
-    // Lanjutkan render jika visible ATAU masih ada frame ekstra untuk exit
+    
     if (!_ballVisible) {
       if (_ballExitFrames > 0) {
         _ballExitFrames--;
@@ -4615,47 +4254,38 @@ document.querySelectorAll('.val-card').forEach(card => {
       }
     }
     timeS += 0.01;
-
     let bounceY = 0;
     if (targetHeroScrollProgress < 0.85) {
       let bounceAmp = Math.max(0, 1.0 - targetHeroScrollProgress * 1.8);
       bounceY = (Math.sin(timeS * 2.2) * 0.14 + Math.sin(timeS * 3.7) * 0.04) * bounceAmp;
     }
-
     let deltaRx = ballState.rx - lastRx;
     let deltaRy = ballState.ry - lastRy;
     let deltaRz = ballState.rz - lastRz;
-
     lastRx = ballState.rx;
     lastRy = ballState.ry;
     lastRz = ballState.rz;
-
     rotVelX = rotVelX * 0.82 + deltaRx * 0.18;
     rotVelZ = rotVelZ * 0.82 + deltaRz * 0.18;
-
     if (!isDragging) {
       targetRotX += rotVelX;
       targetRotY += deltaRy;
       targetRotZ += rotVelZ;
-
       let isIdle = Math.abs(deltaRx) < 0.0001 && Math.abs(deltaRz) < 0.0001;
       if (isIdle) {
         targetRotX += 0.007 + Math.sin(timeS * 0.3) * 0.002;
         targetRotY += 0.005 + Math.cos(timeS * 0.2) * 0.002;
       }
-
       let lerpSpeed = isIdle ? 0.10 : 0.16;
       currentRotation.x = lerpAngle(currentRotation.x, targetRotX, lerpSpeed);
       currentRotation.y = lerpAngle(currentRotation.y, targetRotY, lerpSpeed);
       currentRotation.z = lerpAngle(currentRotation.z, targetRotZ, lerpSpeed);
-
       scrollBall.rotation.x = currentRotation.x;
       scrollBall.rotation.y = currentRotation.y;
       scrollBall.rotation.z = currentRotation.z;
     } else {
       scrollBall.rotation.x += (targetRotation.x - scrollBall.rotation.x) * 0.055;
       scrollBall.rotation.y += (targetRotation.y - scrollBall.rotation.y) * 0.055;
-
       currentRotation.x = scrollBall.rotation.x;
       currentRotation.y = scrollBall.rotation.y;
       currentRotation.z = scrollBall.rotation.z;
@@ -4663,34 +4293,28 @@ document.querySelectorAll('.val-card').forEach(card => {
       targetRotY = scrollBall.rotation.y;
       targetRotZ = scrollBall.rotation.z;
     }
-
-    // Adaptive lerp: semakin jauh jarak ke target, semakin cepat konvergen
-    // Ini mencegah bola "menempel" saat scroll cepat
+    
+    
     let distX = Math.abs(ballState.x - scrollBall.position.x);
     let distY = Math.abs((ballState.y + bounceY) - scrollBall.position.y);
     let distScale = Math.abs(ballState.scale - scrollBall.scale.x);
     let posLerp = 0.18 + Math.min(0.72, (distX + distY) * 0.15 + distScale * 0.3);
-
     let smoothX = scrollBall.position.x + (ballState.x - scrollBall.position.x) * posLerp;
     let targetPosY = ballState.y + bounceY;
     let smoothY = scrollBall.position.y + (targetPosY - scrollBall.position.y) * posLerp;
-
     scrollBall.position.x = smoothX;
     scrollBall.position.y = smoothY;
-    // Adaptive scale lerp untuk respons cepat
+    
     let scaleLerp = 0.18 + Math.min(0.72, distScale * 0.5);
     let smoothScale = scrollBall.scale.x + (ballState.scale - scrollBall.scale.x) * scaleLerp;
     scrollBall.scale.setScalar(smoothScale);
     canvasScroll.style.opacity = ballState.opacity;
-
     ballSMat.uniforms.uTime.value = timeS;
     rendererS.render(sceneS, cameraS);
   }
   renderScrollBall();
 })();
 </script>
-
-<!-- REVISI: SVG Glass Distortion Filter Definition untuk Liquid Glass Button -->
 <svg class="hidden" style="position: absolute; width: 0; height: 0;" width="0" height="0">
   <defs>
     <filter
@@ -4734,34 +4358,18 @@ window.addEventListener('load', () => {
 });
 </script>
 <script>
-/* ════════════════════════════════════════════════════════════════════
-   HERO WEBGL LIQUID DISTORTION + GREEN CHROMATIC ABERRATION
-   ─────────────────────────────────────────────────────────────────
-   Pipeline:
-     1. Render teks hero (PREMIUM / SOCCER / ARENA.) ke offscreen 2D canvas
-        dengan gaya persis sama: outline-only, solid white, neon-green gradient
-     2. Upload sebagai WebGL texture
-     3. Full-screen quad dengan vertex + fragment shader custom:
-        • fBm turbulence (4-octave value noise) → fluid displacement field
-        • Sinusoidal ripple dari posisi mouse → gelombang memancar
-        • Chromatic aberration: R geser kiri, G tidak digeser, B geser kanan
-        • Green channel boost pada area aktif → neon glow effect
-        • Smooth radial falloff dari kursor
-     4. Lerp activity in/out ketika mouse masuk/keluar
-   ════════════════════════════════════════════════════════════════════ */
+
 (function initHeroWebGL() {
-
-  /* ── Config ─────────────────────────────────────────────────────── */
+  
   const CFG = {
-    distortRadius:   0.24,   // radius pengaruh mouse (fraksi lebar canvas)
-    distortStrength: 0.048,  // besaran maksimal displacement UV
-    chromaticShift:  0.010,  // offset chromatic aberration (UV space)
-    relaxSpeed:      0.048,  // kecepatan fade-out saat mouse pergi
-    enterSpeed:      0.12,   // kecepatan fade-in saat mouse masuk
-    initDelay:       900,    // ms – beri GSAP entrance selesai dulu
+    distortRadius:   0.24,   
+    distortStrength: 0.048,  
+    chromaticShift:  0.010,  
+    relaxSpeed:      0.048,  
+    enterSpeed:      0.12,   
+    initDelay:       900,    
   };
-
-  /* ── Vertex Shader ───────────────────────────────────────────────── */
+  
   const VERT_SRC = `
 attribute vec2 a_pos;
 varying   vec2 v_uv;
@@ -4769,11 +4377,9 @@ void main(){
   v_uv        = a_pos * 0.5 + 0.5;
   gl_Position = vec4(a_pos, 0.0, 1.0);
 }`;
-
-  /* ── Fragment Shader ─────────────────────────────────────────────── */
+  
   const FRAG_SRC = `
 precision highp float;
-
 uniform sampler2D u_tex;       /* hero-text texture                    */
 uniform vec2      u_mouse;     /* mouse UV (0..1), Y dibalik           */
 uniform float     u_radius;    /* influence radius                     */
@@ -4782,16 +4388,13 @@ uniform float     u_chroma;    /* chromatic aberration amount          */
 uniform float     u_time;      /* elapsed seconds                      */
 uniform float     u_active;    /* 0..1, lerped smoothly               */
 uniform vec2      u_res;       /* canvas size in pixels                */
-
 varying vec2 v_uv;
-
 /* ── Deterministic pseudo-random ── */
 float hash21(vec2 p){
   p = fract(p * vec2(127.1, 311.7));
   p += dot(p, p + 19.19);
   return fract(p.x * p.y);
 }
-
 /* ── Value noise dengan cubic hermite ── */
 float vnoise(vec2 p){
   vec2 i = floor(p);
@@ -4804,7 +4407,6 @@ float vnoise(vec2 p){
   float d = hash21(i + vec2(1.0, 1.0));
   return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
-
 /* ── fBm: 4-octave fractal Brownian motion → displacement vec2 ── */
 vec2 fbm2(vec2 p, float t){
   vec2  d   = vec2(0.0);
@@ -4819,25 +4421,19 @@ vec2 fbm2(vec2 p, float t){
   }
   return d;
 }
-
 void main(){
   vec2 uv = v_uv;
-
   /* Koreksi aspek rasio untuk perhitungan jarak yang benar */
   float aspect = u_res.x / u_res.y;
   vec2 uvA    = vec2(uv.x  * aspect, uv.y);
   vec2 mA     = vec2(u_mouse.x * aspect, u_mouse.y);
-
   float dist  = length(uvA - mA);
-
   /* Falloff: smooth dari 0 di radius hingga 1 di pusat mouse */
   float falloff = smoothstep(u_radius, u_radius * 0.05, dist);
   falloff *= u_active;
-
   /* ── Fluid turbulence displacement ── */
   vec2 turb = fbm2(uv * 3.2, u_time * 0.9);
   vec2 disp = turb * u_strength * falloff;
-
   /* ── Ripple: gelombang sinus yang memancar dari mouse ── */
   float ripplePhase = dist * 32.0 - u_time * 4.2;
   float ripple      = sin(ripplePhase) * 0.5 + 0.5;
@@ -4846,31 +4442,25 @@ void main(){
   /* Ubah kembali ke UV space (bagi x dengan aspect) */
   rippleDir = normalize(rippleDir) / vec2(aspect, 1.0);
   disp += rippleDir * ripple * u_strength * 0.40 * falloff;
-
   /* ── Chromatic Aberration (Green axis) ── */
   /* R geser ke kiri, G tetap (reference), B geser ke kanan */
   float ca    = u_chroma * falloff;
   vec2  offR  = disp + vec2(-ca,  0.0);
   vec2  offG  = disp;                     /* Green: no lateral shift */
   vec2  offB  = disp + vec2( ca,  0.0);
-
   /* Sample tiap channel secara terpisah */
   float r = texture2D(u_tex, clamp(uv + offR, 0.001, 0.999)).r;
   float g = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).g;
   float b = texture2D(u_tex, clamp(uv + offB, 0.001, 0.999)).b;
   float a = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).a;
-
   /* Green channel boost pada area aktif → neon glow khas MiniFut */
   g = mix(g, min(g * 1.35 + 0.05 * falloff, 1.0), falloff * 0.65);
-
   /* Slight vignette agar tepi chromatic tidak terlihat hard-clip */
   float vign = smoothstep(0.0, 0.15, min(uv.x, 1.0 - uv.x))
              * smoothstep(0.0, 0.12, min(uv.y, 1.0 - uv.y));
-
   gl_FragColor = vec4(r, g, b, a * vign);
 }`;
-
-  /* ── Helper: compile shader ─────────────────────────────────────── */
+  
   function compileShader(gl, type, src) {
     const sh = gl.createShader(type);
     gl.shaderSource(sh, src);
@@ -4882,8 +4472,7 @@ void main(){
     }
     return sh;
   }
-
-  /* ── Helper: link program ───────────────────────────────────────── */
+  
   function makeProgram(gl, vs_src, fs_src) {
     const vs   = compileShader(gl, gl.VERTEX_SHADER,   vs_src);
     const fs   = compileShader(gl, gl.FRAGMENT_SHADER, fs_src);
@@ -4898,45 +4487,35 @@ void main(){
     }
     return prog;
   }
-
-  /* ── Render hero text ke offscreen 2D canvas ────────────────────── */
+  
   function buildTextTexture(gl, W, H) {
-
-    /* --- Offscreen canvas dengan resolusi sama --- */
+    
     const off = document.createElement('canvas');
     off.width  = W;
     off.height = H;
     const ctx  = off.getContext('2d');
     ctx.clearRect(0, 0, W, H);
-
     const isMobile = W <= 600;
-
     const basePx = isMobile
       ? Math.min(W * 0.12, H * 0.08, 48)
       : Math.min(W * 0.07, H * 0.09, 64);
-
     const targetY = isMobile
       ? Math.max(110, Math.min(H * 0.18, 160)) + 40
       : Math.max(164, Math.min(H * 0.16 + 52, 216)) + 28;
-
     const words = [
       { text: 'PREMIUM', style: 'outline' },
       { text: 'SOCCER',  style: 'solid'   },
       { text: 'ARENA.',  style: 'green'   }
     ];
-
     ctx.font         = `400 ${basePx}px Anton, Impact, sans-serif`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-
-    // Measure widths
+    
     const widths = words.map(w => ctx.measureText(w.text).width);
     const gap = isMobile ? 10 : 18;
     const totalW = widths.reduce((sum, w) => sum + w, 0) + gap * (words.length - 1);
-
     let currentX = (W - totalW) / 2;
-
-    // Initialize default states if not present
+    
     if (!window.heroTextState) {
       window.heroTextState = [
         { opacity: 0, y: 110, rotateX: -55, blur: 10 },
@@ -4944,52 +4523,43 @@ void main(){
         { opacity: 0, y: 110, rotateX: -55, blur: 10 }
       ];
     }
-
     words.forEach((w, i) => {
       const state = window.heroTextState[i] || { opacity: 1, y: 0, rotateX: 0, blur: 0 };
       const wordW = widths[i];
-      
       let x, y;
       if (isMobile) {
         x = W / 2;
-        // Stack words vertically centered around targetY
+        
         const baseWordY = targetY + (i - 1) * (basePx * 1.15);
         y = baseWordY + (state.y / 100) * basePx;
       } else {
         x = currentX + wordW / 2;
         y = targetY + (state.y / 100) * basePx;
       }
-
       ctx.save();
-
-      // Apply opacity
+      
       ctx.globalAlpha = state.opacity;
-
-      // Apply blur filter if supported and value is significant
+      
       if (state.blur > 0.05) {
         ctx.filter = `blur(${state.blur}px)`;
       } else {
         ctx.filter = 'none';
       }
-
-      // Apply 3D tilt (rotateX) via Y-scale compression
+      
       const rad = (state.rotateX * Math.PI) / 180;
       const scaleY = Math.cos(rad);
       ctx.translate(x, y + basePx * 0.4);
       ctx.scale(1, Math.max(0, scaleY));
       ctx.translate(-x, -(y + basePx * 0.4));
-
       if (w.style === 'outline') {
         ctx.strokeStyle = 'rgba(255,255,255,0.26)';
         ctx.lineWidth   = isMobile ? 2.0 : 2.5;
         ctx.strokeText(w.text, x, y);
-
       } else if (w.style === 'solid') {
         ctx.fillStyle = '#eceef2';
         ctx.fillText(w.text, x, y);
-
       } else {
-        /* green gradient shine */
+        
         const grd = ctx.createLinearGradient(x - wordW / 2, y, x + wordW / 2, y);
         grd.addColorStop(0,    '#00ff88');
         grd.addColorStop(0.45, '#d4ffec');
@@ -4997,31 +4567,25 @@ void main(){
         ctx.fillStyle = grd;
         ctx.fillText(w.text, x, y);
       }
-
       ctx.restore();
       currentX += wordW + gap;
     });
-
-    /* Upload ke GPU */
+    
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S,     gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T,     gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // Flip Y to fix upside-down (terbalik) issue
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
-
     return tex;
   }
-
-  /* ── Main init (delayed) ────────────────────────────────────────── */
+  
   setTimeout(function () {
-
     const canvas = document.getElementById('hero-gl-canvas');
     if (!canvas) return;
-
-    /* Try WebGL (dengan fallback ke experimental-webgl) */
+    
     const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false })
             || canvas.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: false });
     if (!gl) {
@@ -5029,23 +4593,19 @@ void main(){
       canvas.style.display = 'none';
       return;
     }
-
-    /* Compile & link shaders */
+    
     const prog = makeProgram(gl, VERT_SRC, FRAG_SRC);
     if (!prog) { canvas.style.display = 'none'; return; }
-
-    /* Full-screen quad buffer */
+    
     const quadBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
     gl.bufferData(gl.ARRAY_BUFFER,
       new Float32Array([-1,-1,  1,-1,  -1,1,  1,1]),
       gl.STATIC_DRAW);
-
     const posLoc = gl.getAttribLocation(prog, 'a_pos');
     gl.enableVertexAttribArray(posLoc);
     gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-    /* Uniform locations */
+    
     gl.useProgram(prog);
     const uTex      = gl.getUniformLocation(prog, 'u_tex');
     const uMouse    = gl.getUniformLocation(prog, 'u_mouse');
@@ -5055,38 +4615,33 @@ void main(){
     const uTime     = gl.getUniformLocation(prog, 'u_time');
     const uActive   = gl.getUniformLocation(prog, 'u_active');
     const uRes      = gl.getUniformLocation(prog, 'u_res');
-
-    /* State */
+    
     let mouse      = { x: 0.5, y: 0.5 };
-    let active     = 0.0;   /* current lerped value        */
-    let targetAct  = 0.0;   /* target: 1 = mouse inside    */
+    let active     = 0.0;   
+    let targetAct  = 0.0;   
     let texDirty   = true;
     let tex        = null;
-
-    /* Blend */
+    
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); /* premultiplied output */
-
-    /* ── Resize ── */
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); 
+    
     function resize() {
       const hero = document.getElementById('scroll-sec-hero');
       const rect  = hero ? hero.getBoundingClientRect() : {};
       canvas.width  = rect.width  || window.innerWidth;
       canvas.height = rect.height || window.innerHeight;
       gl.viewport(0, 0, canvas.width, canvas.height);
-      texDirty = true; /* regenerate texture on resize */
+      texDirty = true; 
     }
     resize();
     window.addEventListener('resize', resize, { passive: true });
-
-    /* ── Mouse / Touch tracking ── */
+    
     function updateMouse(clientX, clientY) {
       const r  = canvas.getBoundingClientRect();
       mouse.x  = (clientX - r.left)  / r.width;
-      mouse.y  = 1.0 - (clientY - r.top) / r.height;  /* flip Y untuk WebGL */
+      mouse.y  = 1.0 - (clientY - r.top) / r.height;  
       targetAct = 1.0;
     }
-
     canvas.addEventListener('mousemove',  e => updateMouse(e.clientX, e.clientY), { passive: true });
     canvas.addEventListener('mouseleave', () => { targetAct = 0.0; },              { passive: true });
     canvas.addEventListener('touchmove',  e => {
@@ -5094,45 +4649,35 @@ void main(){
       updateMouse(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: false });
     canvas.addEventListener('touchend',   () => { targetAct = 0.0; },              { passive: true });
-
-    /* ── Visibility observer (hemat GPU saat hero tidak terlihat) ── */
+    
     let isVisible = true;
     const observer = new IntersectionObserver(
       ([entry]) => { isVisible = entry.isIntersecting; },
       { threshold: 0 }
     );
     observer.observe(canvas);
-
-    /* ── Render loop ── */
+    
     let rafId = null;
-
     function render(ms) {
       rafId = requestAnimationFrame(render);
-
-      /* Skip render jika hero tidak di viewport */
+      
       if (!isVisible) return;
-
       const t = ms * 0.001;
-
-      /* Rebuild texture jika perlu (pertama kali, setelah resize, atau saat update animasi) */
+      
       if (texDirty || window.triggerHeroTextUpdate) {
         if (tex) gl.deleteTexture(tex);
         tex = buildTextTexture(gl, canvas.width, canvas.height);
         texDirty = false;
         window.triggerHeroTextUpdate = false;
       }
-
-      /* Lerp activity: cepat masuk, lambat keluar (efek liquid melambat) */
+      
       const speed  = targetAct > active ? CFG.enterSpeed : CFG.relaxSpeed;
       active      += (targetAct - active) * speed;
-
-      /* Clear */
+      
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-
-      /* Draw */
+      
       gl.useProgram(prog);
-
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.uniform1i(uTex,      0);
@@ -5143,25 +4688,19 @@ void main(){
       gl.uniform1f(uTime,     t);
       gl.uniform1f(uActive,   active);
       gl.uniform2f(uRes,      canvas.width, canvas.height);
-
       gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
       gl.enableVertexAttribArray(posLoc);
       gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-
-    // Fade in canvas, fade out original title
+    
     canvas.style.opacity = '1';
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
       heroTitle.style.opacity = '0';
     }
-
     requestAnimationFrame(render);
-
   }, CFG.initDelay);
-
 })();
 </script>
 </body>

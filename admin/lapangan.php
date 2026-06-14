@@ -1,31 +1,22 @@
 <?php
 $pageTitle = 'Lapangan';
 require_once __DIR__ . '/_header.php';
-
 $pdo = getDB();
 $alert = '';
-
-// ── CRUD Actions ─────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-
-    // ── TAMBAH ──
     if ($action === 'tambah') {
         $nama   = trim($_POST['nama']   ?? '');
         $jenis  = trim($_POST['jenis']  ?? '');
         $harga  = (int)($_POST['harga'] ?? 0);
         $status = $_POST['status'] ?? 'TERSEDIA';
         $foto   = null;
-
         if ($nama && $jenis && $harga > 0) {
-            // Upload foto
             if (!empty($_FILES['foto']['name'])) {
                 $up = uploadFoto($_FILES['foto'], 'lapangan');
                 if ($up) $foto = $up;
             }
             $stmt = $pdo->prepare("INSERT INTO Lapangan (ID_LAPANGAN, NAMA_LAPANGAN, JENIS_LAPANGAN, HARGA_PER_JAM, STATUS_LAPANGAN, FOTO) VALUES (NULL, ?, ?, ?, ?, ?)");
-            // Note: ID_LAPANGAN pakai AUTO_INCREMENT di ALTER di bawah, atau set manual
-            // Untuk aman, ambil MAX+1
             $nextId = (int)$pdo->query("SELECT COALESCE(MAX(ID_LAPANGAN),0)+1 FROM Lapangan")->fetchColumn();
             $stmt = $pdo->prepare("INSERT INTO Lapangan (ID_LAPANGAN, NAMA_LAPANGAN, JENIS_LAPANGAN, HARGA_PER_JAM, STATUS_LAPANGAN, FOTO) VALUES (?,?,?,?,?,?)");
             $stmt->execute([$nextId, $nama, $jenis, $harga, $status, $foto]);
@@ -34,23 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alert = 'error|Data tidak lengkap atau tidak valid.';
         }
     }
-
-    // ── EDIT ──
     if ($action === 'edit') {
         $id     = (int)($_POST['id']     ?? 0);
         $nama   = trim($_POST['nama']    ?? '');
         $jenis  = trim($_POST['jenis']   ?? '');
         $harga  = (int)($_POST['harga']  ?? 0);
         $status = $_POST['status']       ?? 'TERSEDIA';
-
         if ($id && $nama && $jenis && $harga > 0) {
             $fotoClause = '';
             $params = [$nama, $jenis, $harga, $status];
-
             if (!empty($_FILES['foto']['name'])) {
                 $up = uploadFoto($_FILES['foto'], 'lapangan');
                 if ($up) {
-                    // Hapus foto lama
                     $old = $pdo->prepare("SELECT FOTO FROM Lapangan WHERE ID_LAPANGAN=?");
                     $old->execute([$id]);
                     $oldFoto = $old->fetchColumn();
@@ -69,18 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alert = 'error|Data tidak lengkap.';
         }
     }
-
-    // ── HAPUS ──
     if ($action === 'hapus') {
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
-            // Cek apakah ada jadwal/booking terkait
             $cek = $pdo->prepare("SELECT COUNT(*) FROM Jadwal WHERE ID_LAPANGAN=?");
             $cek->execute([$id]);
             if ($cek->fetchColumn() > 0) {
                 $alert = 'error|Lapangan tidak bisa dihapus karena masih ada jadwal terkait.';
             } else {
-                // Hapus foto
                 $old = $pdo->prepare("SELECT FOTO FROM Lapangan WHERE ID_LAPANGAN=?");
                 $old->execute([$id]);
                 $oldFoto = $old->fetchColumn();
@@ -91,52 +73,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-// ── Tambahkan kolom FOTO jika belum ada ─────────────────
 try {
     $pdo->query("SELECT FOTO FROM Lapangan LIMIT 1");
 } catch (PDOException) {
     $pdo->exec("ALTER TABLE Lapangan ADD COLUMN FOTO VARCHAR(255) NULL");
 }
-
-// ── Search & Pagination ──────────────────────────────────
 $search  = trim($_GET['search'] ?? '');
 $perPage = 10;
 $page    = max(1, (int)($_GET['page'] ?? 1));
 $offset  = ($page - 1) * $perPage;
-
 $where  = $search ? "WHERE NAMA_LAPANGAN LIKE ? OR JENIS_LAPANGAN LIKE ? OR STATUS_LAPANGAN LIKE ?" : '';
 $params = $search ? ["%$search%","%$search%","%$search%"] : [];
-
 $total = $pdo->prepare("SELECT COUNT(*) FROM Lapangan $where");
 $total->execute($params);
 $totalRows = (int)$total->fetchColumn();
 $totalPages = max(1, ceil($totalRows / $perPage));
-
 $stmt = $pdo->prepare("SELECT * FROM Lapangan $where ORDER BY ID_LAPANGAN ASC LIMIT $perPage OFFSET $offset");
 $stmt->execute($params);
 $lapangans = $stmt->fetchAll();
-
-// Edit data (untuk modal)
 $editData = null;
 if (isset($_GET['edit_id'])) {
     $s = $pdo->prepare("SELECT * FROM Lapangan WHERE ID_LAPANGAN=?");
     $s->execute([(int)$_GET['edit_id']]);
     $editData = $s->fetch();
 }
-
 [$alertType, $alertMsg] = $alert ? explode('|', $alert, 2) : ['', ''];
 ?>
-
 <?php if ($alertMsg): ?>
 <div class="alert alert-<?= $alertType === 'success' ? 'success' : 'error' ?>"><?= e($alertMsg) ?></div>
 <?php endif; ?>
-
 <div class="table-card">
   <div class="table-header">
     <div class="table-title">Data Lapangan</div>
     <div class="table-actions">
-      <!-- Search -->
       <form method="GET" action="">
         <div class="search-wrap">
           <span class="search-icon"><i class="bi bi-search"></i></span>
@@ -146,7 +115,6 @@ if (isset($_GET['edit_id'])) {
       <button class="btn btn-green" onclick="openModal('modal-tambah')"><i class="bi bi-plus-lg"></i> Tambah Lapangan</button>
     </div>
   </div>
-
   <table>
     <thead>
       <tr>
@@ -191,8 +159,6 @@ if (isset($_GET['edit_id'])) {
       <?php endif; ?>
     </tbody>
   </table>
-
-  <!-- Pagination -->
   <?php if ($totalPages > 1): ?>
   <div class="pagination">
     <a href="?page=<?= max(1,$page-1) ?>&search=<?= urlencode($search) ?>" class="page-btn <?= $page<=1?'disabled':'' ?>">‹ Prev</a>
@@ -204,8 +170,6 @@ if (isset($_GET['edit_id'])) {
   </div>
   <?php endif; ?>
 </div>
-
-<!-- ── MODAL TAMBAH ──────────────────────────────────────── -->
 <div class="modal-overlay <?= (!$editData && $alertType==='') || isset($_GET['modal_tambah']) ? '' : '' ?>" id="modal-tambah">
   <div class="modal">
     <div class="modal-head">
@@ -247,8 +211,6 @@ if (isset($_GET['edit_id'])) {
     </div>
   </div>
 </div>
-
-<!-- ── MODAL EDIT ────────────────────────────────────────── -->
 <?php if ($editData): ?>
 <div class="modal-overlay open" id="modal-edit">
   <div class="modal">
@@ -260,7 +222,6 @@ if (isset($_GET['edit_id'])) {
       <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="action" value="edit">
         <input type="hidden" name="id"     value="<?= e($editData['ID_LAPANGAN']) ?>">
-
         <?php if (!empty($editData['FOTO'])): ?>
         <div class="form-group" style="text-align:center;">
           <img src="../<?= UPLOAD_URL . e($editData['FOTO']) ?>"
@@ -268,7 +229,6 @@ if (isset($_GET['edit_id'])) {
           <div style="font-size:.72rem;color:var(--gray);margin-top:6px;">Foto saat ini upload untuk mengubah foto</div>
         </div>
         <?php endif; ?>
-
         <div class="form-group">
           <label class="form-label">Nama Lapangan</label>
           <input type="text" name="nama" class="form-input" value="<?= e($editData['NAMA_LAPANGAN']) ?>" required>
@@ -305,18 +265,15 @@ if (isset($_GET['edit_id'])) {
   </div>
 </div>
 <?php endif; ?>
-
 <script>
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// Close on backdrop click
 document.querySelectorAll('.modal-overlay').forEach(function(el) {
   el.addEventListener('click', function(e) {
     if (e.target === el) el.classList.remove('open');
   });
 });
-
 function previewImg(input, previewId) {
   const preview = document.getElementById(previewId);
   if (input.files && input.files[0]) {
@@ -329,5 +286,4 @@ function previewImg(input, previewId) {
   }
 }
 </script>
-
 <?php require_once __DIR__ . '/_footer.php'; ?>

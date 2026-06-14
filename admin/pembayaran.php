@@ -1,28 +1,20 @@
 <?php
 $pageTitle = 'Pembayaran';
 require_once __DIR__ . '/_header.php';
-
 $pdo   = getDB();
 $alert = '';
-
-// ── CRUD Actions ─────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-
-    // ── KONFIRMASI / EDIT STATUS PEMBAYARAN ──
     if ($action === 'konfirmasi') {
         $id     = (int)($_POST['id'] ?? 0);
         $status = $_POST['status']   ?? '';
         $metode = trim($_POST['metode'] ?? '');
         $validStatus = ['LUNAS','PENDING','GAGAL','REFUND'];
         $validMetode = ['TRANSFER','CASH','QRIS','OVO','GOPAY','DANA'];
-
         if ($id && in_array($status, $validStatus)) {
             $metode = in_array(strtoupper($metode), $validMetode) ? strtoupper($metode) : 'TRANSFER';
             $pdo->prepare("UPDATE Pembayaran SET STATUS_PEMBAYARAN=?, METODE_PEMBAYARAN=?, TANGGAL_BAYAR=NOW() WHERE ID_PEMBAYARAN=?")
                 ->execute([$status, $metode, $id]);
-
-            // Sinkronkan status Booking juga
             if ($status === 'LUNAS') {
                 $stmt = $pdo->prepare("SELECT ID_BOOKING FROM Pembayaran WHERE ID_PEMBAYARAN=?");
                 $stmt->execute([$id]);
@@ -31,14 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("UPDATE Booking SET STATUS_BOOKING='LUNAS' WHERE ID_BOOKING=?")->execute([$bookingId]);
                 }
             }
-
             $alert = 'success|Status pembayaran berhasil diperbarui.';
         } else {
             $alert = 'error|Data tidak valid.';
         }
     }
-
-    // ── HAPUS ──
     if ($action === 'hapus') {
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
@@ -47,16 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 $search  = trim($_GET['search']    ?? '');
 $statusF = trim($_GET['status']    ?? '');
 $perPage = 10;
 $page    = max(1, (int)($_GET['page'] ?? 1));
 $offset  = ($page - 1) * $perPage;
-
 $conditions = [];
 $params     = [];
-
 if ($search) {
     $conditions[] = "(pm.ID_BOOKING LIKE ? OR p.U_NAMA LIKE ? OR p.U_EMAIL LIKE ? OR pm.METODE_PEMBAYARAN LIKE ?)";
     $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%"]);
@@ -66,19 +52,16 @@ if ($statusF) {
     $params[] = $statusF;
 }
 $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
-
 $baseQuery = "FROM Pembayaran pm
               JOIN Booking b    ON pm.ID_BOOKING    = b.ID_BOOKING
               JOIN Pelanggan p  ON b.ID_PELANGGAN   = p.ID_PELANGGAN
               JOIN Jadwal j     ON b.ID_JADWAL       = j.ID_JADWAL
               JOIN Lapangan l   ON j.ID_LAPANGAN     = l.ID_LAPANGAN
               $where";
-
 $totalStmt = $pdo->prepare("SELECT COUNT(*) $baseQuery");
 $totalStmt->execute($params);
 $totalRows  = (int)$totalStmt->fetchColumn();
 $totalPages = max(1, ceil($totalRows / $perPage));
-
 $stmt = $pdo->prepare(
     "SELECT pm.*, b.STATUS_BOOKING, b.TANGGAL_BOOKING,
             p.U_NAMA, p.U_EMAIL, p.U_NOTELP,
@@ -89,8 +72,6 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute($params);
 $payments = $stmt->fetchAll();
-
-// Hitung total revenue dari LUNAS
 $revenue = $pdo->query(
     "SELECT SUM(l.HARGA_PER_JAM * LENGTH(j.JAM_MULAI) - LENGTH(REPLACE(j.JAM_MULAI,',','')) * l.HARGA_PER_JAM)
      FROM Pembayaran pm
@@ -99,18 +80,13 @@ $revenue = $pdo->query(
      JOIN Lapangan l ON j.ID_LAPANGAN=l.ID_LAPANGAN
      WHERE pm.STATUS_PEMBAYARAN='LUNAS'"
 )->fetchColumn();
-
 $pendingCount = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAYARAN='PENDING'")->fetchColumn();
 $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAYARAN='LUNAS'")->fetchColumn();
-
 [$alertType,$alertMsg] = $alert ? explode('|',$alert,2) : ['',''];
 ?>
-
 <?php if ($alertMsg): ?>
 <div class="alert alert-<?= $alertType==='success'?'success':'error' ?>"><?= e($alertMsg) ?></div>
 <?php endif; ?>
-
-<!-- Stats mini -->
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
   <div class="stat-card">
     <div class="stat-label">Menunggu Konfirmasi</div>
@@ -128,13 +104,11 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
     <div class="stat-sub">Semua transaksi tercatat</div>
   </div>
 </div>
-
 <div class="table-card">
   <div class="table-header">
     <div class="table-title">Data Pembayaran</div>
     <div class="table-actions">
       <form method="GET" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <!-- Filter status -->
         <select name="status" class="form-select" style="width:130px;padding:8px;" onchange="this.form.submit()">
           <option value="">Semua Status</option>
           <?php foreach(['LUNAS','PENDING','GAGAL','REFUND'] as $st): ?>
@@ -151,7 +125,6 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
       </form>
     </div>
   </div>
-
   <div style="overflow-x:auto;">
   <table>
     <thead>
@@ -173,7 +146,6 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
         $slots  = explode(',', $pm['JAM_MULAI']);
         $jumlah = count($slots);
         $total  = $jumlah * (int)$pm['HARGA_PER_JAM'];
-
         $stClass = match($pm['STATUS_PEMBAYARAN']) {
           'LUNAS'  => 'badge-green',
           'PENDING' => 'badge-amber',
@@ -227,7 +199,6 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
     </tbody>
   </table>
   </div>
-
   <?php if ($totalPages > 1): ?>
   <div class="pagination">
     <a href="?page=<?= max(1,$page-1) ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($statusF) ?>"
@@ -242,8 +213,6 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
   </div>
   <?php endif; ?>
 </div>
-
-<!-- ── MODAL KONFIRMASI / EDIT STATUS ───────────────────── -->
 <div class="modal-overlay" id="modal-konfirmasi">
   <div class="modal" style="max-width:420px;">
     <div class="modal-head">
@@ -254,12 +223,10 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
       <form method="POST">
         <input type="hidden" name="action" value="konfirmasi">
         <input type="hidden" name="id" id="konfirmasi-id">
-
         <div class="form-group">
           <label class="form-label">Kode Booking</label>
           <div id="konfirmasi-booking" style="font-family:'Orbitron',monospace;color:var(--green);font-size:.84rem;padding:8px 0;"></div>
         </div>
-
         <div class="form-group">
           <label class="form-label">Metode Pembayaran</label>
           <select name="metode" id="konfirmasi-metode" class="form-select">
@@ -271,7 +238,6 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
             <option value="DANA">Dana</option>
           </select>
         </div>
-
         <div class="form-group">
           <label class="form-label">Status Pembayaran</label>
           <select name="status" id="konfirmasi-status" class="form-select">
@@ -281,12 +247,9 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
             <option value="REFUND">REFUND — Dikembalikan</option>
           </select>
         </div>
-
-        <!-- Info box -->
         <div style="background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:.78rem;color:var(--gray2);">
           <i class="bi bi-info-circle"></i> Mengkonfirmasi sebagai <strong style="color:var(--green);">LUNAS</strong> akan otomatis memperbarui status booking menjadi LUNAS.
         </div>
-
         <button type="submit" class="btn btn-green" style="width:100%;padding:12px;font-size:.8rem;">
           Simpan Status
         </button>
@@ -294,14 +257,12 @@ $lunasCount   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAY
     </div>
   </div>
 </div>
-
 <script>
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(function(el) {
   el.addEventListener('click', function(e) { if(e.target===el) el.classList.remove('open'); });
 });
-
 function openKonfirmasi(id, bookingCode, metode) {
   document.getElementById('konfirmasi-id').value      = id;
   document.getElementById('konfirmasi-booking').textContent = bookingCode;
@@ -309,5 +270,4 @@ function openKonfirmasi(id, bookingCode, metode) {
   openModal('modal-konfirmasi');
 }
 </script>
-
 <?php require_once __DIR__ . '/_footer.php'; ?>

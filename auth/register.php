@@ -1,17 +1,13 @@
 <?php
-// auth/register.php — Halaman Registrasi Pelanggan MiniFut
 require_once __DIR__ . '/../config.php';
 startSecureSession();
-
 if (isLoggedIn()) {
     header('Location: ../index.php');
     exit;
 }
-
 $errors  = [];
 $success = false;
 $values  = ['nama'=>'','email'=>'','notelp'=>''];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama     = trim($_POST['nama']     ?? '');
     $email    = trim($_POST['email']    ?? '');
@@ -19,27 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password']      ?? '';
     $konfirm  = $_POST['konfirm']       ?? '';
     $values   = compact('nama','email','notelp');
-
-    // ── Validasi ──────────────────────────────────────────
     if (empty($nama))   $errors[] = 'Nama lengkap tidak boleh kosong.';
     elseif (mb_strlen($nama) < 3) $errors[] = 'Nama minimal 3 karakter.';
-
     if (empty($email))  $errors[] = 'Email tidak boleh kosong.';
     elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Format email tidak valid.';
-
     if (empty($notelp)) $errors[] = 'Nomor telepon tidak boleh kosong.';
     elseif (!preg_match('/^[0-9+\-\s]{8,20}$/', $notelp)) $errors[] = 'Nomor telepon tidak valid (8-20 digit).';
-
     if (empty($password))       $errors[] = 'Password tidak boleh kosong.';
     elseif (mb_strlen($password) < 8) $errors[] = 'Password minimal 8 karakter.';
     elseif (!preg_match('/[A-Z]/', $password)) $errors[] = 'Password harus mengandung minimal 1 huruf kapital.';
     elseif (!preg_match('/[0-9]/', $password)) $errors[] = 'Password harus mengandung minimal 1 angka.';
-
     if ($password !== $konfirm) $errors[] = 'Konfirmasi password tidak cocok.';
-
     if (empty($errors)) {
         $pdo  = getDB();
-        // Cek email duplikat
         $stmt = $pdo->prepare("SELECT ID_PELANGGAN FROM Pelanggan WHERE U_EMAIL = ? LIMIT 1");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
@@ -59,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Daftar Akun</title>
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -90,7 +77,6 @@ html,body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--black);col
   animation: slideUp .6s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-
 .card {
   width: 100%;
   background: rgba(12, 13, 16, 0.96);
@@ -101,7 +87,6 @@ html,body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--black);col
   position: relative;
   z-index: 1;
 }
-
 .shine-border-bg {
   position: absolute;
   inset: 0;
@@ -143,7 +128,6 @@ html,body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--black);col
 h2 { font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:5px; }
 .sub { font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;color:var(--gray2);margin-bottom:24px; }
 
-/* Alerts */
 .alert-err {
   background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.2);
   border-radius:8px;padding:12px 16px;margin-bottom:24px;
@@ -156,7 +140,6 @@ h2 { font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(-
 }
 .alert-ok strong { font-family:'Orbitron',monospace;font-size:.9rem;color:var(--green);display:block;margin-bottom:6px; }
 .alert-ok p { font-size:.8rem;color:var(--gray2); }
-
 .field { margin-bottom:20px; }
 label {
   display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;
@@ -177,9 +160,7 @@ input:focus {
 }
 input::placeholder { color:var(--gray); }
 
-/* Password strength */
 .pw-hint { font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;color:var(--gray);margin-top:6px; }
-
 .btn-submit {
   width:100%;margin-top:12px;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:800;
@@ -205,7 +186,6 @@ input::placeholder { color:var(--gray); }
   border-top-color: var(--black); border-radius: 50%; animation: btn-spin 0.6s linear infinite; z-index: 10;
 }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
-
 .links {
   text-align:center;
   font-size:.82rem;
@@ -244,7 +224,6 @@ input::placeholder { color:var(--gray); }
 }
 @media(max-width:480px){ .card{padding:36px 20px 28px;} }
 
-/* Preloader */
 #site-preloader {
   position: fixed; inset: 0; background: #060608; z-index: 9999;
   display: flex; align-items: center; justify-content: center;
@@ -285,7 +264,6 @@ input::placeholder { color:var(--gray); }
 </style>
 </head>
 <body>
-<!-- PRELOADER SPINNER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
@@ -303,10 +281,8 @@ input::placeholder { color:var(--gray); }
       <a href="../index.php" class="logo">MINI<em>FUT</em></a>
       <div class="tagline">Premium Mini Soccer Arena</div>
     </div>
-
     <h2>Buat Akun Baru</h2>
     <p class="sub">Booking lebih cepat dan mudah</p>
-
     <?php if ($success): ?>
     <div class="alert-ok">
       <strong>Akun Berhasil Dibuat!</strong>
@@ -315,9 +291,7 @@ input::placeholder { color:var(--gray); }
     <div class="links">
       <a href="login.php">Masuk ke akun Anda</a>
     </div>
-
     <?php else: ?>
-
     <?php if (!empty($errors)): ?>
     <div class="alert-err">
       <ul>
@@ -327,46 +301,38 @@ input::placeholder { color:var(--gray); }
       </ul>
     </div>
     <?php endif; ?>
-
     <form method="POST" action="" novalidate>
       <div class="field">
         <label for="nama">Nama Lengkap</label>
         <input type="text" id="nama" name="nama"
                placeholder="Nama sesuai KTP" value="<?= e($values['nama']) ?>" required>
       </div>
-
       <div class="field">
         <label for="email">Email</label>
         <input type="email" id="email" name="email"
                placeholder="nama@email.com" value="<?= e($values['email']) ?>" required>
       </div>
-
       <div class="field">
         <label for="notelp">Nomor Telepon / WhatsApp</label>
         <input type="tel" id="notelp" name="notelp"
                placeholder="08xxxxxxxxxx" value="<?= e($values['notelp']) ?>" required>
       </div>
-
       <div class="field">
         <label for="password">Password</label>
         <input type="password" id="password" name="password"
                placeholder="Min. 8 karakter" required>
         <div class="pw-hint">Minimal 8 karakter, 1 huruf kapital, dan 1 angka.</div>
       </div>
-
       <div class="field">
         <label for="konfirm">Konfirmasi Password</label>
         <input type="password" id="konfirm" name="konfirm"
                placeholder="Ulangi password" required>
       </div>
-
       <button type="submit" class="btn-submit">DAFTAR SEKARANG</button>
     </form>
-
     <div class="links">
       Sudah punya akun? <a href="login.php">Masuk di sini</a>
     </div>
-
     <?php endif; ?>
     </div>
   </div>
@@ -403,7 +369,6 @@ input::placeholder { color:var(--gray); }
   (function anim(){requestAnimationFrame(anim);uni.time.value+=0.05;r.render(sc,cam);})();
 })();
 
-// Form submission loading state
 if (document.querySelector('form')) {
   document.querySelector('form').addEventListener('submit', function() {
     const btn = this.querySelector('.btn-submit');
@@ -411,7 +376,6 @@ if (document.querySelector('form')) {
   });
 }
 
-// Preloader load logic
 window.addEventListener('load', function() {
   setTimeout(function() {
     const preloader = document.getElementById('site-preloader');

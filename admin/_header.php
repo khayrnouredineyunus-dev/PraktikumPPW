@@ -1,16 +1,12 @@
 <?php
-// admin/_header.php — Shared Admin Layout
-// Require auth before including this file
 if (!defined('ADMIN_PAGE')) {
     define('ADMIN_PAGE', true);
 }
 require_once __DIR__ . '/../config.php';
 startSecureSession();
 requireAdmin();
-
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 $adminName   = $_SESSION['user_name'] ?? 'Administrator';
-
 function navItem(string $href, string $icon, string $label, string $current): string {
     $page    = basename($href, '.php');
     $active  = ($current === $page) ? 'active' : '';
@@ -42,7 +38,6 @@ function navItem(string $href, string $icon, string $label, string $current): st
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;}
 
-/* ── SIDEBAR ─────────────────────────────────────────── */
 .sidebar{
   width:var(--sidebar-w);min-height:100vh;
   background:var(--dark);border-right:1px solid var(--border);
@@ -61,7 +56,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
   letter-spacing:3px;text-transform:uppercase;color:var(--gray2);
   margin-top:4px;display:block;
 }
-
 .sidebar-nav{flex:1;padding:16px 12px;overflow-y:auto;}
 .nav-section{
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.58rem;font-weight:700;
@@ -78,7 +72,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 .nav-item.active{background:rgba(0,255,136,.08);color:var(--green);border-left:2px solid var(--green);}
 .nav-icon{font-size:1rem;flex-shrink:0;width:20px;text-align:center;}
 .nav-label{font-size:.84rem;}
-
 .sidebar-footer{
   padding:16px 12px;border-top:1px solid var(--border);
 }
@@ -102,9 +95,7 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 }
 .btn-logout:hover{color:var(--red);border-color:rgba(255,59,92,.3);}
 
-/* ── MAIN CONTENT ──────────────────────────────────────── */
 .main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column;}
-
 .topbar{
   background:var(--dark);border-bottom:1px solid var(--border);
   padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;
@@ -122,10 +113,8 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
   text-decoration:none;transition:all .2s;
 }
 .view-site-btn:hover{background:rgba(0,255,136,.12);}
-
 .content{padding:32px;flex:1;}
 
-/* ── CARDS & STATS ──────────────────────────────────────── */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;}
 .stat-card{
   background:var(--card);border:1px solid var(--border);border-radius:12px;
@@ -139,7 +128,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 .stat-value{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:700;color:var(--green);}
 .stat-sub{font-size:.78rem;color:var(--gray);margin-top:4px;}
 
-/* ── TABLES ──────────────────────────────────────────────── */
 .table-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .table-header{
   padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
@@ -148,7 +136,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 .table-title{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;color:var(--white);}
 .table-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 
-/* Search */
 .search-wrap{position:relative;}
 .search-wrap input{
   background:rgba(255,255,255,.04);border:1px solid var(--border2);
@@ -160,7 +147,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 .search-wrap input::placeholder{color:var(--gray);}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray);font-size:.9rem;}
 
-/* Buttons */
 .btn{
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.7rem;font-weight:700;
   letter-spacing:1.5px;text-transform:uppercase;border-radius:6px;
@@ -178,7 +164,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 .btn-amber{color:var(--white);background:rgba(255,182,0,.15);border:1px solid rgba(255,182,0,.3);}
 .btn-amber:hover{background:rgba(255,182,0,.25);}
 .btn-sm{padding:5px 10px;font-size:.62rem;}
-
 table{width:100%;border-collapse:collapse;}
 thead tr{border-bottom:1px solid var(--border2);}
 th{padding:12px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);text-align:left;}
@@ -188,7 +173,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .td-green{color:var(--green);font-family:'Orbitron',monospace;font-size:.78rem;}
 .td-white{color:var(--white);}
 
-/* Badges */
 .badge{display:inline-block;padding:3px 10px;border-radius:100px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .badge-green{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.2);}
 .badge-red{background:rgba(255,59,92,.1);color:#ff7096;border:1px solid rgba(255,59,92,.2);}
@@ -196,7 +180,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .badge-gray{background:rgba(107,112,128,.1);color:var(--gray2);border:1px solid rgba(107,112,128,.2);}
 .badge-blue{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
 
-/* Pagination */
 .pagination{display:flex;align-items:center;gap:6px;padding:16px 24px;border-top:1px solid var(--border);}
 .page-btn{
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.7rem;font-weight:600;
@@ -208,7 +191,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .page-btn.disabled{opacity:.3;pointer-events:none;}
 .page-info{font-size:.75rem;color:var(--gray);margin-left:auto;}
 
-/* Modal */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:1000;
   background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
@@ -232,7 +214,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .modal-close:hover{color:var(--white);}
 .modal-body{padding:24px 28px 28px;}
 
-/* Form */
 .form-group{margin-bottom:18px;}
 .form-label{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);margin-bottom:7px;}
 .form-input,.form-select,.form-textarea{
@@ -246,7 +227,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(0,255,136,.45);}
 .form-input::placeholder,.form-textarea::placeholder{color:var(--gray);}
 
-/* Photo preview */
 .photo-preview{
   width:80px;height:80px;border-radius:50%;object-fit:cover;
   border:2px solid rgba(0,255,136,.25);background:rgba(255,255,255,.04);
@@ -262,21 +242,17 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 .upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .upload-text{font-size:.78rem;color:var(--gray);}
 
-/* Alert */
 .alert{padding:12px 16px;border-radius:8px;font-size:.84rem;margin-bottom:20px;}
 .alert-success{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);color:#4dffa0;}
 .alert-error{background:rgba(255,59,92,.08);border:1px solid rgba(255,59,92,.2);color:#ff7096;}
 
-/* Foto lapangan */
 .field-photo{width:56px;height:40px;border-radius:4px;object-fit:cover;background:rgba(255,255,255,.04);}
 .avatar-sm{width:36px;height:36px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.04);border:1px solid var(--border);}
 
-/* Empty state */
 .empty-state{padding:48px;text-align:center;color:var(--gray);}
 .empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4;}
 .empty-text{font-size:.84rem;}
 
-/* Responsive */
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);transition:transform .3s;}
   .sidebar.open{transform:translateX(0);}
@@ -289,17 +265,14 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
 </style>
 </head>
 <body>
-<!-- ── SIDEBAR ──────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <a href="dashboard.php" class="logo">MINI<em>FUT</em></a>
     <span class="badge"><i class="bi bi-gear-fill"></i> Admin Panel</span>
   </div>
-
   <nav class="sidebar-nav">
     <div class="nav-section">Utama</div>
     <?= navItem('dashboard.php',   '<i class="bi bi-grid"></i>', 'Dashboard',    $currentPage) ?>
-
     <div class="nav-section">Manajemen</div>
     <?= navItem('lapangan.php',    '<i class="bi bi-hexagon"></i>', 'Lapangan',     $currentPage) ?>
     <?= navItem('jadwal.php',      '<i class="bi bi-calendar3"></i>', 'Jadwal',       $currentPage) ?>
@@ -307,7 +280,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
     <?= navItem('pembayaran.php',  '<i class="bi bi-credit-card-fill"></i>', 'Pembayaran',   $currentPage) ?>
     <?= navItem('pelanggan.php',   '<i class="bi bi-people-fill"></i>', 'Pelanggan',    $currentPage) ?>
   </nav>
-
   <div class="sidebar-footer">
     <div class="user-info">
       <div class="user-avatar"><?= strtoupper(substr($adminName,0,1)) ?></div>
@@ -319,8 +291,6 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
     <a href="logout.php" class="btn-logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
   </div>
 </aside>
-
-<!-- ── MAIN ─────────────────────────────────────────────── -->
 <main class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:16px;">
@@ -336,5 +306,4 @@ tbody tr:hover td{background:rgba(255,255,255,.02);}
       <a href="../index.php" class="view-site-btn" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Lihat Website</a>
     </div>
   </header>
-
   <div class="content">

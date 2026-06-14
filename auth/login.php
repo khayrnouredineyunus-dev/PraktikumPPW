@@ -1,20 +1,14 @@
 <?php
-// auth/login.php — Halaman Login Pelanggan MiniFut
 require_once __DIR__ . '/../config.php';
 startSecureSession();
-
-// Jika sudah login, redirect ke index
 if (isLoggedIn()) {
     header('Location: ../index.php');
     exit;
 }
-
 $error = '';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-
     if (empty($email) || empty($password)) {
         $error = 'Email dan password tidak boleh kosong.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -24,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT ID_PELANGGAN, U_NAMA, U_EMAIL, U_PASSWORD FROM Pelanggan WHERE U_EMAIL = ? LIMIT 1");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
-
         if ($user && password_verify($password, $user['U_PASSWORD'])) {
             session_regenerate_id(true);
             $_SESSION['user_id']    = $user['ID_PELANGGAN'];
@@ -45,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Login</title>
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -60,16 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--black);color:var(--white);overflow:hidden;}
 
-/* Shader background */
 #shader-bg{position:fixed;inset:0;z-index:0;opacity:.55;}
 #shader-bg canvas{display:block;width:100%;height:100%;}
-
 .wrap {
   position:relative;z-index:2;
   display:flex;align-items:center;justify-content:center;
   min-height:100vh;padding:24px;
 }
-
 .card-wrapper {
   position: relative;
   width: 100%;
@@ -81,7 +70,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   animation: slideUp .6s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-
 .card {
   width: 100%;
   background: rgba(12, 13, 16, 0.96);
@@ -92,7 +80,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   position: relative;
   z-index: 1;
 }
-
 .shine-border-bg {
   position: absolute;
   inset: 0;
@@ -118,7 +105,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 .logo-wrap { text-align:center; margin-bottom:36px; }
 .logo {
   font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;
@@ -132,7 +118,6 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   text-transform:uppercase;color:var(--gray);margin-top:8px;
   font-weight: 600;
 }
-
 h2 {
   font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;
   color:var(--white);margin-bottom:6px;
@@ -142,14 +127,12 @@ h2 {
   margin-bottom:28px;
 }
 
-/* Error */
 .alert-err {
   background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.2);
   border-radius:8px;padding:12px 16px;margin-bottom:24px;
   font-size:.8rem;color:#ff7096;display:flex;align-items:center;gap:8px;
 }
 
-/* Form fields */
 .field { margin-bottom:20px; }
 label {
   display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;
@@ -170,7 +153,6 @@ input:focus {
 }
 input::placeholder { color:var(--gray); }
 
-/* Submit */
 .btn-submit {
   width:100%;margin-top:12px;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:800;
@@ -196,12 +178,10 @@ input::placeholder { color:var(--gray); }
   border-top-color: var(--black); border-radius: 50%; animation: btn-spin 0.6s linear infinite; z-index: 10;
 }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
-
 .divider { display:flex;align-items:center;gap:16px;margin:28px 0; }
 .divider hr { flex:1;border:none;border-top:1px solid rgba(255,255,255,0.08); }
 .divider span { font-size:.68rem;color:var(--gray);white-space:nowrap;letter-spacing:1px;text-transform:uppercase;font-weight:500; }
 
-/* Links */
 .links { text-align:center;margin-top:8px; }
 .links a {
   color:var(--green);text-decoration:none;
@@ -231,7 +211,6 @@ input::placeholder { color:var(--gray); }
   width: 100%;
   left: 0;
 }
-
 /* Admin link */
 .admin-link {
   display:inline-block;text-align:center;margin-top:24px;width:100%;
@@ -240,9 +219,7 @@ input::placeholder { color:var(--gray); }
   text-decoration:none;transition:color .3s ease, transform .3s ease;
 }
 .admin-link:hover { color:var(--white); transform: translateY(-1px); }
-
 @media(max-width:480px){ .card{padding:36px 24px 28px;} }
-
 /* Preloader */
 #site-preloader {
   position: fixed; inset: 0; background: #060608; z-index: 9999;
@@ -284,7 +261,6 @@ input::placeholder { color:var(--gray); }
 </style>
 </head>
 <body>
-<!-- PRELOADER SPINNER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
@@ -302,16 +278,13 @@ input::placeholder { color:var(--gray); }
       <a href="../index.php" class="logo">MINI<em>FUT</em></a>
       <div class="tagline">Premium Mini Soccer Arena</div>
     </div>
-
     <h2>Selamat Datang</h2>
     <p class="sub">Masuk untuk booking lapangan dan kelola reservasi Anda</p>
-
     <?php if ($error): ?>
     <div class="alert-err">
       <span>⚠</span> <?= e($error) ?>
     </div>
     <?php endif; ?>
-
     <form method="POST" action="" novalidate>
       <div class="field">
         <label for="email">Email</label>
@@ -319,21 +292,17 @@ input::placeholder { color:var(--gray); }
                placeholder="nama@email.com"
                value="<?= e($_POST['email'] ?? '') ?>" required>
       </div>
-
       <div class="field">
         <label for="password">Password</label>
         <input type="password" id="password" name="password"
                placeholder="Masukkan password" required>
       </div>
-
       <button type="submit" class="btn-submit">MASUK</button>
     </form>
-
     <div class="divider"><hr><span>Belum punya akun?</span><hr></div>
     <div class="links">
       <a href="register.php">Daftar Sekarang</a>
     </div>
-
     <a href="../admin/login.php" class="admin-link">⚙ Masuk sebagai Admin</a>
     </div>
   </div>
@@ -369,13 +338,11 @@ input::placeholder { color:var(--gray); }
   onR();window.addEventListener('resize',onR);
   (function anim(){requestAnimationFrame(anim);uni.time.value+=0.05;r.render(sc,cam);})();
 })();
-
 document.querySelector('form').addEventListener('submit', function() {
   const btn = this.querySelector('.btn-submit');
   if (btn) btn.classList.add('loading');
 });
 
-// Preloader load logic
 window.addEventListener('load', function() {
   setTimeout(function() {
     const preloader = document.getElementById('site-preloader');

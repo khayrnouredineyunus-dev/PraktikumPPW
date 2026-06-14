@@ -1,8 +1,6 @@
-</div><!-- /.content -->
+</div>
 </main>
-
 <script>
-// Close sidebar on outside click (mobile)
 document.addEventListener('click', function(e) {
   const sidebar   = document.getElementById('sidebar');
   const hamburger = document.getElementById('hamburger');
@@ -10,8 +8,6 @@ document.addEventListener('click', function(e) {
     sidebar.classList.remove('open');
   }
 });
-
-// Auto-hide alerts
 document.querySelectorAll('.alert').forEach(function(el) {
   setTimeout(function() {
     el.style.transition = 'opacity .5s';

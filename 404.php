@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - Halaman Tidak Ditemukan</title>
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +16,7 @@
       --white:  #eceef2;
       --gray:   #6b7080;
     }
-
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
       width: 100%; height: 100%;
       background-color: var(--black);
@@ -31,7 +28,6 @@
       position: relative;
     }
 
-    /* ── Noise texture ── */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -40,8 +36,7 @@
       pointer-events: none;
       z-index: 90;
     }
-
-    /* ── Subtle grid ── */
+    
     body::after {
       content: '';
       position: fixed; inset: 0;
@@ -52,8 +47,7 @@
       pointer-events: none;
       z-index: 2;
     }
-
-    /* ── Scanlines ── */
+   
     .scanlines {
       position: fixed; inset: 0;
       background: repeating-linear-gradient(
@@ -64,7 +58,6 @@
       pointer-events: none; z-index: 91;
     }
 
-    /* ── Preloader ── */
     #site-preloader {
       position: fixed; inset: 0;
       background: var(--black);
@@ -74,7 +67,6 @@
       transition: opacity 0.6s ease, visibility 0.6s ease;
     }
     #site-preloader.preloader-hidden { opacity: 0; visibility: hidden; }
-
     .hexagon-spinner {
       width: 56px; height: 56px;
       animation: spin-preloader 2s linear infinite;
@@ -103,8 +95,7 @@
       0%,100% { stroke-dashoffset: 160; }
       50%      { stroke-dashoffset: 0; }
     }
-
-    /* ── Cursor glow ── */
+    
     #cursor-glow {
       position: fixed;
       width: 360px; height: 360px;
@@ -115,8 +106,7 @@
       filter: blur(8px);
       transition: left 0.06s linear, top 0.06s linear;
     }
-
-    /* ── Ambient green glow at bottom ── */
+    
     .ambient-glow {
       position: fixed;
       bottom: -25vh; left: 50%;
@@ -132,7 +122,6 @@
       50%      { opacity: 1;   transform: translateX(-50%) scaleX(1.06); }
     }
 
-    /* ── Main container ── */
     .container {
       max-width: 1200px;
       width: 100%;
@@ -145,8 +134,7 @@
       justify-content: flex-start;
       gap: 36px;
     }
-
-    /* Entrance animations */
+  
     .badge    { animation: fadeUp 0.7s cubic-bezier(0.25,0.8,0.25,1) 1.1s both; }
     .headline { animation: fadeUp 0.7s cubic-bezier(0.25,0.8,0.25,1) 1.28s both; }
     .btn-home { animation: fadeUp 0.7s cubic-bezier(0.25,0.8,0.25,1) 1.46s both; }
@@ -155,7 +143,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Badge ── */
     .badge {
       display: flex; align-items: center; gap: 8px;
       font-family: monospace;
@@ -179,7 +166,6 @@
       50%      { box-shadow: 0 0 12px var(--green), 0 0 30px rgba(0,255,136,0.7); transform: scale(1.15); }
     }
 
-    /* ── Headline ── */
     .headline {
       font-size: clamp(2rem, 5vw, 3.5rem);
       font-weight: 800;
@@ -188,7 +174,6 @@
       letter-spacing: -1px;
     }
 
-    /* ── Button ── */
     .btn-home {
       display: inline-flex;
       align-items: center;
@@ -207,7 +192,7 @@
       position: relative;
       overflow: hidden;
     }
-    /* Shimmer on hover */
+    
     .btn-home::after {
       content: '';
       position: absolute;
@@ -232,8 +217,7 @@
     }
     .btn-home:hover svg { transform: translate(2px,-2px); }
     .btn-home:active { transform: translateY(0); }
-
-    /* ── Stacked 404 graphic ── */
+    
     .graphic-container {
       position: fixed;
       bottom: 0; left: 0;
@@ -254,8 +238,7 @@
       width: 100%;
       will-change: transform;
     }
-
-    /* Green layers */
+       
     .layer-top {
       color: rgba(0,255,136,0.055);
       bottom: 12vw; z-index: 1;
@@ -272,8 +255,7 @@
         drop-shadow(0 0 40px rgba(0,255,136,0.35))
         drop-shadow(0 0 100px rgba(0,255,136,0.15));
     }
-
-    /* ── Responsive ── */
+   
     @media (max-width: 768px) {
       .container  { padding: 40px 24px; gap: 24px; }
       .badge      { margin-top: 10px; }
@@ -285,38 +267,29 @@
       .layer-bot  { bottom: -7vw; }
       #cursor-glow { display: none; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Preloader -->
   <div id="site-preloader">
     <svg class="hexagon-spinner" viewBox="0 0 60 60">
       <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17"/>
     </svg>
     <p class="preloader-label">Loading&hellip;</p>
   </div>
-
-  <!-- Overlays -->
   <div class="scanlines"></div>
   <div id="cursor-glow"></div>
   <div class="ambient-glow"></div>
-
-  <!-- Main content -->
   <div class="container">
     <div class="badge">
       <span class="badge-dot"></span>
       404 Error. Page Not Found
     </div>
-
     <h1 class="headline">
       If you're reading this, something has gone terribly, terribly wrong.
     </h1>
-
     <a href="index.php" class="btn-home">
       Return home
       <svg viewBox="0 0 24 24">
@@ -325,23 +298,19 @@
       </svg>
     </a>
   </div>
-
-  <!-- 404 graphic -->
   <div class="graphic-container">
     <div class="text-404 layer-top"  id="l1">404</div>
     <div class="text-404 layer-mid"  id="l2">404</div>
     <div class="text-404 layer-bot"  id="l3">404</div>
   </div>
-
   <script>
-    /* ── Preloader ── */
+    
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('site-preloader')?.classList.add('preloader-hidden');
       }, 1000);
     });
-
-    /* ── Cursor glow ── */
+    
     const cursorGlow = document.getElementById('cursor-glow');
     if (window.matchMedia('(pointer: fine)').matches) {
       document.addEventListener('mousemove', e => {
@@ -349,14 +318,12 @@
         cursorGlow.style.top  = e.clientY + 'px';
       });
     }
-
-    /* ── Parallax on 404 layers ── */
+  
     const l1 = document.getElementById('l1');
     const l2 = document.getElementById('l2');
     const l3 = document.getElementById('l3');
     const cx = () => window.innerWidth  / 2;
     const cy = () => window.innerHeight / 2;
-
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.addEventListener('mousemove', e => {
         const dx = (e.clientX - cx()) / cx();

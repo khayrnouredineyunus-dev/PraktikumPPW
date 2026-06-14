@@ -1,20 +1,14 @@
 <?php
 $pageTitle = 'Dashboard';
 require_once __DIR__ . '/_header.php';
-
 $pdo = getDB();
-
-// ── Stats ───────────────────────────────────────────────
 $totalBooking   = $pdo->query("SELECT COUNT(*) FROM Booking")->fetchColumn();
 $totalPelanggan = $pdo->query("SELECT COUNT(*) FROM Pelanggan")->fetchColumn();
 $totalLapangan  = $pdo->query("SELECT COUNT(*) FROM Lapangan")->fetchColumn();
 $pendingBayar   = $pdo->query("SELECT COUNT(*) FROM Pembayaran WHERE STATUS_PEMBAYARAN = 'PENDING'")->fetchColumn();
-
 $revenueRow = $pdo->query(
     "SELECT COUNT(*) * 1000000 as rev FROM Booking WHERE STATUS_BOOKING = 'LUNAS'"
 )->fetchColumn();
-
-// ── 5 Booking Terbaru ───────────────────────────────────
 $recentBookings = $pdo->query(
     "SELECT b.ID_BOOKING, p.U_NAMA, p.U_EMAIL, l.NAMA_LAPANGAN,
             j.TANGGAL, j.JAM_MULAI, b.STATUS_BOOKING, b.TANGGAL_BOOKING
@@ -25,7 +19,6 @@ $recentBookings = $pdo->query(
      ORDER BY b.TANGGAL_BOOKING DESC LIMIT 8"
 )->fetchAll();
 ?>
-
 <div class="stat-grid">
   <div class="stat-card">
     <div class="stat-label">Total Booking</div>
@@ -48,8 +41,6 @@ $recentBookings = $pdo->query(
     <div class="stat-sub">Menunggu konfirmasi</div>
   </div>
 </div>
-
-<!-- Quick Nav -->
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px;">
   <?php
   $shortcuts = [
@@ -67,8 +58,6 @@ $recentBookings = $pdo->query(
   </a>
   <?php endforeach; ?>
 </div>
-
-<!-- Recent Bookings -->
 <div class="table-card">
   <div class="table-header">
     <div class="table-title">Booking Terbaru</div>
@@ -111,5 +100,4 @@ $recentBookings = $pdo->query(
     </tbody>
   </table>
 </div>
-
 <?php require_once __DIR__ . '/_footer.php'; ?>

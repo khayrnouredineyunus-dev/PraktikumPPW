@@ -1,34 +1,23 @@
 <?php
-// profile.php — Halaman Profil Pelanggan MiniFut
 require_once __DIR__ . '/config.php';
 startSecureSession();
-
 if (!isLoggedIn()) {
     header('Location: auth/login.php');
     exit;
 }
-
 $pdo    = getDB();
 $userId = (int)$_SESSION['user_id'];
 $alert  = '';
 $activeTab = $_GET['tab'] ?? 'info';
-
-// Pastikan kolom FOTO_PROFIL ada
 try { $pdo->query("SELECT FOTO_PROFIL FROM Pelanggan LIMIT 1"); }
 catch (PDOException $e) { $pdo->exec("ALTER TABLE Pelanggan ADD COLUMN FOTO_PROFIL VARCHAR(255) NULL"); }
-
-// Pastikan kolom sosial media ada
 $socialCols = ['SOSMED_INSTAGRAM','SOSMED_TWITTER','SOSMED_TIKTOK','SOSMED_FACEBOOK','SOSMED_YOUTUBE'];
 foreach ($socialCols as $col) {
     try { $pdo->query("SELECT $col FROM Pelanggan LIMIT 1"); }
     catch (PDOException $e) { $pdo->exec("ALTER TABLE Pelanggan ADD COLUMN $col VARCHAR(100) NULL"); }
 }
-
-// ── HANDLE POST ACTIONS ──────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-
-    // 1. UPDATE INFORMASI PROFIL
     if ($action === 'update_profile') {
         $nama   = trim($_POST['nama']   ?? '');
         $email  = trim($_POST['email']  ?? '');
@@ -39,11 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fb     = trim($_POST['facebook']  ?? '');
         $yt     = trim($_POST['youtube']   ?? '');
         $errors = [];
-
         if (mb_strlen($nama) < 3)  $errors[] = 'Nama minimal 3 karakter.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Format email tidak valid.';
         if ($notelp && !preg_match('/^[0-9+\-\s]{8,20}$/', $notelp)) $errors[] = 'Nomor telepon tidak valid (8–20 digit).';
-
         if (empty($errors)) {
             $cek = $pdo->prepare("SELECT ID_PELANGGAN FROM Pelanggan WHERE U_EMAIL=? AND ID_PELANGGAN!=?");
             $cek->execute([$email, $userId]);
@@ -66,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $activeTab = 'info';
     }
-
     if ($action === 'update_photo') {
         if (!empty($_FILES['foto']['name']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
             $up = uploadFoto($_FILES['foto'], 'profil');
@@ -87,8 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $activeTab = 'avatar';
     }
-
-    // 3. HAPUS FOTO PROFIL
     if ($action === 'delete_photo') {
         $stmt = $pdo->prepare("SELECT FOTO_PROFIL FROM Pelanggan WHERE ID_PELANGGAN=?");
         $stmt->execute([$userId]);
@@ -100,8 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $alert = 'success|Foto profil berhasil dihapus.';
         $activeTab = 'avatar';
     }
-
-    // 4. UBAH PASSWORD
     if ($action === 'change_password') {
         $curPw  = $_POST['current_password'] ?? '';
         $newPw  = $_POST['new_password']     ?? '';
@@ -109,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt   = $pdo->prepare("SELECT U_PASSWORD FROM Pelanggan WHERE ID_PELANGGAN=?");
         $stmt->execute([$userId]);
         $hash = $stmt->fetchColumn();
-
         if (!password_verify($curPw, $hash)) {
             $alert = 'error|Password saat ini tidak benar.';
         } elseif (mb_strlen($newPw) < 8) {
@@ -128,13 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $activeTab = 'security';
     }
 }
-
-// Ambil data terbaru dari database
 $stmt = $pdo->prepare("SELECT * FROM Pelanggan WHERE ID_PELANGGAN=?");
 $stmt->execute([$userId]);
 $user = $stmt->fetch();
-
-// Ambil riwayat booking
 $histStmt = $pdo->prepare(
     "SELECT b.ID_BOOKING, b.TANGGAL_BOOKING, b.STATUS_BOOKING,
             l.NAMA_LAPANGAN, l.HARGA_PER_JAM,
@@ -149,13 +126,10 @@ $histStmt = $pdo->prepare(
 );
 $histStmt->execute([$userId]);
 $bookingHistory = $histStmt->fetchAll();
-
 $totalBookings   = count($bookingHistory);
 $lunasBookings   = count(array_filter($bookingHistory, fn($b) => $b['STATUS_BOOKING'] === 'LUNAS'));
 $pendingBookings = count(array_filter($bookingHistory, fn($b) => in_array($b['STATUS_BOOKING'], ['PENDING','DP'])));
-
 [$alertType, $alertMsg] = $alert ? explode('|', $alert, 2) : ['', ''];
-
 $userName  = $user['U_NAMA']             ?? $_SESSION['user_name']  ?? '';
 $userEmail = $user['U_EMAIL']            ?? $_SESSION['user_email'] ?? '';
 $userPhone = $user['U_NOTELP']           ?? '';
@@ -172,12 +146,11 @@ $userYt    = $user['SOSMED_YOUTUBE']     ?? '';
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Profil Saya</title>
-<!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
-/* ── RESET & GLOBAL ──────────────────────────────────────── */
+
 :root {
   --black: #060608; --dark: #0c0d10; --card: #111318; --card2: #161820;
   --border: rgba(255,255,255,.06); --border2: rgba(255,255,255,.10);
@@ -200,11 +173,9 @@ input, button, select, textarea {
   font-family: var(--font-ui);
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: rgba(0,255,136,.15); border-radius: 2px; }
 
-/* ── BACKGROUND GRID ────────────────────────────────────── */
 #bg-grid {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image:
@@ -213,7 +184,6 @@ input, button, select, textarea {
   background-size: 52px 52px;
 }
 
-/* ── FLOATING LINES CANVAS (WebGL) ─────────────────────── */
 #fl-canvas {
   position: fixed; inset: 0; z-index: 1;
   pointer-events: none;
@@ -221,13 +191,11 @@ input, button, select, textarea {
   opacity: 1;
 }
 
-/* ── NOISE OVERLAY ──────────────────────────────────────── */
 #noise {
   position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .016;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ── NAVBAR ─────────────────────────────────────────────── */
 nav {
   position: fixed;
   top: 24px; left: 50%; transform: translateX(-50%);
@@ -255,7 +223,6 @@ nav {
   text-shadow: 0 0 15px var(--green);
 }
 
-/* CTA BACK — Liquid Glass dengan GSAP magnetic */
 .nav-cta {
   font-family: var(--font-ui);
   font-size: .78rem; font-weight: 700;
@@ -299,14 +266,12 @@ nav {
 .nav-cta:hover::before { box-shadow: none; }
 .nav-cta:hover .nav-cta-backdrop { opacity: 0; }
 .nav-cta span.cta-text { position:relative; z-index:2; }
-
 @media (max-width: 768px) {
   nav { width: calc(100% - 32px); top:16px; padding:0 20px; height:64px; border-radius:16px; }
   .logo { font-size: 1.15rem; letter-spacing: 3px; }
   .nav-cta { padding: 9px 18px; font-size: .7rem; }
 }
 
-/* ── PAGE LAYOUT ─────────────────────────────────────────── */
 .page-wrap {
   position: relative; z-index: 10;
   max-width: 1180px; margin: 0 auto;
@@ -320,16 +285,13 @@ nav {
   .page-wrap { grid-template-columns: 1fr; padding: 108px 20px 60px; }
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
 .sidebar { display: flex; flex-direction: column; gap: 8px; position: sticky; top: 110px; }
-
 .profile-card {
   background: var(--card);
   border: 1px solid var(--border2);
   border-radius: 16px; overflow: hidden;
 }
 
-/* avatar top */
 .profile-card-top {
   padding: 32px 24px 20px;
   background: linear-gradient(135deg, rgba(0,255,136,.05) 0%, transparent 70%);
@@ -340,7 +302,6 @@ nav {
   content: ''; position: absolute; top:0; left:12%; right:12%; height:2px;
   background: linear-gradient(90deg, transparent, var(--green), transparent);
 }
-
 .avatar-wrap {
   position: relative; width: 96px; height: 96px;
   margin: 0 auto 16px; cursor: pointer;
@@ -378,7 +339,6 @@ nav {
   background: var(--green); border: 3px solid var(--card);
   box-shadow: 0 0 6px var(--green);
 }
-
 .profile-name  { font-family: var(--font-head); font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
 .profile-email { font-family: var(--font-ui); font-size: .82rem; font-weight: 500; color: var(--gray2); margin-bottom: 16px; }
 .member-badge {
@@ -389,7 +349,6 @@ nav {
   padding: 4px 14px; border-radius: 100px;
 }
 
-/* stats */
 .stats-row { display: flex; justify-content: center; }
 .stat-item {
   flex: 1; padding: 14px 8px; text-align: center;
@@ -399,7 +358,6 @@ nav {
 .stat-val { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: var(--green); }
 .stat-key { font-family: var(--font-ui); font-size: .72rem; font-weight: 600; letter-spacing: 1px; color: var(--gray); margin-top: 2px; text-transform: uppercase; }
 
-/* sidebar nav */
 .sidebar-nav { padding: 8px; }
 .snav-item {
   display: flex; align-items: center; gap: 10px;
@@ -422,10 +380,8 @@ nav {
   padding: 2px 8px; border-radius: 100px;
 }
 
-/* ── MAIN CONTENT ─────────────────────────────────────────── */
 .main-content { display: flex; flex-direction: column; gap: 8px; }
 
-/* alert */
 .alert-box {
   padding: 13px 18px; border-radius: 10px;
   font-family: var(--font-ui); font-size: .9rem; font-weight: 600;
@@ -434,7 +390,6 @@ nav {
 .alert-success { background: rgba(0,255,136,.07); border: 1px solid rgba(0,255,136,.22); color: #4dffa0; }
 .alert-error   { background: rgba(255,59,92,.07);  border: 1px solid rgba(255,59,92,.22);  color: #ff8099; }
 
-/* section card */
 .section-card {
   background: var(--card);
   border: 1px solid var(--border2);
@@ -444,7 +399,6 @@ nav {
 }
 .section-card.visible { display: block; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-
 .section-header {
   padding: 20px 26px 16px;
   border-bottom: 1px solid var(--border);
@@ -460,7 +414,6 @@ nav {
 .section-sub   { font-family: var(--font-ui); font-size: .78rem; font-weight: 500; color: var(--gray); margin-top: 3px; }
 .section-body  { padding: 26px; }
 
-/* ── PHOTO UPLOAD SECTION ─────────────────────────────────── */
 .photo-wrap {
   display: grid; grid-template-columns: auto 1fr; gap: 24px;
   align-items: center; padding: 20px;
@@ -468,7 +421,6 @@ nav {
   border-radius: 12px; margin-bottom: 24px;
 }
 @media (max-width: 580px) { .photo-wrap { grid-template-columns: 1fr; text-align: center; } }
-
 .photo-thumb {
   width: 76px; height: 76px; border-radius: 12px;
   object-fit: cover; border: 2px solid rgba(0,255,136,.28);
@@ -479,7 +431,6 @@ nav {
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-head); font-size: 1.6rem; font-weight: 900; color: var(--green);
 }
-
 .photo-label { font-family: var(--font-ui); font-size: .82rem; font-weight: 600; color: var(--gray2); margin-bottom: 10px; display: block; }
 .upload-zone {
   position: relative; border: 1px dashed rgba(0,255,136,.28);
@@ -495,14 +446,11 @@ nav {
 .upload-zone-hint { font-family: var(--font-ui); font-size: .74rem; font-weight: 500; color: var(--gray); margin-top: 2px; }
 .upload-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-/* ── FORM ELEMENTS ──────────────────────────────────────── */
 .divider { height: 1px; background: var(--border); margin: 22px 0; }
-
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid.cols1 { grid-template-columns: 1fr; }
 @media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
 .fg-full { grid-column: 1 / -1; }
-
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-label {
   font-family: var(--font-ui); font-size: .8rem; font-weight: 700;
@@ -523,16 +471,13 @@ nav {
 .form-input::placeholder { color: var(--gray); }
 .form-hint { font-family: var(--font-ui); font-size: .76rem; font-weight: 500; color: var(--gray); }
 
-/* social media prefix input */
 .input-prefix-wrap { display: flex; align-items: center; gap: 0; border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; background: rgba(255,255,255,.03); transition: border-color .22s, box-shadow .22s; }
 .input-prefix-wrap:focus-within { border-color: rgba(0,255,136,.42); box-shadow: 0 0 0 3px rgba(0,255,136,.06); }
 .input-prefix { font-family: var(--font-ui); font-size: .82rem; font-weight: 600; color: var(--gray); background: rgba(255,255,255,.04); border-right: 1px solid var(--border2); padding: 11px 12px; white-space: nowrap; }
 .input-prefix-wrap input { border: none; border-radius: 0; background: transparent; flex: 1; outline: none; padding: 11px 14px; font-family: var(--font-ui); font-size: .95rem; font-weight: 500; color: var(--white); }
 
-/* section sub-title */
 .subsection-title { font-family: var(--font-ui); font-size: .84rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gray2); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 
-/* ── BUTTONS ─────────────────────────────────────────────── */
 .btn {
   font-family: var(--font-ui); font-size: .88rem; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
@@ -548,13 +493,11 @@ nav {
 .btn-danger:hover  { background: rgba(255,59,92,.16); }
 .btn-sm { padding: 7px 14px; font-size: .8rem; }
 
-/* ── PASSWORD STRENGTH ──────────────────────────────────── */
 .pw-strength { margin-top: 6px; }
 .pw-strength-bar { height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; margin-bottom: 4px; }
 .pw-strength-fill { height: 100%; border-radius: 2px; transition: all .3s; width: 0; }
 .pw-strength-text { font-family: var(--font-ui); font-size: .74rem; font-weight: 600; color: var(--gray); }
 
-/* ── PASSWORD EYE TOGGLE ───────────────────────────────── */
 .pw-wrap { position: relative; }
 .pw-wrap input { padding-right: 44px; }
 .pw-eye {
@@ -565,7 +508,6 @@ nav {
 }
 .pw-eye:hover { color: var(--gray2); }
 
-/* ── SECURITY INFO BOX ──────────────────────────────────── */
 .info-box {
   background: rgba(255,182,0,.04); border: 1px solid rgba(255,182,0,.16);
   border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
@@ -575,7 +517,6 @@ nav {
 .info-box i { color: var(--amber); font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
 .info-box strong { color: var(--white); }
 
-/* ── BOOKING HISTORY ─────────────────────────────────────── */
 .booking-list { display: flex; flex-direction: column; gap: 10px; }
 .booking-row {
   background: var(--card2); border: 1px solid var(--border);
@@ -594,7 +535,6 @@ nav {
 .booking-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
 .booking-date  { font-family: var(--font-ui); font-size: .72rem; font-weight: 500; color: var(--gray); }
 
-/* badges */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 10px; border-radius: 100px;
@@ -606,7 +546,6 @@ nav {
 .badge-blue   { background: rgba(59,130,246,.1);  color: #60a5fa;      border: 1px solid rgba(59,130,246,.2); }
 .badge-gray   { background: rgba(107,112,128,.1); color: var(--gray2); border: 1px solid rgba(107,112,128,.2); }
 
-/* empty state */
 .empty-state { padding: 56px 24px; text-align: center; }
 .empty-icon  { font-size: 2.8rem; margin-bottom: 14px; opacity: .28; color: var(--green); }
 .empty-title { font-family: var(--font-head); font-size: .82rem; font-weight: 700; color: var(--gray2); margin-bottom: 6px; }
@@ -618,7 +557,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
   cursor: pointer !important;
 }
 
-/* PRELOADER SPINNER */
 #site-preloader {
   position: fixed; inset: 0; background: var(--black); z-index: 99999;
   display: flex; align-items: center; justify-content: center;
@@ -660,19 +598,15 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
 </style>
 </head>
 <body>
-<!-- PRELOADER -->
 <div id="site-preloader">
   <svg class="hexagon-spinner" viewBox="0 0 60 60">
     <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
   </svg>
   <p class="preloader-label">Loading&hellip;</p>
 </div>
-
 <div id="bg-grid"></div>
 <canvas id="fl-canvas"></canvas>
 <div id="noise"></div>
-
-<!-- SVG Glass filter for liquid glass button -->
 <svg style="position:absolute;width:0;height:0;" width="0" height="0">
   <defs>
     <filter id="container-glass" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
@@ -684,8 +618,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
     </filter>
   </defs>
 </svg>
-
-<!-- ── NAVBAR ─────────────────────────────────────────────── -->
 <nav id="nav">
   <a href="index.php" class="logo">MINI<em>FUT</em></a>
   <a href="index.php" class="nav-cta" id="navCtaBack">
@@ -694,15 +626,10 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
     <span class="cta-text">Kembali</span>
   </a>
 </nav>
-
-<!-- ── PAGE WRAPPER ───────────────────────────────────────── -->
 <div class="page-wrap">
-
-  <!-- ══════════ SIDEBAR ══════════ -->
   <aside class="sidebar">
     <div class="profile-card">
       <div class="profile-card-top">
-        <!-- Avatar — click goes to avatar tab -->
         <a href="profile.php?tab=avatar" id="avatarLink" style="text-decoration:none;display:inline-block;">
           <div class="avatar-wrap">
             <?php if (!empty($userFoto)): ?>
@@ -717,12 +644,10 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
             <div class="avatar-dot"></div>
           </div>
         </a>
-
         <div class="profile-name"><?= e($userName) ?></div>
         <div class="profile-email"><?= e($userEmail) ?></div>
         <div class="member-badge"><i class="bi bi-patch-check-fill"></i> Active Member</div>
       </div>
-
       <div class="stats-row">
         <div class="stat-item">
           <div class="stat-val"><?= $totalBookings ?></div>
@@ -737,7 +662,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
           <div class="stat-key">Proses</div>
         </div>
       </div>
-
       <div class="sidebar-nav">
         <div class="snav-item <?= $activeTab === 'info'     ? 'active' : '' ?>" onclick="switchTab('info')">
           <i class="bi bi-person-fill"></i> Profile Info
@@ -759,23 +683,17 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         </div>
       </div>
     </div>
-
     <a href="booking.php" class="btn btn-green" style="width:100%;justify-content:center;padding:13px;border-radius:12px;">
       <i class="bi bi-calendar-plus-fill"></i> Book Lapangan
     </a>
   </aside>
-
-  <!-- ══════════ MAIN CONTENT ══════════ -->
   <div class="main-content">
-
     <?php if ($alertMsg): ?>
     <div class="alert-box alert-<?= $alertType === 'success' ? 'success' : 'error' ?>" id="alertBox">
       <i class="bi bi-<?= $alertType === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill' ?>"></i>
       <?= e($alertMsg) ?>
     </div>
     <?php endif; ?>
-
-    <!-- ── TAB: Profile Info ──────────────────────────── -->
     <div class="section-card <?= $activeTab === 'info' ? 'visible' : '' ?>" id="tab-info">
       <div class="section-header">
         <div class="section-icon-wrap">
@@ -804,7 +722,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
               <span class="form-hint">Digunakan untuk konfirmasi booking</span>
             </div>
           </div>
-          <!-- hidden social fields forwarded so they are not erased on profile save -->
           <input type="hidden" name="instagram" value="<?= e($userIg) ?>">
           <input type="hidden" name="twitter"   value="<?= e($userTw) ?>">
           <input type="hidden" name="tiktok"    value="<?= e($userTt) ?>">
@@ -816,7 +733,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         </form>
       </div>
     </div>
-
     <div class="section-card <?= $activeTab === 'avatar' ? 'visible' : '' ?>" id="tab-avatar">
       <div class="section-header">
         <div class="section-icon-wrap">
@@ -863,8 +779,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         </div>
       </div>
     </div>
-
-    <!-- ── TAB: Social Media ──────────────────────────── -->
     <div class="section-card <?= $activeTab === 'social' ? 'visible' : '' ?>" id="tab-social">
       <div class="section-header">
         <div class="section-icon-wrap">
@@ -924,8 +838,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         </form>
       </div>
     </div>
-
-    <!-- ── TAB: Password ──────────────────────────────── -->
     <div class="section-card <?= $activeTab === 'security' ? 'visible' : '' ?>" id="tab-security">
       <div class="section-header">
         <div class="section-icon-wrap">
@@ -984,8 +896,6 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         </form>
       </div>
     </div>
-
-    <!-- ── TAB: Booking History ───────────────────────── -->
     <div class="section-card <?= $activeTab === 'history' ? 'visible' : '' ?>" id="tab-history">
       <div class="section-header">
         <div class="section-icon-wrap">
@@ -1053,18 +963,12 @@ a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
         <?php endif; ?>
       </div>
     </div>
-
-  </div><!-- /main-content -->
-</div><!-- /page-wrap -->
-
-<!-- ── THREE.JS + GSAP ── -->
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
 
-/* ================================================================
-   NAV CTA — GSAP MAGNETIC (sama persis seperti index.php)
-================================================================ */
 const navCta = document.getElementById('navCtaBack');
 if (navCta && window.matchMedia('(pointer:fine)').matches) {
   navCta.addEventListener('mousemove', e => {
@@ -1078,9 +982,6 @@ if (navCta && window.matchMedia('(pointer:fine)').matches) {
   });
 }
 
-/* ================================================================
-   TAB SWITCHING
-================================================================ */
 const TABS = ['info','avatar','social','security','history'];
 function switchTab(tab) {
   TABS.forEach(t => {
@@ -1092,15 +993,12 @@ function switchTab(tab) {
   history.replaceState(null, '', '?tab=' + tab);
 }
 
-/* ================================================================
-   PHOTO PREVIEW
-================================================================ */
 function handlePhotoChange(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
   const reader = new FileReader();
   reader.onload = function(e) {
-    // sidebar avatar
+    
     const ap = document.getElementById('avatarPreview');
     if (ap.tagName === 'IMG') {
       ap.src = e.target.result;
@@ -1109,7 +1007,7 @@ function handlePhotoChange(input) {
       img.src = e.target.result; img.className = 'avatar-img'; img.id = 'avatarPreview';
       ap.replaceWith(img);
     }
-    // photo tab thumb
+    
     const pt = document.getElementById('photoThumb');
     if (pt) {
       if (pt.tagName === 'IMG') {
@@ -1120,7 +1018,7 @@ function handlePhotoChange(input) {
         pt.replaceWith(img2);
       }
     }
-    // zone text
+    
     const zt = document.querySelector('.upload-zone-text');
     if (zt) zt.innerHTML = '<strong>' + file.name + '</strong>';
     const btn = document.getElementById('btnUpload');
@@ -1129,7 +1027,6 @@ function handlePhotoChange(input) {
   reader.readAsDataURL(file);
 }
 
-// Drag & drop
 const uploadZone = document.getElementById('uploadZone');
 if (uploadZone) {
   uploadZone.addEventListener('dragover',  e => { e.preventDefault(); uploadZone.style.borderColor='var(--green)'; uploadZone.style.background='rgba(0,255,136,.05)'; });
@@ -1141,9 +1038,6 @@ if (uploadZone) {
   });
 }
 
-/* ================================================================
-   PASSWORD HELPERS
-================================================================ */
 function togglePw(inputId, btn) {
   const inp = document.getElementById(inputId);
   if (!inp) return;
@@ -1154,7 +1048,6 @@ function togglePw(inputId, btn) {
     ic.className = show ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill';
   }
 }
-
 function checkStrength(val) {
   const wrap = document.getElementById('pwStrength');
   const bar  = document.getElementById('pwBar');
@@ -1179,7 +1072,6 @@ function checkStrength(val) {
   bar.style.width = lv.w; bar.style.background = lv.c;
   txt.textContent = lv.t; txt.style.color = lv.c;
 }
-
 function checkConfirm() {
   const nv = document.getElementById('newPw')?.value;
   const cv = document.getElementById('confPw')?.value;
@@ -1189,9 +1081,6 @@ function checkConfirm() {
   hint.style.color  = cv === nv ? 'var(--green)' : '#ff8099';
 }
 
-/* ================================================================
-   AUTO-HIDE ALERT
-================================================================ */
 const alertBox = document.getElementById('alertBox');
 if (alertBox) {
   setTimeout(() => {
@@ -1201,25 +1090,18 @@ if (alertBox) {
   }, 4500);
 }
 
-/* ================================================================
-   FLOATING LINES (WebGL via Three.js)
-================================================================ */
 (function initFloatingLines() {
   const canvas = document.getElementById('fl-canvas');
   if (!canvas || typeof THREE === 'undefined') return;
-
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
   const scene  = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   camera.position.z = 1;
-
   const vertexShader = `
     precision highp float;
     void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
   `;
-
   const fragmentShader = `
     precision highp float;
     uniform float iTime;
@@ -1238,9 +1120,7 @@ if (alertBox) {
     uniform vec2  parallaxOffset;
     uniform vec3  lineGradient[8];
     uniform int   lineGradientCount;
-
     mat2 rotate(float r){ return mat2(cos(r),sin(r),-sin(r),cos(r)); }
-
     vec3 getColor(float t) {
       if (lineGradientCount <= 0) return vec3(0.0, 0.7, 0.4);
       if (lineGradientCount == 1) return lineGradient[0];
@@ -1250,7 +1130,6 @@ if (alertBox) {
       int   j = min(i + 1, lineGradientCount - 1);
       return mix(lineGradient[i], lineGradient[j], f) * 0.55;
     }
-
     float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv) {
       float time = iTime * animationSpeed;
       float amp  = sin(offset + time * 0.2) * 0.28;
@@ -1263,7 +1142,6 @@ if (alertBox) {
       float m = uv.y - y;
       return 0.018 / max(abs(m) + 0.01, 1e-3) + 0.01;
     }
-
     void mainImage(out vec4 col, in vec2 fc) {
       vec2 uv = (2.0 * fc - iResolution.xy) / iResolution.y;
       uv.y *= -1.0;
@@ -1286,10 +1164,8 @@ if (alertBox) {
       }
       col = vec4(c, 1.0);
     }
-
     void main() { vec4 c = vec4(0.0); mainImage(c, gl_FragCoord.xy); gl_FragColor = c; }
   `;
-
   const uniforms = {
     iTime:              { value: 0 },
     iResolution:        { value: new THREE.Vector3(1,1,1) },
@@ -1308,19 +1184,15 @@ if (alertBox) {
     lineGradient:       { value: Array.from({ length:8 }, () => new THREE.Vector3(1,1,1)) },
     lineGradientCount:  { value: 3 },
   };
-
   const palette = ['#00ff88','#00cc66','#004422'];
   palette.forEach((hex, i) => {
     const v = parseInt(hex.slice(1), 16);
     uniforms.lineGradient.value[i].set(((v>>16)&255)/255, ((v>>8)&255)/255, (v&255)/255);
   });
-
   const mat  = new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat);
   scene.add(mesh);
-
   const clock = new THREE.Clock();
-
   function resize() {
     const w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
@@ -1328,14 +1200,12 @@ if (alertBox) {
   }
   resize();
   window.addEventListener('resize', resize);
-
   const targetMouse     = new THREE.Vector2(-1000,-1000);
   const currentMouse    = new THREE.Vector2(-1000,-1000);
   const targetParallax  = new THREE.Vector2(0,0);
   const currentParallax = new THREE.Vector2(0,0);
   let   targetInfl = 0, currentInfl = 0;
   const damp = 0.055;
-
   document.addEventListener('mousemove', e => {
     const dpr = renderer.getPixelRatio();
     targetMouse.set(e.clientX * dpr, (window.innerHeight - e.clientY) * dpr);
@@ -1345,7 +1215,6 @@ if (alertBox) {
     targetParallax.set(ox, oy);
   });
   document.addEventListener('mouseleave', () => { targetInfl = 0; });
-
   (function animate() {
     requestAnimationFrame(animate);
     uniforms.iTime.value = clock.getElapsedTime();
@@ -1359,9 +1228,6 @@ if (alertBox) {
   })();
 })();
 
-/* ================================================================
-   AVATAR LINK — click → go to avatar tab and open file picker
-================================================================ */
 document.getElementById('avatarLink').addEventListener('click', function(e) {
   if (window.location.search.includes('tab=avatar')) {
     e.preventDefault();
@@ -1370,9 +1236,6 @@ document.getElementById('avatarLink').addEventListener('click', function(e) {
   }
 });
 
-/* ================================================================
-   PRELOADER HIDE ON LOAD
-================================================================ */
 window.addEventListener('load', () => {
   const preloader = document.getElementById('site-preloader');
   if (preloader) {
