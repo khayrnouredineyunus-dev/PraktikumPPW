@@ -172,6 +172,8 @@ $userYt    = $user['SOSMED_YOUTUBE']     ?? '';
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Profil Saya</title>
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
@@ -240,9 +242,18 @@ nav {
   display: flex; align-items: center; justify-content: space-between;
   z-index: 1001;
 }
-.logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; color: var(--green); letter-spacing: 5px; text-decoration: none; transition: all .3s; }
+@keyframes logo-wiggle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-1deg); }
+  75%  { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+.logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; color: var(--green); letter-spacing: 5px; text-decoration: none; transition: all .3s; display: inline-block; transform-origin: center; }
 .logo em { color: var(--white); font-style: normal; }
-.logo:hover { text-shadow: 0 0 12px var(--glow); }
+.logo:hover {
+  animation: logo-wiggle 0.25s ease-in-out 1;
+  text-shadow: 0 0 15px var(--green);
+}
 
 /* CTA BACK — Liquid Glass dengan GSAP magnetic */
 .nav-cta {
@@ -606,9 +617,57 @@ body, a, button, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
 a, button, .nav-cta, .snav-item, .booking-row, .avatar-wrap, .upload-zone {
   cursor: pointer !important;
 }
+
+/* PRELOADER SPINNER */
+#site-preloader {
+  position: fixed; inset: 0; background: var(--black); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.hexagon-spinner {
+  width: 56px; height: 56px;
+  animation: spin-preloader 2s linear infinite;
+}
+.hexagon-spinner polygon {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.5;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: drawHexagon 2s ease-in-out infinite;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--green));
+}
+.preloader-label {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--gray);
+  text-transform: uppercase;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes spin-preloader { to { transform: rotate(360deg); } }
+@keyframes drawHexagon {
+  0%,100% { stroke-dashoffset: 160; }
+  50%      { stroke-dashoffset: 0; }
+}
+.preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
 </style>
 </head>
 <body>
+<!-- PRELOADER -->
+<div id="site-preloader">
+  <svg class="hexagon-spinner" viewBox="0 0 60 60">
+    <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
+  </svg>
+  <p class="preloader-label">Loading&hellip;</p>
+</div>
+
 <div id="bg-grid"></div>
 <canvas id="fl-canvas"></canvas>
 <div id="noise"></div>
@@ -1308,6 +1367,21 @@ document.getElementById('avatarLink').addEventListener('click', function(e) {
     e.preventDefault();
     document.getElementById('fotoInput')?.click();
     return;
+  }
+});
+
+/* ================================================================
+   PRELOADER HIDE ON LOAD
+================================================================ */
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('site-preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('preloader-hidden');
+      setTimeout(() => {
+        preloader.remove();
+      }, 500);
+    }, 1000);
   }
 });
 </script>

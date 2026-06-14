@@ -41,12 +41,13 @@ if (isset($_SESSION['user_id'])) {
 <meta property="twitter:image" content="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=1200&q=80">
 
 <!-- Favicon -->
-<link class="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23060608'/><text y='.9em' font-size='80' x='10'</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 
 <!-- Google Fonts Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 
 :root {
@@ -99,6 +100,13 @@ nav.shrunk {
   padding: 0 24px;
 }
 
+@keyframes logo-wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-1deg); }
+  75% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .logo {
   font-family: 'Orbitron', monospace;
   font-size: 1.5rem;
@@ -106,105 +114,256 @@ nav.shrunk {
   color: var(--green);
   letter-spacing: 5px;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  display: inline-block;
+  transform-origin: center;
 }
 .logo em { color: var(--white); font-style: normal; }
-.logo:hover { text-shadow: 0 0 10px var(--glow); }
+.logo:hover { 
+  animation: logo-wiggle 0.25s ease-in-out 1;
+  text-shadow: 0 0 15px var(--green);
+}
 
 nav.shrunk .logo {
   font-size: 1.15rem;
   letter-spacing: 3px;
 }
 
-.nav-links {
+/* Revamped Navbar Elements */
+.nav-left {
   display: flex;
-  gap: 36px;
-  list-style: none;
-  transition: all 0.3s;
+  align-items: center;
 }
-nav.shrunk .nav-links { gap: 20px; }
-.nav-links a {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gray2);
-  text-decoration: none;
-  transition: color 0.25s;
+.nav-slash {
+  margin: 0 16px;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 1.1rem;
+  font-weight: 300;
+  user-select: none;
 }
-.nav-links a:hover { color: var(--green); }
-nav.shrunk .nav-links a { font-size: 0.7rem; }
-
-.nav-cta {
+.nav-booking-link {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--green);
-  background: rgba(0, 255, 136, 0.06);
-  border: 1px solid rgba(0, 255, 136, 0.25);
-  padding: 10px 22px;
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
-  border-radius: 30px;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
   position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 24px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+.nav-booking-orig, .nav-booking-clone {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.nav-booking-clone {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--green);
+}
+.nav-booking-link:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+.nav-booking-link:hover .nav-booking-orig {
+  transform: translateY(-100%);
+}
+.nav-booking-link:hover .nav-booking-clone {
+  transform: translateY(-100%);
+}
+
+.nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
-.nav-cta::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+.nav-instagram-link {
+  margin-left: 14px;
+}
+.nav-whatsapp-link, .nav-tiktok-link {
+  margin-left: 8px;
+}
+.nav-instagram-link:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 5px 15px rgba(220, 39, 67, 0.4);
+}
+.nav-whatsapp-link:hover {
+  background: linear-gradient(45deg, #25D366 0%, #128C7E 100%);
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+}
+.nav-tiktok-link:hover {
+  background: #000000;
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: -3px -3px 8px rgba(0, 242, 254, 0.6), 3px 3px 8px rgba(254, 9, 121, 0.6);
+}
+nav.shrunk .nav-instagram-link, nav.shrunk .nav-whatsapp-link, nav.shrunk .nav-tiktok-link {
+  width: 32px;
+  height: 32px;
+  font-size: 0.95rem;
+}
+nav.shrunk .nav-instagram-link {
+  margin-left: 10px;
+}
+nav.shrunk .nav-whatsapp-link, nav.shrunk .nav-tiktok-link {
+  margin-left: 6px;
+}
+nav.shrunk .nav-booking-link {
+  font-size: 0.68rem;
+  letter-spacing: 1.8px;
+}
+nav.shrunk .nav-slash {
+  margin: 0 12px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 30px;
-  pointer-events: none;
-  z-index: 1;
-  box-shadow: 
-    0 0 6px rgba(0,0,0,0.03),
-    0 2px 6px rgba(0,0,0,0.08),
-    inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),
-    inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
-    inset 1px 1px 1px -0.5px rgba(0,0,0,0.6),
-    inset -1px -1px 1px -0.5px rgba(0,0,0,0.6),
-    inset 0 0 6px 6px rgba(0,0,0,0.12),
-    inset 0 0 2px 2px rgba(0,0,0,0.06),
-    0 0 12px rgba(255,255,255,0.15);
+  padding: 8px 18px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
   transition: all 0.3s ease;
 }
-.nav-cta-backdrop {
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  overflow: hidden;
-  z-index: 0;
-  backdrop-filter: url("#container-glass") blur(4px);
-  -webkit-backdrop-filter: url("#container-glass") blur(4px);
-  background: rgba(0, 255, 136, 0.05);
-  transition: all 0.3s ease;
+.nav-btn-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
-.nav-cta:hover {
+
+.nav-btn-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00ff88 0%, #00b359 100%);
+  border: none;
+  border-radius: 30px;
+  padding: 8px 20px;
   color: var(--black);
-  background: var(--green);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-  transform: scale(1.05);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.35);
+  transition: all 0.3s ease;
 }
-.nav-cta-logout:hover {
+.nav-btn-glow:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+}
+
+nav.shrunk .nav-btn-dark, nav.shrunk .nav-btn-glow {
+  padding: 6px 14px;
+  font-size: 0.68rem;
+}
+
+.nav-user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-avatar-link {
+  display: block;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.nav-avatar-link img, .nav-avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--green);
+  box-shadow: 0 0 10px var(--glow);
+  transition: all 0.3s ease;
+}
+.nav-avatar-placeholder {
+  background: rgba(0, 255, 136, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.nav-avatar-link:hover img, .nav-avatar-link:hover .nav-avatar-placeholder {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px var(--green);
+}
+.nav-btn-logout {
+  background: rgba(255, 59, 92, 0.06);
+  border: 1px solid rgba(255, 59, 92, 0.25);
+  color: #ff7096;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.nav-btn-logout:hover {
   color: var(--white) !important;
   background: var(--red) !important;
-  box-shadow: 0 0 20px rgba(255, 59, 92, 0.5) !important;
+  box-shadow: 0 0 16px rgba(255, 59, 92, 0.4);
+  transform: translateY(-1px);
 }
-.nav-cta:hover::before {
-  box-shadow: none;
+nav.shrunk .nav-avatar-link img, nav.shrunk .nav-avatar-placeholder {
+  width: 30px;
+  height: 30px;
 }
-.nav-cta:hover .nav-cta-backdrop {
-  opacity: 0;
+nav.shrunk .nav-btn-logout {
+  padding: 4px 10px;
+  font-size: 0.62rem;
 }
-nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px; }
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
+  .nav-slash, .nav-booking-link, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
+    display: none;
+  }
+  .nav-btn-dark {
+    display: none;
+  }
   nav { 
     padding: 0 20px; 
     width: calc(100% - 32px);
@@ -212,8 +371,10 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
     height: 64px;
     border-radius: 16px;
   }
-  .nav-links { display: none; }
-  .nav-cta { padding: 10px 20px; font-size: 0.7rem; }
+  .nav-btn-glow {
+    padding: 6px 14px;
+    font-size: 0.68rem;
+  }
   
   nav.shrunk {
     top: 14px;
@@ -229,11 +390,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   nav.shrunk .logo {
     font-size: 1.05rem;
     letter-spacing: 2px;
-  }
-  nav.shrunk .nav-cta {
-    padding: 8px 16px;
-    font-size: 0.68rem;
-    border-radius: 30px;
   }
 }
 
@@ -257,7 +413,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 /* ══ HERO CONTENT — Heading Premium di Atas ══ */
 .hero-content {
   position: absolute;
-  top: clamp(112px, 16vh, 164px);
+  top: 36vh;
   left: 0;
   right: 0;
   z-index: 5;
@@ -285,10 +441,14 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   pointer-events: none;
 }
 
-/* Eyebrow label */
-.hero-eyebrow {
+/* Location label */
+.hero-location {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 20;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.66rem;
@@ -296,28 +456,24 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--green);
-  margin-bottom: 20px;
-  padding: 8px 20px;
-  border: 1px solid rgba(0,255,136,.25);
-  border-radius: 30px;
-  background: rgba(0,255,136,.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   opacity: 0; /* GSAP */
+  max-width: 180px;
+  line-height: 1.6;
 }
-.hero-eyebrow-dot {
+.hero-location-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--green);
   flex-shrink: 0;
+  margin-top: 2px;
   animation: heroDotPulse 2.4s ease-in-out infinite;
 }
 @keyframes heroDotPulse {
   0%, 100% { box-shadow: 0 0 6px rgba(0,255,136,.45); transform: scale(1); }
   50%      { box-shadow: 0 0 16px rgba(0,255,136,.85), 0 0 28px rgba(0,255,136,.2); transform: scale(1.3); }
 }
-.hero-eyebrow-short { display: none; }
+.hero-location-short { display: none; }
 
 .hero-title {
   font-family: 'Anton', sans-serif;
@@ -386,7 +542,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .hero-underline {
   width: clamp(70px, 9vw, 130px);
   height: 3px;
-  margin-top: 24px;
+  margin-top: 0;
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, var(--green), transparent);
   transform: scaleX(0);
@@ -399,7 +555,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 }
 
 @media (max-width: 1024px) {
-  .hero-content { top: clamp(98px, 14vh, 144px); }
+  .hero-content { top: 38vh; }
   .hero-content::before { height: 260px; }
   .hero-title {
     gap: 12px;
@@ -420,20 +576,28 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   .hero-line-wrap:nth-child(2) {
     display: none;
   }
-  .hero-eyebrow {
+  .hero-location {
+    bottom: 24px;
+    left: 20px;
+    max-width: 140px;
     font-size: 0.55rem;
     letter-spacing: 2.5px;
     gap: 8px;
-    padding: 6px 14px;
-    white-space: normal;
-    text-align: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    align-items: flex-start;
+    text-align: left;
     line-height: 1.6;
   }
-  .hero-eyebrow-full { display: none; }
-  .hero-eyebrow-short { display: inline; }
+  .hero-location-full { display: none; }
+  .hero-location-short { display: inline; }
   .hero-line { font-size: clamp(1.8rem, 9vw, 2.8rem); }
   .hero-content::before { width: 100vw; height: 220px; }
-  .hero-underline { margin-top: 16px; }
+  .hero-content { top: 42vh; }
+  .hero-underline { margin-top: 0; }
 }
 
 .btn-p { clip-path:polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%); padding-right:52px;}
@@ -1013,7 +1177,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   outline-offset: 3px;
 }
 
-.fields-sec, .gallery-sec, .showcase-sec, .pricing-sec, .cta-sec { position: relative; }
+.fields-sec, .gallery-sec, .showcase-sec, .pricing-sec, .cta-sec { position: relative; z-index: 1; }
 
 .gallery-sec::before, .showcase-sec::before, .pricing-sec::before, .cta-sec::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
@@ -1030,7 +1194,20 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   background:radial-gradient(ellipse, rgba(0,255,136,.07) 0%, transparent 70%); pointer-events:none;
 }
 .showcase-sec::after {
-  content:''; position:absolute; pointer-events:none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    rgba(0, 255, 136, 0.06) 0px,
+    rgba(0, 255, 136, 0.06) 1px,
+    transparent 1px,
+    transparent 40px
+  );
+  mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 @media (max-width: 1024px) { 
@@ -1052,6 +1229,18 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.showcase-bg-stadium {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at bottom, rgba(0, 255, 136, 0.15) 0%, rgba(6, 6, 8, 0.65) 60%, var(--black) 100%), 
+                    url('https://images.unsplash.com/photo-1556056504-517cf015e859?w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.22;
+  filter: blur(2px) contrast(1.1);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .premium-scroll-sec {
@@ -1207,23 +1396,24 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
     transform: translate(-50%, -50%);
     padding: 0;
     width: 100%;
-    height: 60vh;
+    height: 48vh;
     gap: 0;
   }
   .sc1-title-left, .sc1-title-right {
-    font-size: clamp(3.2rem, 15vw, 6rem);
-    transform: scaleY(1.1);
-    letter-spacing: 2px;
+    font-size: clamp(4.8rem, 20vw, 8rem);
+    transform: scaleY(1.3);
+    letter-spacing: -2px;
     display: block;
     text-align: center;
+    pointer-events: auto;
   }
   .sc1-title-left:hover, .sc1-title-left:active {
-    transform: scaleY(1.1) scaleX(1.05) translateY(-8px);
+    transform: scaleY(1.3) scaleX(1.05) translateY(-8px);
     color: var(--green);
     text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(0, 255, 136, 0.4);
   }
   .sc1-title-right:hover, .sc1-title-right:active {
-    transform: scaleY(1.1) scaleX(1.05) translateY(8px);
+    transform: scaleY(1.3) scaleX(1.05) translateY(8px);
     color: var(--green);
     text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(0, 255, 136, 0.4);
   }
@@ -1459,7 +1649,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
 
 @media (max-width: 1024px) {
   .ball-section-text {
-    max-width: 320px !important;
+    max-width: 240px !important;
     width: auto;
     top: 50% !important;
     transform: translateY(-50%) !important;
@@ -1486,6 +1676,12 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   }
   .bst-grid-lines, .bst-curved-bg {
     display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .ball-section-text {
+    max-width: 170px !important;
   }
 }
 
@@ -1522,6 +1718,29 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   background: var(--black);
   position: relative;
   overflow: hidden;
+}
+.fanwall-bg-stadium {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to bottom, rgba(6, 6, 8, 1) 0%, rgba(6, 6, 8, 0.45) 40%, rgba(6, 6, 8, 0.45) 60%, rgba(6, 6, 8, 1) 100%), 
+                    url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.32;
+  filter: blur(2px) grayscale(15%);
+  z-index: 0;
+  pointer-events: none;
+}
+.fanwall-divider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.35), transparent);
+  z-index: 5;
+  pointer-events: none;
 }
 
 .fanwall-sec::before {
@@ -1697,10 +1916,10 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focu
   .fanwall-track { gap: 10px; }
   .fanwall-track-rev { margin-top: 10px; }
 }
-body, a, button, .f-card, .showcase-item, .g-item, .nav-cta, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .val-card, .award-item, .p-btn, .fw-card {
+body, a, button, .f-card, .showcase-item, .g-item, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .val-card, .award-item, .p-btn, .fw-card {
   cursor: auto !important;
 }
-a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .nav-cta, .p-btn {
+a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link, .p-btn {
   cursor: pointer !important;
 }
 
@@ -1896,6 +2115,10 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 .image-title span {
   color: var(--green);
 }
+.image-title span.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
+}
 
 .image-sep-top,
 .image-sep-bottom {
@@ -1914,9 +2137,584 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   .image-content { padding: 0 24px; }
   .image-title { font-size: clamp(1.8rem, 6vw, 2.6rem); }
 }
+/* PRELOADER SPINNER */
+#site-preloader {
+  position: fixed; inset: 0; background: var(--black); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.hexagon-spinner {
+  width: 56px; height: 56px;
+  animation: spin-preloader 2s linear infinite;
+}
+.hexagon-spinner polygon {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.5;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: drawHexagon 2s ease-in-out infinite;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--green));
+}
+.preloader-label {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--gray);
+  text-transform: uppercase;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes spin-preloader { to { transform: rotate(360deg); } }
+@keyframes drawHexagon {
+  0%,100% { stroke-dashoffset: 160; }
+  50%      { stroke-dashoffset: 0; }
+}
+.preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ── LOCATION SECTION ── */
+.location-sec {
+  padding: 120px 0;
+  background: var(--dark);
+  position: relative;
+  overflow: hidden;
+}
+.location-sec::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+}
+.location-sec::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+}
+/* Scanline layer */
+.loc-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.022) 0px,
+    rgba(0, 255, 136, 0.022) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 50%, black 30%, transparent 100%);
+  animation: scanline-drift 8s linear infinite;
+}
+@keyframes scanline-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 60px; }
+}
+
+
+/* Garis dekorasi vertikal di latar */
+.loc-grid-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.35;
+}
+.loc-grid-deco::before,
+.loc-grid-deco::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(0,255,136,0.15), transparent);
+}
+.loc-grid-deco::before { left: 25%; }
+.loc-grid-deco::after  { right: 25%; }
+
+/* Layout 2 kolom */
+.loc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .loc-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Panel kiri: heading + info */
+.loc-left {}
+
+.loc-header {
+  margin-bottom: 40px;
+}
+.loc-sup-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+.loc-sup-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--glow);
+}
+.loc-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.loc-title-bg {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  line-height: 0.9;
+  pointer-events: none;
+}
+.loc-title-fg {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 0.9;
+  display: inline-flex;
+  align-items: baseline;
+}
+.loc-green-dot {
+  display: inline-block;
+  width: clamp(10px, 1.6vw, 14px);
+  height: clamp(10px, 1.6vw, 14px);
+  background: var(--green);
+  margin-left: 8px;
+  vertical-align: baseline;
+  box-shadow: 0 0 12px var(--glow);
+}
+
+/* Tabs info */
+.loc-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 28px;
+}
+.loc-tab-btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  background: none;
+  border: none;
+  padding: 10px 20px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.loc-tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.loc-tab-btn.active {
+  color: var(--green);
+}
+.loc-tab-btn.active::after {
+  transform: scaleX(1);
+}
+.loc-tab-btn:hover { color: var(--white); }
+
+/* Tab panels */
+.loc-panel { display: none; }
+.loc-panel.active { display: block; }
+
+/* Info rows */
+.loc-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.loc-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.loc-info-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,255,136,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.loc-info-row:hover {
+  border-color: rgba(0,255,136,0.3);
+  transform: translateX(4px);
+}
+.loc-info-row:hover::before { opacity: 1; }
+.loc-info-icon {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--green);
+  line-height: 1;
+}
+.loc-info-text {}
+.loc-info-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 3px;
+}
+.loc-info-val {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--white);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Jam operasional */
+.loc-hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 400px) {
+  .loc-hours-grid { grid-template-columns: 1fr; }
+}
+.loc-hour-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+}
+.loc-hour-item:hover {
+  border-color: rgba(0,255,136,0.3);
+  background: rgba(0,255,136,0.02);
+  transform: translateY(-3px);
+}
+.loc-hour-day {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray2);
+  margin-bottom: 4px;
+}
+.loc-hour-time {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.loc-hour-badge {
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--green);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+/* Kontak */
+.loc-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.loc-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+}
+.loc-contact-item:hover {
+  border-color: rgba(0,255,136,0.4);
+  background: rgba(0,255,136,0.04);
+  transform: translateX(4px);
+}
+.loc-contact-icon {
+  font-size: 1.15rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--green);
+  line-height: 1;
+  transition: background 0.3s, border-color 0.3s;
+}
+.loc-contact-item:hover .loc-contact-icon {
+  background: rgba(0,255,136,0.15);
+  border-color: rgba(0,255,136,0.45);
+}
+.loc-contact-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 2px;
+}
+.loc-contact-val {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+/* Panel kanan: Map */
+.loc-right {}
+
+.loc-map-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: var(--card);
+  transition: border-color 0.4s, box-shadow 0.4s;
+  height: 480px;
+}
+@media (max-width: 900px) {
+  .loc-map-wrapper { height: 340px; }
+}
+.loc-map-wrapper:hover {
+  border-color: rgba(0,255,136,0.4);
+  box-shadow: 0 20px 50px rgba(0,255,136,0.1);
+}
+
+/* Corner accents */
+.loc-map-corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  pointer-events: none;
+  z-index: 3;
+}
+.loc-map-corner::before,
+.loc-map-corner::after {
+  content: '';
+  position: absolute;
+  background: var(--green);
+  border-radius: 1px;
+}
+.loc-map-corner::before { width: 20px; height: 2px; }
+.loc-map-corner::after  { width: 2px; height: 20px; }
+.loc-map-corner.tl { top: 10px; left: 10px; }
+.loc-map-corner.tr { top: 10px; right: 10px; transform: scaleX(-1); }
+.loc-map-corner.bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+.loc-map-corner.br { bottom: 10px; right: 10px; transform: scale(-1,-1); }
+
+.loc-map-iframe {
+  width: 100%; height: 100%;
+  border: none;
+  display: block;
+  filter: grayscale(0.85) invert(0.92) hue-rotate(160deg) contrast(0.9) brightness(0.75);
+  transition: filter 0.5s ease;
+}
+.loc-map-wrapper:hover .loc-map-iframe {
+  filter: grayscale(0.5) invert(0.85) hue-rotate(160deg) contrast(0.95) brightness(0.85);
+}
+
+/* Overlay label atas map */
+.loc-map-label {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(6,6,8,0.82);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,255,136,0.25);
+  padding: 7px 14px;
+  border-radius: 30px;
+  z-index: 4;
+  pointer-events: none;
+}
+.loc-map-label-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--glow);
+  animation: locPulse 2.2s ease-in-out infinite;
+}
+@keyframes locPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 6px rgba(0,255,136,.5); }
+  50%       { transform: scale(1.4); box-shadow: 0 0 18px rgba(0,255,136,.9), 0 0 32px rgba(0,255,136,.2); }
+}
+.loc-map-label-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+/* CTA bawah map */
+.loc-map-cta {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 4;
+}
+.loc-map-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,255,136,0.9);
+  color: var(--black);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+  box-shadow: 0 4px 16px rgba(0,255,136,0.35);
+}
+.loc-map-open-btn:hover {
+  background: var(--green);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(0,255,136,0.5);
+}
+.loc-map-open-btn svg {
+  flex-shrink: 0;
+}
+
+/* Status bar bawah */
+.loc-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.loc-status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.loc-status-indicator {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(0,255,136,.6);
+  animation: locPulse 2s ease-in-out infinite;
+}
+.loc-status-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--white);
+}
+.loc-status-meta {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+@media (max-width: 480px) {
+  .loc-status-bar { flex-direction: column; align-items: flex-start; }
+  .loc-tabs { overflow-x: auto; }
+  .loc-tab-btn { padding: 10px 14px 12px; font-size: 0.65rem; }
+}
+
+/* Pindahkan hero-location ke hidden — section lokasi menggantikannya */
+.hero-location { display: none !important; }
+
+/* ── WEBGL LIQUID DISTORTION OVERLAY ── */
+#hero-gl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 6;
+  pointer-events: auto;
+  display: block;
+}
+/* hero-content tetap di bawah canvas, tidak perlu pointer-events */
+#hero-content { pointer-events: none; }
+.hero-title { transition: opacity 0.8s ease; }
+
 </style>
 </head>
 <body>
+<!-- PRELOADER SPINNER -->
+<div id="site-preloader">
+  <svg class="hexagon-spinner" viewBox="0 0 60 60">
+    <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
+  </svg>
+  <p class="preloader-label">Loading&hellip;</p>
+</div>
 <div id="noise"></div>
 <div id="lb"><button id="lb-close">✕</button><img id="lb-img" src="" alt=""></div>
 
@@ -1943,51 +2741,54 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 <canvas id="ball-scroll-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 8; opacity: 1; transition: opacity 0.4s;"></canvas>
 
 <nav id="nav">
-  <a href="#" class="logo">MINI<em>FUT</em></a>
-  <ul class="nav-links" id="nav-links">
-    <li><a href="#lapangan">Lapangan</a></li>
-    <li><a href="#galeri">Galeri</a></li>
-    <li><a href="#fasilitas">Fasilitas</a></li>
-    <li><a href="#harga">Harga</a></li>
-    <li><a href="booking.php">Booking</a></li>
-  </ul>
-  <!-- AUTH: Tampilkan profil user + logout jika sudah login, atau Book Sekarang jika belum -->
-  <?php if (isPelanggan()): ?>
-  <div style="display:flex;align-items:center;gap:12px;">
-    
-    <?php if (!empty($user_foto)): ?>
-      <a href="profile.php" title="Profil Saya" style="flex-shrink:0;">
-        <img src="admin/uploads/<?= htmlspecialchars($user_foto, ENT_QUOTES, 'UTF-8') ?>" 
-            style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green); box-shadow: 0 0 10px var(--glow); cursor: pointer; transition: box-shadow .3s, transform .3s; flex-shrink: 0;" 
-            alt="Foto Profil"
-            onmouseover="this.style.boxShadow='0 0 18px var(--green)';this.style.transform='scale(1.08)'"
-            onmouseout="this.style.boxShadow='0 0 10px var(--glow)';this.style.transform='scale(1)'">
-      </a>
-    <?php else: ?>
-      <a href="profile.php" title="Profil Saya" style="flex-shrink:0;text-decoration:none;">
-        <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(0, 255, 136, 0.1); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; color: var(--green); box-shadow: 0 0 10px var(--glow); cursor: pointer; transition: box-shadow .3s, transform .3s; flex-shrink: 0;"
-            onmouseover="this.style.boxShadow='0 0 18px var(--green)';this.style.transform='scale(1.08)'"
-            onmouseout="this.style.boxShadow='0 0 10px var(--glow)';this.style.transform='scale(1)'">
-          <?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)) ?>
-        </div>
-      </a>
-    <?php endif; ?>
-
-    <a href="auth/logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar dari MiniFut Arena?')" class="nav-cta nav-cta-logout" style="background:rgba(255,59,92,.06); border-color:rgba(255,59,92,0.25); color:#ff7096; padding: 6px 14px; border-radius: 30px; font-size: 0.68rem;">
-      <span style="position:relative;z-index:2;">Logout</span>
+  <div class="nav-left">
+    <a href="#" class="logo">MINI<em>FUT</em></a>
+    <span class="nav-slash">/</span>
+    <a href="booking.php" class="nav-booking-link">
+      <span class="nav-booking-orig">BOOK NOW</span>
+      <span class="nav-booking-clone">BOOK NOW</span>
     </a>
-
+    <a href="https://instagram.com/minifut.arena" target="_blank" class="nav-instagram-link" title="Instagram MiniFut Arena">
+      <i class="bi bi-instagram"></i>
+    </a>
+    <a href="https://wa.me/628123456789" target="_blank" class="nav-whatsapp-link" title="WhatsApp MiniFut Arena">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+    <a href="https://tiktok.com/@minifut.id" target="_blank" class="nav-tiktok-link" title="TikTok MiniFut Arena">
+      <i class="bi bi-tiktok"></i>
+    </a>
   </div>
-  <?php else: ?>
-  <a href="booking.php" class="nav-cta">
-    <span class="nav-cta-backdrop"></span>
-    <span style="position: relative; z-index: 2;">Book Sekarang</span>
-  </a>
-  <?php endif; ?>
+  
+  <div class="nav-right">
+    <?php if (isPelanggan()): ?>
+      <div class="nav-user-wrapper">
+        <?php if (!empty($user_foto)): ?>
+          <a href="profile.php" title="Profil Saya" class="nav-avatar-link">
+            <img src="admin/uploads/<?= htmlspecialchars($user_foto, ENT_QUOTES, 'UTF-8') ?>" alt="Foto Profil">
+          </a>
+        <?php else: ?>
+          <a href="profile.php" title="Profil Saya" class="nav-avatar-link">
+            <div class="nav-avatar-placeholder">
+              <?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)) ?>
+            </div>
+          </a>
+        <?php endif; ?>
+        
+        <a href="auth/logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar dari MiniFut Arena?')" class="nav-btn-logout">
+          Logout
+        </a>
+      </div>
+    <?php else: ?>
+      <a href="auth/login.php" class="nav-btn-dark">LOGIN</a>
+      <a href="booking.php" class="nav-btn-glow">BOOK NOW</a>
+    <?php endif; ?>
+  </div>
 </nav>
 
 <!-- PINNED SHOWCASE CONTAINER UTAMA (MENCAKUP HERO DAN SECTION 2-4) -->
 <div class="premium-showcase-container">
+  <!-- Stadium Background Overlay for depth -->
+  <div class="showcase-bg-stadium"></div>
   <!-- SECTION 1: HERO (Pindah ke dalam container agar pin terintegrasi) -->
   <section class="premium-scroll-sec hero" id="scroll-sec-hero">
     <!-- CANVAS ANIMATED GLOWING FLUID SHADER (BACKGROUND LAYER) -->
@@ -1998,19 +2799,12 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
+
     <div class="hero-content" id="hero-content">
-      <div class="hero-eyebrow">
-        <span class="hero-eyebrow-dot"></span>
-        <span class="hero-eyebrow-full">Jl. Kaliurang Km 7.5, Sinduharjo, Ngaglik, Sleman, Yogyakarta</span>
-        <span class="hero-eyebrow-short">Jl. Kaliurang Km 7.5, Sleman, DIY</span>
-      </div>
-      <h1 class="hero-title">
-        <div class="hero-line-wrap"><span class="hero-line hero-line-1">PREMIUM</span></div>
-        <div class="hero-line-wrap"><span class="hero-line hero-line-2">SOCCER</span></div>
-        <div class="hero-line-wrap"><span class="hero-line hero-line-3">ARENA<span class="hero-title-accent">.</span></span></div>
-      </h1>
       <div class="hero-underline"></div>
     </div>
+    <!-- WebGL liquid distortion canvas — renders over hero-content, captures mouse -->
+    <canvas id="hero-gl-canvas" aria-hidden="true"></canvas>
     <div class="scroll-ind center">
       <span>Scroll Down</span>
       <div class="scroll-bar"></div>
@@ -2096,6 +2890,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 
 <!-- ── FAN WALL: DOKUMENTASI CUSTOMER ── -->
 <section class="fanwall-sec">
+  <div class="fanwall-divider"></div>
+  <div class="fanwall-bg-stadium"></div>
   <div class="fanwall-neon-l"></div>
   <div class="fanwall-neon-r"></div>
 
@@ -2336,7 +3132,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   <div class="image-content">
     <div class="image-text-wrap">
       <div class="image-label"><span class="ml-dot"></span>THE GAME NEVER STOPS</div>
-      <h2 class="image-title">PLAY<br><span>BEYOND</span><br>LIMITS</h2>
+      <h2 class="image-title">PLAY<br><span>BEYOND</span><br><span class="outline">LIMITS</span></h2>
     </div>
   </div>
   <div class="image-sep-bottom"></div>
@@ -2405,6 +3201,207 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <a href="booking.php" class="p-btn solid">Pilih Lapangan 2</a>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOCATION SECTION ── -->
+<section class="location-sec" id="lokasi">
+  <!-- Dekorasi background -->
+  <div class="loc-scanlines"></div>
+  <div class="loc-grid-deco"></div>
+
+  <div class="container">
+    <div class="loc-layout">
+
+      <!-- KOLOM KIRI: Info -->
+      <div class="loc-left">
+        <div class="loc-header reveal">
+          <div class="loc-sup-label">
+            <span class="loc-sup-dot"></span>
+            Temukan Kami
+          </div>
+          <div class="loc-title-wrap">
+            <span class="loc-title-bg">PINPOINT</span>
+            <span class="loc-title-fg">LOKASI<span class="loc-green-dot"></span></span>
+          </div>
+        </div>
+
+        <!-- Tab navigasi -->
+        <div class="loc-tabs reveal" id="locTabs">
+          <button class="loc-tab-btn active" data-tab="alamat"><i class="bi bi-geo-alt-fill"></i> Alamat</button>
+          <button class="loc-tab-btn" data-tab="jadwal"><i class="bi bi-clock-fill"></i> Jadwal</button>
+          <button class="loc-tab-btn" data-tab="kontak"><i class="bi bi-telephone-fill"></i> Kontak</button>
+        </div>
+
+        <!-- Panel: Alamat -->
+        <div class="loc-panel active reveal" id="tab-alamat">
+          <div class="loc-info-rows">
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Alamat Lengkap</div>
+                <div class="loc-info-val">Jl. Kaliurang Km 7.5, Sinduharjo, Ngaglik, Sleman, Daerah Istimewa Yogyakarta 55581</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-building"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Kota & Provinsi</div>
+                <div class="loc-info-val">Sleman, Daerah Istimewa Yogyakarta</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-compass-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Lokasi Strategis</div>
+                <div class="loc-info-val">Hanya ±8 menit dari UGM dan ±15 menit dari Malioboro</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-p-square-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Area Parkir</div>
+                <div class="loc-info-val">Parkir Gratis dan Terpantau CCTV 24 jam</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Jadwal -->
+        <div class="loc-panel" id="tab-jadwal">
+          <div class="loc-hours-grid">
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Senin – Jumat</div>
+              <div class="loc-hour-time">08.00 – 24.00</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Sabtu – Minggu</div>
+              <div class="loc-hour-time">08.00 – 24.00</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Hari Libur</div>
+              <div class="loc-hour-time">TUTUP</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Booking Terakhir</div>
+              <div class="loc-hour-time">Jam 23.00</div>
+            </div>
+          </div>
+          <div class="loc-info-row" style="margin-top:14px;">
+            <div class="loc-info-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div class="loc-info-text">
+              <div class="loc-info-label">Info Operasional</div>
+              <div class="loc-info-val">Buka setiap hari Senin sampai Minggu. Tutup pada Hari Libur Nasional.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Kontak -->
+        <div class="loc-panel" id="tab-kontak">
+          <div class="loc-contact-list">
+            <a href="https://wa.me/6281234567890" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-whatsapp"></i></div>
+              <div>
+                <div class="loc-contact-label">WhatsApp</div>
+                <div class="loc-contact-val">+62 812-3456-7890</div>
+              </div>
+            </a>
+            <a href="tel:+62274123456" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-telephone-fill"></i></div>
+              <div>
+                <div class="loc-contact-label">Telepon</div>
+                <div class="loc-contact-val">(0274) 123-456</div>
+              </div>
+            </a>
+            <a href="https://instagram.com/minifut.id" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-instagram"></i></div>
+              <div>
+                <div class="loc-contact-label">Instagram</div>
+                <div class="loc-contact-val">@minifut.id</div>
+              </div>
+            </a>
+            <a href="https://tiktok.com/@minifut.id" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-tiktok"></i></div>
+              <div>
+                <div class="loc-contact-label">TikTok</div>
+                <div class="loc-contact-val">@minifut.id</div>
+              </div>
+            </a>
+            <a href="mailto:info@minifut.id" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-envelope-fill"></i></div>
+              <div>
+                <div class="loc-contact-label">Email</div>
+                <div class="loc-contact-val">info@minifut.id</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- KOLOM KANAN: Map -->
+      <div class="loc-right reveal">
+        <div class="loc-map-wrapper">
+          <!-- Corner accents -->
+          <div class="loc-map-corner tl"></div>
+          <div class="loc-map-corner tr"></div>
+          <div class="loc-map-corner bl"></div>
+          <div class="loc-map-corner br"></div>
+
+          <!-- Label overlay -->
+          <div class="loc-map-label">
+            <span class="loc-map-label-dot"></span>
+            <span class="loc-map-label-text">MiniFut · Live</span>
+          </div>
+
+          <!-- Google Maps embed — Jl. Kaliurang Km 7.5 Sleman -->
+          <iframe
+            class="loc-map-iframe"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.4048!2d110.3905!3d-7.7494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59456e6fcc6d%3A0x6ebce4ad8cc92f5b!2sJl.%20Kaliurang%20No.KM.7%2C%20Sinduharjo%2C%20Kec.%20Ngaglik%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Lokasi MiniFut Yogyakarta"
+          ></iframe>
+
+          <!-- CTA buka Google Maps -->
+          <div class="loc-map-cta">
+            <a
+              href="https://maps.google.com/?q=Jl.+Kaliurang+Km+7.5+Sinduharjo+Ngaglik+Sleman+Yogyakarta"
+              target="_blank"
+              class="loc-map-open-btn"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              Buka Maps
+            </a>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="loc-status-bar reveal">
+          <div class="loc-status-item">
+            <div class="loc-status-indicator"></div>
+            <div>
+              <div class="loc-status-text">Buka Sekarang</div>
+              <div class="loc-status-meta">08.00 – 24.00 WIB</div>
+            </div>
+          </div>
+          <div class="loc-status-item">
+            <div class="loc-info-icon"><i class="bi bi-hexagon"></i></div>
+            <div>
+              <div class="loc-status-text">3 Lapangan Tersedia</div>
+              <div class="loc-status-meta">Sleman, Yogyakarta</div>
+            </div>
+          </div>
+          <a href="booking.php" class="loc-map-open-btn" style="position:static;box-shadow:none;font-size:0.68rem;padding:9px 16px;">
+            Book Sekarang
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -2517,6 +3514,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <li><a href="#lapangan">Lapangan</a></li>
           <li><a href="#fasilitas">Fasilitas</a></li>
           <li><a href="#harga">Harga</a></li>
+          <li><a href="#lokasi">Lokasi</a></li>
           <li><a href="booking.php">Booking Lapangan</a></li>
         </ul>
       </div>
@@ -2542,10 +3540,11 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 MiniFut — All Rights Reserved</div>
+      <div class="footer-copy">© 2026 MiniFut</div>
       <div class="f-links" style="flex-direction:row; gap:20px;">
         <a href="https://instagram.com/minifut.id" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="https://tiktok.com/@minifut.id" target="_blank" rel="noopener noreferrer">TikTok</a>
       </div>
     </div>
   </div>
@@ -2676,7 +3675,7 @@ let targetHeroScrollProgress = 0;
 
 gsap.registerPlugin(ScrollTrigger);
 
-document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta').forEach(btn => {
+document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link').forEach(btn => {
   btn.addEventListener('mousemove', e => {
     const rect = btn.getBoundingClientRect();
     const relX = e.clientX - (rect.left + rect.width / 2);
@@ -2725,35 +3724,29 @@ ScrollTrigger.batch(".reveal", {
    Delay: 0.5s (memberi ruang shader & stadium 3D untuk init)
    ══════════════════════════════════════════════ */
 (function initHeroEntrance() {
-  // Set initial transform/filter states (sebelum reveal)
-  gsap.set(".hero-line", {
-    yPercent: 110,            // Tersembunyi di bawah overflow:hidden wrapper
-    rotateX: -55,             // Tilt 3D untuk efek flip-up
-    filter: "blur(10px)",     // Blur-to-focus
-    transformOrigin: "50% 100%"
-  });
-  gsap.set(".hero-eyebrow", { y: -16 });
+  window.heroTextState = [
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 }
+  ];
+  window.triggerHeroTextUpdate = true;
+
   gsap.set(".hero-underline", { scaleX: 0 });
 
   const heroEnterTl = gsap.timeline({ delay: 0.5 });
   heroEnterTl
-    // 1. Eyebrow label: fade + turun pelan
-    .to(".hero-eyebrow", {
+    .to(window.heroTextState, {
       opacity: 1,
       y: 0,
-      duration: 0.7,
-      ease: "power2.out"
-    })
-    // 2. Title lines: cinematic flip-up reveal dengan blur-to-focus, stagger per kata
-    .to(".hero-line", {
-      yPercent: 0,
       rotateX: 0,
-      filter: "blur(0px)",
+      blur: 0,
       duration: 1.2,
       ease: "power4.out",
-      stagger: 0.12
-    }, "-=0.35")
-    // 3. Garis aksen hijau melebar dari tengah
+      stagger: 0.12,
+      onUpdate: () => {
+        window.triggerHeroTextUpdate = true;
+      }
+    })
     .to(".hero-underline", {
       opacity: 1,
       scaleX: 1,
@@ -2791,6 +3784,195 @@ tlImage.fromTo(".image-label",
   { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 
   "-=0.5"
 );
+
+/* ══════════════════════════════════════════════
+   LOCATION SECTION — GSAP ANIMATIONS
+   ══════════════════════════════════════════════ */
+(function initLocationSection() {
+
+  /* 1. Title PINPOINT: teks outline masuk dari kiri, teks solid dari kanan */
+  const locTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".location-sec",
+      start: "top 75%",
+      toggleActions: "play none none none"
+    }
+  });
+
+  locTl
+    .fromTo(".loc-title-bg",
+      { x: -60, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" }
+    )
+    .fromTo(".loc-title-fg",
+      { x: 60, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
+      "-=0.7"
+    )
+    .fromTo(".loc-sup-label",
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+      "<"
+    );
+
+  /* 2. Info rows: stagger masuk dari bawah */
+  ScrollTrigger.create({
+    trigger: ".location-sec",
+    start: "top 65%",
+    once: true,
+    onEnter: () => {
+      gsap.fromTo(".loc-info-row",
+        { y: 32, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out", stagger: 0.1 }
+      );
+      gsap.fromTo(".loc-hour-item",
+        { y: 28, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, ease: "power2.out", stagger: 0.08 }
+      );
+      gsap.fromTo(".loc-contact-item",
+        { x: -30, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.55, ease: "power2.out", stagger: 0.09 }
+      );
+    }
+  });
+
+  /* 3. Map wrapper: scale + fade masuk */
+  gsap.fromTo(".loc-map-wrapper",
+    { scale: 0.94, opacity: 0 },
+    {
+      scale: 1, opacity: 1,
+      duration: 1.1, ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".loc-map-wrapper",
+        start: "top 80%",
+        toggleActions: "play none none none"
+      }
+    }
+  );
+
+  /* 4. Corner accents: stagger masuk */
+  gsap.fromTo(".loc-map-corner",
+    { scale: 0, opacity: 0 },
+    {
+      scale: 1, opacity: 1,
+      duration: 0.5, ease: "back.out(2)", stagger: 0.07,
+      scrollTrigger: {
+        trigger: ".loc-map-wrapper",
+        start: "top 78%"
+      }
+    }
+  );
+
+  /* 5. Status bar slide dari bawah */
+  gsap.fromTo(".loc-status-bar",
+    { y: 30, opacity: 0 },
+    {
+      y: 0, opacity: 1,
+      duration: 0.8, ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".loc-status-bar",
+        start: "top 88%"
+      }
+    }
+  );
+
+  /* 6. Ambient glow parallax */
+  gsap.to(".loc-ambient",
+    {
+      y: -60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".location-sec",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5
+      }
+    }
+  );
+  gsap.to(".loc-ambient-r",
+    {
+      y: 60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".location-sec",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 2
+      }
+    }
+  );
+
+  /* 7. Mouse-hover radial glow pada info-row */
+  document.querySelectorAll('.loc-info-row').forEach(row => {
+    row.addEventListener('mousemove', e => {
+      const rect = row.getBoundingClientRect();
+      row.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+      row.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+    });
+  });
+
+})();
+
+/* ── TAB SWITCHING LOGIC untuk Location Section ── */
+(function initLocTabs() {
+  const tabs = document.querySelectorAll('.loc-tab-btn');
+  if (!tabs.length) return;
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      // Update active tab button
+      tabs.forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Animate out current panel
+      const currentPanel = document.querySelector('.loc-panel.active');
+      if (currentPanel) {
+        gsap.to(currentPanel, {
+          y: -12, opacity: 0, duration: 0.22, ease: "power2.in",
+          onComplete: () => {
+            currentPanel.classList.remove('active');
+            currentPanel.style.display = 'none';
+
+            // Animate in new panel
+            const nextPanel = document.getElementById('tab-' + target);
+            if (nextPanel) {
+              nextPanel.style.display = 'block';
+              nextPanel.classList.add('active');
+              gsap.fromTo(nextPanel,
+                { y: 16, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }
+              );
+              // Re-trigger stagger for newly shown rows
+              if (target === 'alamat') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-info-row'),
+                  { y: 20, opacity: 0 },
+                  { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              } else if (target === 'jadwal') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-hour-item, .loc-info-row'),
+                  { y: 20, opacity: 0 },
+                  { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              } else if (target === 'kontak') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-contact-item'),
+                  { x: -24, opacity: 0 },
+                  { x: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              }
+            }
+          }
+        });
+      }
+    });
+  });
+})();
+
+/* ── FIX: Semua loc-panel non-active dimulai tersembunyi ── */
+document.querySelectorAll('.loc-panel:not(.active)').forEach(p => {
+  p.style.display = 'none';
+});
 
 document.querySelectorAll('.sc-card').forEach(card => {
   card.addEventListener('mousemove', e => {
@@ -3204,14 +4386,14 @@ document.querySelectorAll('.val-card').forEach(card => {
 
   function getResponsiveParams() {
     const w = window.innerWidth;
-    if (w <= 768) {
-      return { hero: 0.11, sec2: 0.75, sec3: 1.5, sec4: 1.5, xOffset: 0.5 };
+    if (w <= 600) {
+      return { hero: 0.11, sec2: 0.75, sec3: 0.95, sec4: 0.95, xOffset: 0.45 };
     } else if (w <= 1024) {
-      return { hero: 0.12, sec2: 0.80, sec3: 1.8, sec4: 1.8, xOffset: 0.8 };
+      return { hero: 0.12, sec2: 0.80, sec3: 1.3, sec4: 1.3, xOffset: 0.95 };
     } else if (w <= 1280) {
-      return { hero: 0.13, sec2: 0.85, sec3: 2.4, sec4: 2.4, xOffset: 1.0 };
+      return { hero: 0.13, sec2: 0.85, sec3: 2.2, sec4: 2.2, xOffset: 1.1 };
     } else {
-      return { hero: 0.15, sec2: 0.95, sec3: 3.2, sec4: 3.2, xOffset: 1.2 };
+      return { hero: 0.15, sec2: 0.95, sec3: 3.0, sec4: 3.0, xOffset: 1.3 };
     }
   }
 
@@ -3314,7 +4496,7 @@ document.querySelectorAll('.val-card').forEach(card => {
 
     // ── [1] HERO → SECTION 2 (MINI FUT) ──
     // Sembunyikan heading (zoom-out + blur) dan scroll indicator smooth saat hero mulai transisi
-    .to("#hero-content", { opacity: 0, y: -40, scale: 0.94, filter: "blur(10px)", duration: 0.6, ease: "power2.in" })
+    .to(["#hero-content", "#hero-gl-canvas"], { opacity: 0, y: -40, scale: 0.94, filter: "blur(10px)", duration: 0.6, ease: "power2.in" })
     .to(".scroll-ind.center", { opacity: 0, y: 12, duration: 0.4, ease: "power2.in" }, "<")
 
     // Geser seluruh tumpukan seksi ke atas secara sinkron (Reel Effect)
@@ -3392,7 +4574,7 @@ document.querySelectorAll('.val-card').forEach(card => {
     // ── [4] EXIT OUTRO ──
     .to("#bst-right", { opacity: 0, y: -30, yPercent: -50, duration: 1.0, ease: "power2.in" })
     .to("#scroll-sec-3", { yPercent: -100, duration: 1.5, ease: "power2.in" }, "<0.2")
-    .to(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 0, duration: 1.5, ease: "power2.in" }, "<")
+    .to(["#premium-border-frame", "#premium-pitch-bg", ".showcase-bg-stadium"], { opacity: 0, duration: 1.5, ease: "power2.in" }, "<")
     // Bola menggelinding keluar ke arah bawah panggung halaman secara perlahan
     .to(ballState, {
       opacity: 0,
@@ -3540,5 +4722,447 @@ document.querySelectorAll('.val-card').forEach(card => {
     </filter>
   </defs>
 </svg>
+<script>
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('site-preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('preloader-hidden');
+      setTimeout(() => preloader.remove(), 500);
+    }, 1000);
+  }
+});
+</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   HERO WEBGL LIQUID DISTORTION + GREEN CHROMATIC ABERRATION
+   ─────────────────────────────────────────────────────────────────
+   Pipeline:
+     1. Render teks hero (PREMIUM / SOCCER / ARENA.) ke offscreen 2D canvas
+        dengan gaya persis sama: outline-only, solid white, neon-green gradient
+     2. Upload sebagai WebGL texture
+     3. Full-screen quad dengan vertex + fragment shader custom:
+        • fBm turbulence (4-octave value noise) → fluid displacement field
+        • Sinusoidal ripple dari posisi mouse → gelombang memancar
+        • Chromatic aberration: R geser kiri, G tidak digeser, B geser kanan
+        • Green channel boost pada area aktif → neon glow effect
+        • Smooth radial falloff dari kursor
+     4. Lerp activity in/out ketika mouse masuk/keluar
+   ════════════════════════════════════════════════════════════════════ */
+(function initHeroWebGL() {
+
+  /* ── Config ─────────────────────────────────────────────────────── */
+  const CFG = {
+    distortRadius:   0.24,   // radius pengaruh mouse (fraksi lebar canvas)
+    distortStrength: 0.048,  // besaran maksimal displacement UV
+    chromaticShift:  0.010,  // offset chromatic aberration (UV space)
+    relaxSpeed:      0.048,  // kecepatan fade-out saat mouse pergi
+    enterSpeed:      0.12,   // kecepatan fade-in saat mouse masuk
+    initDelay:       900,    // ms – beri GSAP entrance selesai dulu
+  };
+
+  /* ── Vertex Shader ───────────────────────────────────────────────── */
+  const VERT_SRC = `
+attribute vec2 a_pos;
+varying   vec2 v_uv;
+void main(){
+  v_uv        = a_pos * 0.5 + 0.5;
+  gl_Position = vec4(a_pos, 0.0, 1.0);
+}`;
+
+  /* ── Fragment Shader ─────────────────────────────────────────────── */
+  const FRAG_SRC = `
+precision highp float;
+
+uniform sampler2D u_tex;       /* hero-text texture                    */
+uniform vec2      u_mouse;     /* mouse UV (0..1), Y dibalik           */
+uniform float     u_radius;    /* influence radius                     */
+uniform float     u_strength;  /* displacement magnitude               */
+uniform float     u_chroma;    /* chromatic aberration amount          */
+uniform float     u_time;      /* elapsed seconds                      */
+uniform float     u_active;    /* 0..1, lerped smoothly               */
+uniform vec2      u_res;       /* canvas size in pixels                */
+
+varying vec2 v_uv;
+
+/* ── Deterministic pseudo-random ── */
+float hash21(vec2 p){
+  p = fract(p * vec2(127.1, 311.7));
+  p += dot(p, p + 19.19);
+  return fract(p.x * p.y);
+}
+
+/* ── Value noise dengan cubic hermite ── */
+float vnoise(vec2 p){
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  /* Hermite smoothstep */
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i);
+  float b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0));
+  float d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+/* ── fBm: 4-octave fractal Brownian motion → displacement vec2 ── */
+vec2 fbm2(vec2 p, float t){
+  vec2  d   = vec2(0.0);
+  float amp = 0.50;
+  float frq = 1.00;
+  for(int i = 0; i < 4; i++){
+    /* Dua channel independen dengan phase offset berbeda */
+    d.x += (vnoise(p * frq + vec2(t * 0.31,  1.70)) * 2.0 - 1.0) * amp;
+    d.y += (vnoise(p * frq + vec2(5.20, t * 0.29 + 3.14)) * 2.0 - 1.0) * amp;
+    amp *= 0.48;
+    frq *= 2.10;
+  }
+  return d;
+}
+
+void main(){
+  vec2 uv = v_uv;
+
+  /* Koreksi aspek rasio untuk perhitungan jarak yang benar */
+  float aspect = u_res.x / u_res.y;
+  vec2 uvA    = vec2(uv.x  * aspect, uv.y);
+  vec2 mA     = vec2(u_mouse.x * aspect, u_mouse.y);
+
+  float dist  = length(uvA - mA);
+
+  /* Falloff: smooth dari 0 di radius hingga 1 di pusat mouse */
+  float falloff = smoothstep(u_radius, u_radius * 0.05, dist);
+  falloff *= u_active;
+
+  /* ── Fluid turbulence displacement ── */
+  vec2 turb = fbm2(uv * 3.2, u_time * 0.9);
+  vec2 disp = turb * u_strength * falloff;
+
+  /* ── Ripple: gelombang sinus yang memancar dari mouse ── */
+  float ripplePhase = dist * 32.0 - u_time * 4.2;
+  float ripple      = sin(ripplePhase) * 0.5 + 0.5;
+  /* Arah menjauhi mouse (normalize), dikali ripple & falloff */
+  vec2  rippleDir = (uvA - mA + 0.0001);
+  /* Ubah kembali ke UV space (bagi x dengan aspect) */
+  rippleDir = normalize(rippleDir) / vec2(aspect, 1.0);
+  disp += rippleDir * ripple * u_strength * 0.40 * falloff;
+
+  /* ── Chromatic Aberration (Green axis) ── */
+  /* R geser ke kiri, G tetap (reference), B geser ke kanan */
+  float ca    = u_chroma * falloff;
+  vec2  offR  = disp + vec2(-ca,  0.0);
+  vec2  offG  = disp;                     /* Green: no lateral shift */
+  vec2  offB  = disp + vec2( ca,  0.0);
+
+  /* Sample tiap channel secara terpisah */
+  float r = texture2D(u_tex, clamp(uv + offR, 0.001, 0.999)).r;
+  float g = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).g;
+  float b = texture2D(u_tex, clamp(uv + offB, 0.001, 0.999)).b;
+  float a = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).a;
+
+  /* Green channel boost pada area aktif → neon glow khas MiniFut */
+  g = mix(g, min(g * 1.35 + 0.05 * falloff, 1.0), falloff * 0.65);
+
+  /* Slight vignette agar tepi chromatic tidak terlihat hard-clip */
+  float vign = smoothstep(0.0, 0.15, min(uv.x, 1.0 - uv.x))
+             * smoothstep(0.0, 0.12, min(uv.y, 1.0 - uv.y));
+
+  gl_FragColor = vec4(r, g, b, a * vign);
+}`;
+
+  /* ── Helper: compile shader ─────────────────────────────────────── */
+  function compileShader(gl, type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.warn('[HeroGL] Shader error:', gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+
+  /* ── Helper: link program ───────────────────────────────────────── */
+  function makeProgram(gl, vs_src, fs_src) {
+    const vs   = compileShader(gl, gl.VERTEX_SHADER,   vs_src);
+    const fs   = compileShader(gl, gl.FRAGMENT_SHADER, fs_src);
+    if (!vs || !fs) return null;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.warn('[HeroGL] Link error:', gl.getProgramInfoLog(prog));
+      return null;
+    }
+    return prog;
+  }
+
+  /* ── Render hero text ke offscreen 2D canvas ────────────────────── */
+  function buildTextTexture(gl, W, H) {
+
+    /* --- Offscreen canvas dengan resolusi sama --- */
+    const off = document.createElement('canvas');
+    off.width  = W;
+    off.height = H;
+    const ctx  = off.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+
+    const isMobile = W <= 600;
+
+    const basePx = isMobile
+      ? Math.min(W * 0.12, H * 0.08, 48)
+      : Math.min(W * 0.07, H * 0.09, 64);
+
+    const targetY = isMobile
+      ? Math.max(110, Math.min(H * 0.18, 160)) + 40
+      : Math.max(164, Math.min(H * 0.16 + 52, 216)) + 28;
+
+    const words = [
+      { text: 'PREMIUM', style: 'outline' },
+      { text: 'SOCCER',  style: 'solid'   },
+      { text: 'ARENA.',  style: 'green'   }
+    ];
+
+    ctx.font         = `400 ${basePx}px Anton, Impact, sans-serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Measure widths
+    const widths = words.map(w => ctx.measureText(w.text).width);
+    const gap = isMobile ? 10 : 18;
+    const totalW = widths.reduce((sum, w) => sum + w, 0) + gap * (words.length - 1);
+
+    let currentX = (W - totalW) / 2;
+
+    // Initialize default states if not present
+    if (!window.heroTextState) {
+      window.heroTextState = [
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 }
+      ];
+    }
+
+    words.forEach((w, i) => {
+      const state = window.heroTextState[i] || { opacity: 1, y: 0, rotateX: 0, blur: 0 };
+      const wordW = widths[i];
+      
+      let x, y;
+      if (isMobile) {
+        x = W / 2;
+        // Stack words vertically centered around targetY
+        const baseWordY = targetY + (i - 1) * (basePx * 1.15);
+        y = baseWordY + (state.y / 100) * basePx;
+      } else {
+        x = currentX + wordW / 2;
+        y = targetY + (state.y / 100) * basePx;
+      }
+
+      ctx.save();
+
+      // Apply opacity
+      ctx.globalAlpha = state.opacity;
+
+      // Apply blur filter if supported and value is significant
+      if (state.blur > 0.05) {
+        ctx.filter = `blur(${state.blur}px)`;
+      } else {
+        ctx.filter = 'none';
+      }
+
+      // Apply 3D tilt (rotateX) via Y-scale compression
+      const rad = (state.rotateX * Math.PI) / 180;
+      const scaleY = Math.cos(rad);
+      ctx.translate(x, y + basePx * 0.4);
+      ctx.scale(1, Math.max(0, scaleY));
+      ctx.translate(-x, -(y + basePx * 0.4));
+
+      if (w.style === 'outline') {
+        ctx.strokeStyle = 'rgba(255,255,255,0.26)';
+        ctx.lineWidth   = isMobile ? 2.0 : 2.5;
+        ctx.strokeText(w.text, x, y);
+
+      } else if (w.style === 'solid') {
+        ctx.fillStyle = '#eceef2';
+        ctx.fillText(w.text, x, y);
+
+      } else {
+        /* green gradient shine */
+        const grd = ctx.createLinearGradient(x - wordW / 2, y, x + wordW / 2, y);
+        grd.addColorStop(0,    '#00ff88');
+        grd.addColorStop(0.45, '#d4ffec');
+        grd.addColorStop(1,    '#00ff88');
+        ctx.fillStyle = grd;
+        ctx.fillText(w.text, x, y);
+      }
+
+      ctx.restore();
+      currentX += wordW + gap;
+    });
+
+    /* Upload ke GPU */
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S,     gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T,     gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // Flip Y to fix upside-down (terbalik) issue
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
+
+    return tex;
+  }
+
+  /* ── Main init (delayed) ────────────────────────────────────────── */
+  setTimeout(function () {
+
+    const canvas = document.getElementById('hero-gl-canvas');
+    if (!canvas) return;
+
+    /* Try WebGL (dengan fallback ke experimental-webgl) */
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false })
+            || canvas.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: false });
+    if (!gl) {
+      console.warn('[HeroGL] WebGL tidak tersedia di browser ini.');
+      canvas.style.display = 'none';
+      return;
+    }
+
+    /* Compile & link shaders */
+    const prog = makeProgram(gl, VERT_SRC, FRAG_SRC);
+    if (!prog) { canvas.style.display = 'none'; return; }
+
+    /* Full-screen quad buffer */
+    const quadBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1,-1,  1,-1,  -1,1,  1,1]),
+      gl.STATIC_DRAW);
+
+    const posLoc = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    /* Uniform locations */
+    gl.useProgram(prog);
+    const uTex      = gl.getUniformLocation(prog, 'u_tex');
+    const uMouse    = gl.getUniformLocation(prog, 'u_mouse');
+    const uRadius   = gl.getUniformLocation(prog, 'u_radius');
+    const uStrength = gl.getUniformLocation(prog, 'u_strength');
+    const uChroma   = gl.getUniformLocation(prog, 'u_chroma');
+    const uTime     = gl.getUniformLocation(prog, 'u_time');
+    const uActive   = gl.getUniformLocation(prog, 'u_active');
+    const uRes      = gl.getUniformLocation(prog, 'u_res');
+
+    /* State */
+    let mouse      = { x: 0.5, y: 0.5 };
+    let active     = 0.0;   /* current lerped value        */
+    let targetAct  = 0.0;   /* target: 1 = mouse inside    */
+    let texDirty   = true;
+    let tex        = null;
+
+    /* Blend */
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); /* premultiplied output */
+
+    /* ── Resize ── */
+    function resize() {
+      const hero = document.getElementById('scroll-sec-hero');
+      const rect  = hero ? hero.getBoundingClientRect() : {};
+      canvas.width  = rect.width  || window.innerWidth;
+      canvas.height = rect.height || window.innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      texDirty = true; /* regenerate texture on resize */
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    /* ── Mouse / Touch tracking ── */
+    function updateMouse(clientX, clientY) {
+      const r  = canvas.getBoundingClientRect();
+      mouse.x  = (clientX - r.left)  / r.width;
+      mouse.y  = 1.0 - (clientY - r.top) / r.height;  /* flip Y untuk WebGL */
+      targetAct = 1.0;
+    }
+
+    canvas.addEventListener('mousemove',  e => updateMouse(e.clientX, e.clientY), { passive: true });
+    canvas.addEventListener('mouseleave', () => { targetAct = 0.0; },              { passive: true });
+    canvas.addEventListener('touchmove',  e => {
+      e.preventDefault();
+      updateMouse(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    canvas.addEventListener('touchend',   () => { targetAct = 0.0; },              { passive: true });
+
+    /* ── Visibility observer (hemat GPU saat hero tidak terlihat) ── */
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisible = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    /* ── Render loop ── */
+    let rafId = null;
+
+    function render(ms) {
+      rafId = requestAnimationFrame(render);
+
+      /* Skip render jika hero tidak di viewport */
+      if (!isVisible) return;
+
+      const t = ms * 0.001;
+
+      /* Rebuild texture jika perlu (pertama kali, setelah resize, atau saat update animasi) */
+      if (texDirty || window.triggerHeroTextUpdate) {
+        if (tex) gl.deleteTexture(tex);
+        tex = buildTextTexture(gl, canvas.width, canvas.height);
+        texDirty = false;
+        window.triggerHeroTextUpdate = false;
+      }
+
+      /* Lerp activity: cepat masuk, lambat keluar (efek liquid melambat) */
+      const speed  = targetAct > active ? CFG.enterSpeed : CFG.relaxSpeed;
+      active      += (targetAct - active) * speed;
+
+      /* Clear */
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      /* Draw */
+      gl.useProgram(prog);
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1i(uTex,      0);
+      gl.uniform2f(uMouse,    mouse.x, mouse.y);
+      gl.uniform1f(uRadius,   CFG.distortRadius);
+      gl.uniform1f(uStrength, CFG.distortStrength);
+      gl.uniform1f(uChroma,   CFG.chromaticShift);
+      gl.uniform1f(uTime,     t);
+      gl.uniform1f(uActive,   active);
+      gl.uniform2f(uRes,      canvas.width, canvas.height);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+
+    // Fade in canvas, fade out original title
+    canvas.style.opacity = '1';
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      heroTitle.style.opacity = '0';
+    }
+
+    requestAnimationFrame(render);
+
+  }, CFG.initDelay);
+
+})();
+</script>
 </body>
 </html>

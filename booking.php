@@ -242,7 +242,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniFut — Book Arena</title>
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 :root{
   --black:#060608;--dark:#0c0d10;--card:#111318;--card2:#161820;
@@ -257,10 +260,52 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 #noise{position:fixed;inset:0;opacity:.015;pointer-events:none;z-index:8000;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");}
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,6,8,.9);backdrop-filter:blur(24px);border-bottom:1px solid rgba(0,255,136,.08);}
-.logo{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--green);letter-spacing:5px;text-decoration:none;}
+@keyframes logo-wiggle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-1deg); }
+  75%  { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+.logo{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--green);letter-spacing:5px;text-decoration:none;transition:all .3s;display:inline-block;transform-origin:center;}
 .logo em{color:var(--white);font-style:normal;}
-.nav-back{font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .25s;}
-.nav-back:hover{color:var(--green);}
+.logo:hover {
+  animation: logo-wiggle 0.25s ease-in-out 1;
+  text-shadow: 0 0 15px var(--green);
+}
+.nav-back {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray2);
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 24px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+.nav-back-orig, .nav-back-clone {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.nav-back-clone {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--green);
+}
+.nav-back:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+.nav-back:hover .nav-back-orig {
+  transform: translateY(-100%);
+}
+.nav-back:hover .nav-back-clone {
+  transform: translateY(-100%);
+}
 .nav-step-indicator{font-family:'Plus Jakarta Sans',sans-serif;font-size:.7rem;letter-spacing:2px;color:var(--gray);text-transform:uppercase;}
 .bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);
@@ -275,15 +320,148 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 64px;display:f
   .booking-main{padding:20px; border-right:none;}
   .booking-sidebar{position:static;height:auto;}
 }
-.steps-bar{display:flex;gap:0;margin-bottom:44px;}
-.step-item{display:flex;align-items:center;gap:0;flex:1;}
-.step-num{width:32px;height:32px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--gray);transition:all .35s;flex-shrink:0;}
-.step-num.done{background:var(--green);border-color:var(--green);color:var(--black);}
-.step-num.active{border-color:var(--green);color:var(--green);box-shadow:0 0 14px rgba(0,255,136,.3);}
-.step-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-left:10px;transition:color .35s;white-space:nowrap;}
-.step-label.active{color:var(--white);}
-.step-connector{flex:1;height:1px;background:var(--border);margin:0 14px;transition:background .35s;}
-.step-connector.done{background:var(--green);}
+.steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(17, 19, 24, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 20px 28px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  margin-bottom: 44px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.step-item.active {
+  opacity: 1;
+}
+.step-item.done {
+  opacity: 0.85;
+}
+.step-num {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--gray2);
+  background: var(--border2);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.step-num::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(6, 6, 8, 0.9);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  z-index: -1;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+/* Active state with pulse animation */
+.step-item.active .step-num {
+  background: var(--green);
+  color: var(--green);
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.35));
+  animation: step-pulse 2.2s infinite alternate;
+}
+.step-item.active .step-num::before {
+  background: #0d0e12;
+}
+/* Done state */
+.step-item.done .step-num {
+  background: var(--green);
+  color: var(--green);
+  filter: none;
+}
+.step-item.done .step-num::before {
+  background: #0d0e12;
+}
+/* Hover effect for all steps */
+.step-item.active {
+  cursor: default !important;
+}
+.step-item.active:hover .step-num {
+  transform: none !important;
+  background: var(--green) !important;
+  color: var(--green) !important;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.35)) !important;
+}
+.step-item.active:hover .step-num::before {
+  background: #0d0e12 !important;
+}
+.step-item.active:hover .step-label {
+  transform: none !important;
+}
+.step-item:hover {
+  opacity: 1;
+}
+.step-item:hover .step-num {
+  transform: scale(1.1) rotate(5deg);
+  background: var(--green);
+  color: var(--black);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 136, 0.5));
+}
+.step-item:hover .step-num::before {
+  background: var(--green);
+}
+.step-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  white-space: nowrap;
+}
+.step-item.active .step-label {
+  color: var(--white);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+.step-item.done .step-label {
+  color: var(--green);
+}
+.step-item:hover .step-label {
+  color: var(--white);
+  transform: translateX(4px);
+}
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 0 10px;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 2px;
+}
+.step-connector.done {
+  background: linear-gradient(90deg, var(--green), #00ff88);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+@keyframes step-pulse {
+  0% {
+    filter: drop-shadow(0 0 3px rgba(0, 255, 136, 0.2));
+  }
+  100% {
+    filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.6));
+  }
+}
 .sec-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
 .sec-title{font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:700;color:var(--white);margin-bottom:28px;}
 #step1{display:block;}
@@ -451,9 +629,139 @@ body, a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .
 a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-back {
   cursor: pointer !important;
 }
+/* Premium Info Lapangan Styling */
+.info-lapangan-card {
+  margin-top: 24px;
+  background: rgba(17, 19, 24, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+.info-lapangan-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--green), transparent);
+}
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.info-header i {
+  color: var(--green);
+  font-size: 1.1rem;
+}
+.info-header span {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.info-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.info-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid rgba(0, 255, 136, 0.15);
+  border-radius: 6px;
+  color: var(--green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.info-item.warning .info-icon-wrapper {
+  background: rgba(255, 59, 92, 0.05);
+  border-color: rgba(255, 59, 92, 0.15);
+  color: var(--red);
+}
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.info-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.info-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.76rem;
+  color: var(--gray2);
+  line-height: 1.4;
+}
+
+/* PRELOADER SPINNER */
+#site-preloader {
+  position: fixed; inset: 0; background: var(--black); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.hexagon-spinner {
+  width: 56px; height: 56px;
+  animation: spin-preloader 2s linear infinite;
+}
+.hexagon-spinner polygon {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.5;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: drawHexagon 2s ease-in-out infinite;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--green));
+}
+.preloader-label {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--gray);
+  text-transform: uppercase;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes spin-preloader { to { transform: rotate(360deg); } }
+@keyframes drawHexagon {
+  0%,100% { stroke-dashoffset: 160; }
+  50%      { stroke-dashoffset: 0; }
+}
+.preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
 </style>
 </head>
 <body>
+<!-- PRELOADER SPINNER -->
+<div id="site-preloader">
+  <svg class="hexagon-spinner" viewBox="0 0 60 60">
+    <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
+  </svg>
+  <p class="preloader-label">Loading&hellip;</p>
+</div>
 <div id="noise"></div>
 <div class="bg-grid"></div>
 
@@ -504,7 +812,10 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
 <nav>
   <a href="index.php" class="logo">MINI<em>FUT</em></a>
   <div class="nav-step-indicator" id="stepIndicator">STEP 1 / 4 — PILIH LAPANGAN</div>
-  <a href="index.php" class="nav-back">← Kembali ke Beranda</a>
+  <a href="index.php" class="nav-back">
+    <span class="nav-back-orig">← Kembali ke Beranda</span>
+    <span class="nav-back-clone">← Kembali ke Beranda</span>
+  </a>
 </nav>
 
 <div class="booking-wrap">
@@ -694,7 +1005,7 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
 
       <div class="action-row">
         <button class="btn-back" onclick="goStep(3)">← Kembali</button>
-        <button class="btn-next" id="btn4" onclick="submitBooking()" disabled>Konfirmasi Booking ✓</button>
+        <button class="btn-next" id="btn4" onclick="submitBooking()" disabled>Konfirmasi Booking</button>
       </div>
     </div>
 
@@ -722,20 +1033,73 @@ a, button, .fc, .cal-day.available, .time-slot.avail, label, .step-item, .nav-ba
         <span class="sum-total-val" id="sum-total">—</span>
       </div>
     </div>
-    <div style="margin-top:16px;padding:16px;border:1px solid rgba(0,255,136,.15);background:rgba(0,255,136,.03);">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px;">Info Lapangan</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-        <li style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;color:var(--gray2);line-height:1.5;">• Pelunasan bisa dilakukan di lokasi</li>
-        <li style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;color:var(--gray2);line-height:1.5;">• Harap hadir 15 menit sebelum sesi dimulai</li>
-        <li style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;color:var(--gray2);line-height:1.5;">• Dilarang membawa makanan dari luar</li>
-        <li style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;color:var(--gray2);line-height:1.5;">• Tersedia area Restaurant & Café dan Ruang Ganti</li>
-        <li style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;color:var(--green);line-height:1.5;margin-top:6px;">• Jl. Kaliurang Km 7.5, RT 04/RW 12, Sinduharjo, Ngaglik, Sleman, D.I. Yogyakarta 55581</li>
-      </ul>
+    <!-- INFO LAPANGAN CONTAINER -->
+    <div class="info-lapangan-card">
+      <div class="info-header">
+        <i class="bi bi-info-circle-fill"></i>
+        <span>Info Lapangan & Aturan</span>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <div class="info-icon-wrapper">
+            <i class="bi bi-cash-coin"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-title">Sistem Pembayaran</div>
+            <div class="info-desc">Pelunasan sisa biaya sewa dapat dilakukan langsung di lokasi.</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon-wrapper">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-title">Waktu Kedatangan</div>
+            <div class="info-desc">Harap hadir di lokasi minimal 15 menit sebelum sesi dimulai.</div>
+          </div>
+        </div>
+
+        <div class="info-item warning">
+          <div class="info-icon-wrapper">
+            <i class="bi bi-ban"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-title">Aturan Makanan</div>
+            <div class="info-desc">Dilarang membawa makanan atau minuman dari luar area MiniFut.</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon-wrapper">
+            <i class="bi bi-cup-hot"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-title">Fasilitas Area</div>
+            <div class="info-desc">Tersedia area Restaurant & Café serta Ruang Ganti bersih.</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon-wrapper">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-title">Lokasi Arena</div>
+            <div class="info-desc">Jl. Kaliurang Km 7.5, RT 04/RW 12, Sinduharjo, Ngaglik, Sleman, D.I. Yogyakarta 55581</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="margin-top:8px;padding:14px 16px;border:1px solid var(--border);background:var(--card2);display:flex;align-items:center;gap:12px;">
+
+    <!-- BANTUAN CARD -->
+    <div style="margin-top:12px;padding:16px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);border-radius:12px;display:flex;align-items:center;gap:14px;backdrop-filter:blur(10px);">
+      <div style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:50%;color:var(--white);">
+        <i class="bi bi-telephone-fill" style="font-size:0.9rem;"></i>
+      </div>
       <div>
-        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;letter-spacing:2px;color:var(--gray);text-transform:uppercase;">Bantuan & Informasi</div>
-        <div style="font-family:'Orbitron',monospace;font-size:.85rem;color:var(--white);margin-top:4px;">+62 812-3456-7890</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;letter-spacing:1.5px;color:var(--gray);text-transform:uppercase;font-weight:700;">Bantuan & Informasi</div>
+        <div style="font-family:'Orbitron',monospace;font-size:.85rem;color:var(--green);margin-top:2px;font-weight:700;letter-spacing:0.5px;">+62 812-3456-7890</div>
       </div>
     </div>
   </div>
@@ -820,6 +1184,7 @@ function toggleSlot(h){
 
 const stepLabels=['','PILIH LAPANGAN','PILIH TANGGAL','PILIH JAM','DATA DIRI'];
 function goStep(n){
+  if(n===state.step)return;
   if(n===2&&!state.field)return;
   if(n===3&&!state.date)return;
   if(n===4&&state.slots.length===0)return;
@@ -845,17 +1210,33 @@ function goStep(n){
 
   [1,2,3,4].forEach(i=>{
     const sn=document.getElementById('sn'+i),sl=document.getElementById('sl'+i),sc=document.getElementById('sc'+i);
-    if(i<n){sn.classList.add('done');sn.classList.remove('active');sl.classList.remove('active');}
-    else if(i===n){sn.classList.remove('done');sn.classList.add('active');sl.classList.add('active');}
-    else{sn.classList.remove('done','active');sl.classList.remove('active');}
+    const item=sn ? sn.parentElement : null;
+    if(i<n){
+      sn.classList.add('done');sn.classList.remove('active');sl.classList.remove('active');
+      if(item) { item.classList.add('done'); item.classList.remove('active'); }
+    }
+    else if(i===n){
+      sn.classList.remove('done');sn.classList.add('active');sl.classList.add('active');
+      if(item) { item.classList.remove('done'); item.classList.add('active'); }
+    }
+    else{
+      sn.classList.remove('done','active');sl.classList.remove('active');
+      if(item) { item.classList.remove('done','active'); }
+    }
     if(sc&&i<n)sc.classList.add('done');
     else if(sc)sc.classList.remove('done');
   });
 
   document.getElementById('stepIndicator').textContent=`STEP ${n} / 4 — ${stepLabels[n]}`;
 
-  if(n===2)renderCalendar();
-  if(n===3)fetchAndRenderTimeGrid(); 
+  if(n===2){
+    renderCalendar();
+    document.getElementById('btn2').disabled = !state.date;
+  }
+  if(n===3){
+    fetchAndRenderTimeGrid(); 
+    document.getElementById('btn3').disabled = state.slots.length === 0;
+  }
   if(n===4)setupFormListeners();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1280,5 +1661,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('site-preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('preloader-hidden');
+      setTimeout(() => preloader.remove(), 500);
+    }, 1000);
+  }
+});
+</script>
 </body>
 </html>

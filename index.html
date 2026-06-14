@@ -19,18 +19,19 @@
 <meta property="twitter:image" content="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=1200&q=80">
 
 <!-- Favicon -->
-<link class="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23060608'/><text y='.9em' font-size='80' x='10'</text>⚽</svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpolygon points='60,6 107,33 107,87 60,114 13,87 13,33' fill='%23060608' stroke='%2300ff88' stroke-width='4'/%3E%3Ccircle cx='60' cy='60' r='20' stroke='%2300ff88' stroke-width='3' fill='none'/%3E%3Cpolygon points='60,42 75,53 69,71 51,71 45,53' fill='%2300ff88'/%3E%3Cpath d='M60 42 L60 10 M75 53 L104 39 M69 71 L92 92 M51 71 L28 92 M45 53 L16 39' stroke='%2300ff88' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 
 <!-- Google Fonts Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Anton&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 
 :root {
   --black:   #060608; --dark:    #0c0d10; --card:    #111318; --card2:   #161820;
   --border:  rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
-  --green:   #00ff88; --green2:  --green; --glow:    rgba(0,255,136,0.18); --glow-sm: rgba(0,255,136,0.07);
+  --green:   #00ff88; --green2:  var(--green); --glow:    rgba(0,255,136,0.18); --glow-sm: rgba(0,255,136,0.07);
   --gray:    #6b7080; --gray2:   #9aa0b0; --white:   #eceef2; --red:     #ff3b5c;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -39,7 +40,6 @@ body{background:var(--black);color:var(--white);font-family:'Plus Jakarta Sans',
 
 #noise{position:fixed;inset:0;opacity:.018;pointer-events:none;z-index:8000;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");}
-
 
 nav {
   position: fixed;
@@ -78,6 +78,13 @@ nav.shrunk {
   padding: 0 24px;
 }
 
+@keyframes logo-wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-1deg); }
+  75% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .logo {
   font-family: 'Orbitron', monospace;
   font-size: 1.5rem;
@@ -85,113 +92,268 @@ nav.shrunk {
   color: var(--green);
   letter-spacing: 5px;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  display: inline-block;
+  transform-origin: center;
 }
 .logo em { color: var(--white); font-style: normal; }
-.logo:hover { text-shadow: 0 0 10px var(--glow); }
+.logo:hover { 
+  animation: logo-wiggle 0.25s ease-in-out 1;
+  text-shadow: 0 0 15px var(--green);
+}
 
 nav.shrunk .logo {
   font-size: 1.15rem;
   letter-spacing: 3px;
 }
 
-.nav-links {
+/* Revamped Navbar Elements */
+.nav-left {
   display: flex;
-  gap: 36px;
-  list-style: none;
-  transition: all 0.3s;
+  align-items: center;
 }
-nav.shrunk .nav-links { gap: 20px; }
-.nav-links a {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gray2);
-  text-decoration: none;
-  transition: color 0.25s;
+.nav-slash {
+  margin: 0 16px;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 1.1rem;
+  font-weight: 300;
+  user-select: none;
 }
-.nav-links a:hover { color: var(--white); }
-nav.shrunk .nav-links a { font-size: 0.7rem; }
-
-/* REVISI: Mengubah nav-cta menjadi Premium Green Liquid Glass Button */
-.nav-cta {
+.nav-booking-link {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--green);
-  background: rgba(0, 255, 136, 0.06);
-  border: 1px solid rgba(0, 255, 136, 0.25);
-  padding: 10px 22px;
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
-  border-radius: 30px; /* Fully rounded liquid pill shape */
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
   position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 24px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+.nav-booking-orig, .nav-booking-clone {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.nav-booking-clone {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--green);
+}
+.nav-booking-link:hover {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+.nav-booking-link:hover .nav-booking-orig {
+  transform: translateY(-100%);
+}
+.nav-booking-link:hover .nav-booking-clone {
+  transform: translateY(-100%);
+}
+
+.nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
-}
-.nav-cta::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  border-radius: 30px;
-  pointer-events: none;
-  z-index: 1;
-  box-shadow: 
-    0 0 6px rgba(0,0,0,0.03),
-    0 2px 6px rgba(0,0,0,0.08),
-    inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),
-    inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
-    inset 1px 1px 1px -0.5px rgba(0,0,0,0.6),
-    inset -1px -1px 1px -0.5px rgba(0,0,0,0.6),
-    inset 0 0 6px 6px rgba(0,0,0,0.12),
-    inset 0 0 2px 2px rgba(0,0,0,0.06),
-    0 0 12px rgba(255,255,255,0.15);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  text-decoration: none;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
-.nav-cta-backdrop {
-  position: absolute;
-  inset: 0;
-  border-radius: 30px;
-  overflow: hidden;
-  z-index: 0;
-  backdrop-filter: url("#container-glass") blur(4px);
-  -webkit-backdrop-filter: url("#container-glass") blur(4px);
-  background: rgba(0, 255, 136, 0.05);
-  transition: all 0.3s ease;
+.nav-instagram-link {
+  margin-left: 14px;
 }
-.nav-cta:hover {
-  color: var(--black);
-  background: var(--green);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-  transform: scale(1.05);
+.nav-whatsapp-link, .nav-tiktok-link {
+  margin-left: 8px;
 }
-.nav-cta:hover::before {
-  box-shadow: none;
+.nav-instagram-link:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 5px 15px rgba(220, 39, 67, 0.4);
 }
-.nav-cta:hover .nav-cta-backdrop {
-  opacity: 0;
+.nav-whatsapp-link:hover {
+  background: linear-gradient(45deg, #25D366 0%, #128C7E 100%);
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
 }
-nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px; }
+.nav-tiktok-link:hover {
+  background: #000000;
+  border-color: transparent;
+  color: var(--white);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: -3px -3px 8px rgba(0, 242, 254, 0.6), 3px 3px 8px rgba(254, 9, 121, 0.6);
+}
+nav.shrunk .nav-instagram-link, nav.shrunk .nav-whatsapp-link, nav.shrunk .nav-tiktok-link {
+  width: 32px;
+  height: 32px;
+  font-size: 0.95rem;
+}
+nav.shrunk .nav-instagram-link {
+  margin-left: 10px;
+}
+nav.shrunk .nav-whatsapp-link, nav.shrunk .nav-tiktok-link {
+  margin-left: 6px;
+}
+nav.shrunk .nav-booking-link {
+  font-size: 0.68rem;
+  letter-spacing: 1.8px;
+}
+nav.shrunk .nav-slash {
+  margin: 0 12px;
+}
 
-@media (max-width: 1024px) {
-  /* REVISI RESPONSIVE: Menyesuaikan panjang awal navbar di mobile pada Hero Section */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  padding: 8px 18px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.nav-btn-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.nav-btn-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00ff88 0%, #00b359 100%);
+  border: none;
+  border-radius: 30px;
+  padding: 8px 20px;
+  color: var(--black);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.35);
+  transition: all 0.3s ease;
+}
+.nav-btn-glow:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+}
+
+nav.shrunk .nav-btn-dark, nav.shrunk .nav-btn-glow {
+  padding: 6px 14px;
+  font-size: 0.68rem;
+}
+
+.nav-user-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-avatar-link {
+  display: block;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.nav-avatar-link img, .nav-avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--green);
+  box-shadow: 0 0 10px var(--glow);
+  transition: all 0.3s ease;
+}
+.nav-avatar-placeholder {
+  background: rgba(0, 255, 136, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.nav-avatar-link:hover img, .nav-avatar-link:hover .nav-avatar-placeholder {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px var(--green);
+}
+.nav-btn-logout {
+  background: rgba(255, 59, 92, 0.06);
+  border: 1px solid rgba(255, 59, 92, 0.25);
+  color: #ff7096;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.nav-btn-logout:hover {
+  color: var(--white) !important;
+  background: var(--red) !important;
+  box-shadow: 0 0 16px rgba(255, 59, 92, 0.4);
+  transform: translateY(-1px);
+}
+nav.shrunk .nav-avatar-link img, nav.shrunk .nav-avatar-placeholder {
+  width: 30px;
+  height: 30px;
+}
+nav.shrunk .nav-btn-logout {
+  padding: 4px 10px;
+  font-size: 0.62rem;
+}
+
+@media (max-width: 767px) {
+  .nav-slash, .nav-booking-link, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link {
+    display: none;
+  }
+  .nav-btn-dark {
+    display: none;
+  }
   nav { 
     padding: 0 20px; 
-    width: calc(100% - 32px); /* Menentukan lebar proporsional pada mobile agar dapat bertransisi memendek */
+    width: calc(100% - 32px);
     top: 16px;
     height: 64px;
     border-radius: 16px;
   }
-  .nav-links { display: none; }
-  .nav-cta { padding: 10px 20px; font-size: 0.7rem; }
+  .nav-btn-glow {
+    padding: 6px 14px;
+    font-size: 0.68rem;
+  }
   
-  /* REVISI RESPONSIVE: Navbar memendek sedikit saja di mobile, adaptif dan premium */
   nav.shrunk {
     top: 14px;
     width: calc(100% - 64px);
@@ -206,11 +368,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   nav.shrunk .logo {
     font-size: 1.05rem;
     letter-spacing: 2px;
-  }
-  nav.shrunk .nav-cta {
-    padding: 8px 16px;
-    font-size: 0.68rem;
-    border-radius: 30px;
   }
 }
 
@@ -229,22 +386,73 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 #shader-canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:0;}
 #three-canvas{position:absolute;inset:0;width:100%!important;height:100%!important;z-index:4;opacity:1;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,6,8,.85) 0%,rgba(6,6,8,.3) 60%,rgba(6,6,8,.7) 100%);z-index:2;pointer-events:none;}
-.hero-grid{position:absolute;inset:0;z-index:3;background-image:linear-gradient(rgba(0,255,136,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.03) 1px,transparent 1px);background-size:56px 56px;animation:gridDrift 25s linear infinite;pointer-events:none;}
-@keyframes gridDrift{0%{transform:translateY(0)}100%{transform:translateY(56px)}}
+.hero-grid{display:none;}
 
-/* ══ HERO CONTENT — Horizontal Heading di Atas ══ */
+/* ══ HERO CONTENT — Heading Premium di Atas ══ */
 .hero-content {
   position: absolute;
-  top: clamp(100px, 15vh, 140px);
+  top: 36vh;
   left: 0;
   right: 0;
   z-index: 5;
   pointer-events: none;
   opacity: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
 }
+
+/* Halo gelap lembut di belakang heading agar tetap kontras di atas canvas 3D */
+.hero-content::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(920px, 130vw);
+  height: 320px;
+  background: radial-gradient(ellipse, rgba(6,6,8,.55) 0%, transparent 72%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Location label */
+.hero-location {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--green);
+  opacity: 0; /* GSAP */
+  max-width: 180px;
+  line-height: 1.6;
+}
+.hero-location-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+  margin-top: 2px;
+  animation: heroDotPulse 2.4s ease-in-out infinite;
+}
+@keyframes heroDotPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(0,255,136,.45); transform: scale(1); }
+  50%      { box-shadow: 0 0 16px rgba(0,255,136,.85), 0 0 28px rgba(0,255,136,.2); transform: scale(1.3); }
+}
+.hero-location-short { display: none; }
+
 .hero-title {
   font-family: 'Anton', sans-serif;
   font-weight: 400;
@@ -257,43 +465,117 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
+  perspective: 700px;
 }
 .hero-line-wrap {
   display: block;
   overflow: hidden;
   line-height: 0.98;
+  padding: 0 2px;
 }
 .hero-line {
   display: block;
   font-size: clamp(2rem, 5vw, 4.2rem);
   letter-spacing: -1px;
+  will-change: transform, filter;
 }
 .hero-line-1 {
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(255,255,255,0.22);
+  animation: heroOutlinePulse 5s ease-in-out infinite;
 }
-.hero-line-2 { color: var(--white); }
+@keyframes heroOutlinePulse {
+  0%, 100% { -webkit-text-stroke-color: rgba(255,255,255,.18); }
+  50%      { -webkit-text-stroke-color: rgba(0,255,136,.4); }
+}
+.hero-line-2 {
+  color: var(--white);
+  text-shadow: 0 4px 30px rgba(0,0,0,.35);
+}
 .hero-line-3 {
-  color: var(--green);
-  text-shadow: 0 0 40px rgba(0,255,136,0.25);
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(110deg, var(--green) 25%, #d4ffec 50%, var(--green) 75%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: heroShine 6s linear infinite;
 }
-.hero-title-accent { color: var(--green); }
+@keyframes heroShine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.hero-title-accent {
+  color: var(--green);
+  display: inline-block;
+  transform-origin: center;
+  animation: heroAccentPulse 2.4s ease-in-out infinite;
+}
+@keyframes heroAccentPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.4); opacity: .65; }
+}
+
+/* Garis aksen hijau di bawah judul */
+.hero-underline {
+  width: clamp(70px, 9vw, 130px);
+  height: 3px;
+  margin-top: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  transform: scaleX(0);
+  opacity: 0; /* GSAP */
+  animation: heroUnderlinePulse 3s ease-in-out infinite;
+}
+@keyframes heroUnderlinePulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0,255,136,.3); }
+  50%      { box-shadow: 0 0 22px rgba(0,255,136,.6); }
+}
 
 @media (max-width: 1024px) {
+  .hero-content { top: 38vh; }
+  .hero-content::before { height: 260px; }
   .hero-title {
     gap: 12px;
   }
   .hero-line {
     font-size: clamp(1.8rem, 6vw, 3rem);
   }
+  .hero-eyebrow { font-size: 0.6rem; letter-spacing: 3px; padding: 7px 16px; }
 }
 @media (max-width: 600px) {
   .hero-title {
     gap: 8px;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  .hero-line { font-size: clamp(2.4rem, 11.5vw, 3.6rem); }
+  .hero-line-wrap:nth-child(2) {
+    display: none;
+  }
+  .hero-location {
+    bottom: 24px;
+    left: 20px;
+    max-width: 140px;
+    font-size: 0.55rem;
+    letter-spacing: 2.5px;
+    gap: 8px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    align-items: flex-start;
+    text-align: left;
+    line-height: 1.6;
+  }
+  .hero-location-full { display: none; }
+  .hero-location-short { display: inline; }
+  .hero-line { font-size: clamp(1.8rem, 9vw, 2.8rem); }
+  .hero-content::before { width: 100vw; height: 220px; }
+  .hero-content { top: 42vh; }
+  .hero-underline { margin-top: 0; }
 }
 
 .btn-p { clip-path:polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%); padding-right:52px;}
@@ -318,7 +600,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .btn-s{font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,255,136,.35);padding:17px 44px;text-decoration:none;transition:all .3s;}
 .btn-s:hover{border-color:var(--green);background:var(--glow-sm);}
 
-/* REVISI: SOFTEN EDGE BUTTON UNTUK CTA PALING BAWAH */
+/* Soften edge button for main bottom CTA */
 .btn-soft {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .88rem;
@@ -406,7 +688,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 12px;
   line-height: 1;
   transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
   cursor: pointer;
@@ -438,7 +720,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   vertical-align: baseline;
   box-shadow: 0 0 12px var(--glow);
 }
-/* VARIATIONS */
+
 .title-style-swapped .fields-bg-text {
   color: var(--white);
   -webkit-text-stroke: 1.5px var(--white);
@@ -479,7 +761,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .f-card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,8,.95) 0%,transparent 55%);}
 .f-card-badge-wrap{position:absolute;bottom:18px;left:20px;z-index:1;}
 .f-badge{display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,136,.4);padding:3px 10px;background:rgba(0,255,136,.06);margin-bottom:6px;}
-.f-card-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white);text-transform:uppercase;letter-spacing:1px;line-height:1;}
+.f-card-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:700;color:var(--white);letter-spacing:1px;line-height:1;}
 .f-card-body{padding:22px;}
 .f-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
 .f-card-body 
@@ -513,7 +795,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   z-index: 1;
   pointer-events: none;
 }
-
 .gallery-fg-text {
   font-family: 'Anton', sans-serif;
   font-size: clamp(3rem, 6vw, 4.8rem);
@@ -583,6 +864,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   vertical-align: baseline;
   box-shadow: 0 0 15px var(--glow);
 }
+
 .gallery-mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:320px 320px;gap:16px;max-width:1400px;margin:0 auto;padding:0 24px;}
 .g-item{
   position:relative;
@@ -634,7 +916,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 }
 .g-item:hover .g-label{opacity:1;transform:translateY(0);}
 
-/* ── LIGHTBOX ── */
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
 #lb.open{opacity:1;pointer-events:all;}
 #lb img{max-width:82vw;max-height:82vh;object-fit:contain;border:1px solid rgba(0,255,136,.2);}
@@ -745,7 +1026,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   display: none;
 }
 
-/* REVISI: SEKSI SEWA HARGA LEBIH INTERAKTIF & PREMIUM DENGAN HOVER EFFECT & SHINE BORDER */
 .pricing-sec{padding:120px 0;position:relative;}
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
 
@@ -759,7 +1039,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
   box-shadow: 0 20px 45px rgba(0, 255, 136, 0.18);
 }
 
-/* Shine Border wrapper backgrounds */
 .shine-border-bg {
   position: absolute;
   inset: 0;
@@ -779,11 +1058,11 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
     transparent 80%
   );
   animation: spin-shine 4s linear infinite;
-  opacity: 0.5; /* Meredam pendaran berlebih agar lebih elegan */
+  opacity: 0.5;
 }
 .featured-shine {
   animation: spin-shine 3s linear infinite;
-  opacity: 0.6; /* Meredam pendaran berlebih pada kartu populer agar tetap seimbang */
+  opacity: 0.6;
 }
 
 @keyframes spin-shine {
@@ -794,17 +1073,17 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .p-card{
   padding:40px;
   background:var(--card);
-  border:none; /* remove default border to let shine border show */
+  border:none;
   position:relative;
   transition:background 0.3s;
-  margin: 2px; /* leaves 2px of space for the shine border */
+  margin: 2px;
   border-radius: 14px;
-  height: calc(100% - 4px); /* offsets margin */
+  height: calc(100% - 4px);
 }
 .p-card-wrapper:hover .p-card {
   background: rgba(17, 19, 24, 0.95);
 }
-.p-card.featured{background: #0d1612;} /* Menggunakan solid background agar pendaran tidak tembus menerobos teks */
+.p-card.featured{background: #0d1612;}
 .p-card.featured:hover {background: #111e18;}
 .p-card.featured::before{content:'TERPOPULER';position:absolute;top:0;left:50%;transform:translate(-50%,-50%);font-family:'Plus Jakarta Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:3px;color:var(--black);background:var(--green);padding:4px 16px;white-space:nowrap;z-index:10;}
 
@@ -824,7 +1103,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .p-card:hover .p-btn.solid { background: #00e676; box-shadow: 0 0 20px rgba(0,255,136,0.6); }
 .p-btn.solid{background:var(--green);color:var(--black);border-color:var(--green);}
 
-/* VALUES SECTION */
 .values-sec{padding:130px 0;position:relative;overflow:hidden;}
 .values-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,.3),transparent);}
 .values-sec::after{content:'';position:absolute;bottom:-150px;left:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,136,.04) 0%,transparent 70%);pointer-events:none;}
@@ -835,10 +1113,9 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .val-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,255,136,.06) 0%,transparent 65%);opacity:0;transition:opacity .35s;}
 .val-card:hover::before{opacity:1;}
 .val-num{font-family:'Anton',sans-serif;font-size:4rem;font-weight:400;color:transparent;-webkit-text-stroke:1px rgba(0,255,136,.12);position:absolute;top:16px;right:20px;line-height:1;}
-.val-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.val-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:14px;letter-spacing:1px;}
 .val-desc{font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;color:var(--gray2);line-height:1.75;}
 
-/* ── AWARDS MARQUEE ── */
 .awards-sec{padding:80px 0;background:var(--dark);overflow:hidden;position:relative;}
 .awards-sec::before,.awards-sec::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,.2),transparent);}
 .awards-sec::before{top:0;}.awards-sec::after{bottom:0;}
@@ -851,7 +1128,6 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 .award-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray2);}
 .award-year{font-family:'Orbitron',monospace;font-size:.65rem;color:var(--green);}
 
-/* ── CTA SECTION DIPERBARUI BACKGROUND HITAM PEKAT ── */
 .cta-sec{padding:130px 0;background:var(--black);text-align:center;position:relative;overflow:hidden;}
 .cta-sec .fields-bg-text, .cta-sec .fields-fg-text { font-family: 'Plus Jakarta Sans', sans-serif !important; font-weight: 800; }
 .cta-title{font-family:'Anton',sans-serif;font-size:clamp(2.4rem,6vw,4.8rem);font-weight:400;color:var(--white);line-height:0.95;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;}
@@ -861,6 +1137,7 @@ nav.shrunk .nav-cta { padding: 8px 16px; font-size: 0.68rem; border-radius: 30px
 footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;z-index:6;background:var(--black);}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:56px;}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr;gap:32px;} .footer-bottom{flex-wrap:wrap;gap:12px;justify-content:center;text-align:center;}}
 .footer-desc{font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;color:var(--gray);line-height:1.75;max-width:270px;margin-top:14px;}
 .f-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--gray2);margin-bottom:20px;font-weight:700;}
 .f-links{list-style:none;display:flex;flex-direction:column;gap:11px;}
@@ -872,9 +1149,14 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(0,255,136,.15) }
 
-.fields-sec, .gallery-sec, .showcase-sec, .pricing-sec, .cta-sec { position: relative; }
+/* Keyboard accessibility: focus-visible ring */
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
 
-/* Separator Lines */
+.fields-sec, .gallery-sec, .showcase-sec, .pricing-sec, .cta-sec { position: relative; z-index: 1; }
+
 .gallery-sec::before, .showcase-sec::before, .pricing-sec::before, .cta-sec::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
   background:linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
@@ -884,14 +1166,26 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   background:linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
 }
 
-/* Green Glows */
 .cta-sec::after {
   content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   width:700px; height:350px; border-radius:50%;
   background:radial-gradient(ellipse, rgba(0,255,136,.07) 0%, transparent 70%); pointer-events:none;
 }
 .showcase-sec::after {
-  content:''; position:absolute; pointer-events:none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    rgba(0, 255, 136, 0.06) 0px,
+    rgba(0, 255, 136, 0.06) 1px,
+    transparent 1px,
+    transparent 40px
+  );
+  mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 @media (max-width: 1024px) { 
@@ -899,9 +1193,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   .g-item:nth-child(n) { grid-column: 1 / -1 !important; grid-row: auto !important; height: 250px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   COMBINASI HIJAU TEPI LAYAR & OUT LINE LAPANGAN PUTIH + DASHED BACKGROUND
-   ═══════════════════════════════════════════════════════════════ */
 .premium-showcase-container {
   background: var(--black);
   padding: 0;
@@ -909,25 +1200,52 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   flex-direction: column;
   position: relative;
   z-index: 5;
+  height: 100vh;
+  overflow: hidden;
   
-  /* Mengunci teks agar tidak dapat terblokir / ter-highlight secara tidak sengaja saat click-and-drag */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
+.showcase-bg-stadium {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at bottom, rgba(0, 255, 136, 0.15) 0%, rgba(6, 6, 8, 0.65) 60%, var(--black) 100%), 
+                    url('https://images.unsplash.com/photo-1556056504-517cf015e859?w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.22;
+  filter: blur(2px) contrast(1.1);
+  z-index: 1;
+  pointer-events: none;
+}
 
 .premium-scroll-sec {
-  position: relative;
+  position: absolute !important;
+  inset: 0;
   height: 100vh;
   width: 100%;
-  background: #090a0d;
+  background: transparent !important;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
+
+.premium-scroll-sec * {
+  pointer-events: auto;
+}
+
+#scroll-sec-hero {
+  background: #060608 !important;
+  z-index: 10;
+}
+#scroll-sec-1 { z-index: 15; }
+#scroll-sec-2 { z-index: 20; }
+#scroll-sec-3 { z-index: 25; }
 
 /* Container utama untuk kerangka outline overlay (Bingkai Hijau) */
 #premium-border-frame {
@@ -936,18 +1254,17 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   border-radius: 40px;
   pointer-events: none;
   opacity: 0;
-  z-index: 998; /* Di depan bola untuk masking sisi luar */
+  z-index: 998;
   box-shadow: 0 0 0 16px var(--green), 0 0 0 100vmax var(--green); 
 }
 
-/* Garis Putih & Diagram Taktis Lapangan (Pindah Ke Belakang Bola) */
 #premium-pitch-bg {
   position: fixed;
   top: 16px; left: 16px; right: 16px; bottom: 16px;
   border-radius: 40px;
   pointer-events: none;
   opacity: 0;
-  z-index: 6; /* Di belakang canvas bola (z-index 8) agar tidak menghalangi bola */
+  z-index: 6;
 }
 
 .pitch-tactical-svg {
@@ -968,7 +1285,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   z-index: 1; 
 }
 
-/* 4 Busur Sudut Seperempat Lingkaran (Corner kick arcs) */
 .pitch-corner-arc {
   position: absolute;
   width: 60px; height: 60px;
@@ -982,7 +1298,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
 .pitch-corner-arc.bl { bottom: 0; left: 0; border-right-width: 4px; border-top-width: 4px; border-top-right-radius: 100%; }
 .pitch-corner-arc.br { bottom: 0; right: 0; border-left-width: 4px; border-top-width: 4px; border-top-left-radius: 100%; }
 
-/* REVISI RESPONSIVE: Penyesuaian frame tepi & garis sudut lapangan taktis pada mobile */
 @media (max-width: 1024px) {
   #premium-border-frame {
     top: 8px; left: 8px; right: 8px; bottom: 8px;
@@ -1007,7 +1322,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   .pitch-corner-arc.br { border-left-width: 2px; border-top-width: 2px; }
 }
 
-/* REVISI DESKTOP: Mengembalikan posisi horizontal MINI FUT di desktop ke tengah layar terpisah */
 .sc1-title-container {
   position: absolute;
   top: 50%; left: 50%;
@@ -1020,7 +1334,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   pointer-events: none;
   z-index: 7;
   
-  /* Proteksi agar judul tidak terblokir */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1051,7 +1364,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   text-shadow: 0 0 30px var(--glow), 0 0 60px rgba(0, 255, 136, 0.4);
 }
 
-/* REVISI RESPONSIVE: Penataan vertical (atas dan bawah) teks "MINI" (sc1-up) & "FUT" (sc1-down) pada mobile agar terbagi bersih di atas dan bawah bola */
 @media (max-width: 1024px) {
   .sc1-title-container {
     flex-direction: column;
@@ -1062,29 +1374,29 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
     transform: translate(-50%, -50%);
     padding: 0;
     width: 100%;
-    height: 60vh; /* Memberikan batasan tinggi yang presisi agar di tengahnya pas menampung bola 3D */
+    height: 48vh;
     gap: 0;
   }
   .sc1-title-left, .sc1-title-right {
-    font-size: clamp(3.2rem, 15vw, 6rem);
-    transform: scaleY(1.1);
-    letter-spacing: 2px;
+    font-size: clamp(4.8rem, 20vw, 8rem);
+    transform: scaleY(1.3);
+    letter-spacing: -2px;
     display: block;
     text-align: center;
+    pointer-events: auto;
   }
   .sc1-title-left:hover, .sc1-title-left:active {
-    transform: scaleY(1.1) scaleX(1.05) translateY(-8px);
+    transform: scaleY(1.3) scaleX(1.05) translateY(-8px);
     color: var(--green);
     text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(0, 255, 136, 0.4);
   }
   .sc1-title-right:hover, .sc1-title-right:active {
-    transform: scaleY(1.1) scaleX(1.05) translateY(8px);
+    transform: scaleY(1.3) scaleX(1.05) translateY(8px);
     color: var(--green);
     text-shadow: 0 0 25px var(--glow), 0 0 50px rgba(0, 255, 136, 0.4);
   }
 }
 
-/* REVISI DESKTOP: BST TEXT DI DESKTOP TETAP LEBAR DAN PARAGRAF LENGKAP */
 .ball-section-text { 
   position: absolute; 
   z-index: 10; 
@@ -1093,7 +1405,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   max-width: 380px; 
   opacity: 0; 
   
-  /* Mengunci seleksi teks agar tidak mengganggu fokus gesture mouse drag */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1176,14 +1487,14 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   position: absolute;
   left: 0;
   top: 0;
-  width: 4px;
+  width: 2px;
   height: 100%;
-  border-left: 4px double rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.25);
   transition: all 0.3s ease;
 }
 .bst-stat-item:hover::before {
-  border-left: 4px double var(--green);
-  filter: drop-shadow(0 0 5px var(--glow));
+  background: var(--green);
+  box-shadow: 0 0 8px var(--glow);
 }
 .bst-stat-val {
   font-family: 'Anton', sans-serif;
@@ -1284,30 +1595,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   text-align: right;
   max-width: 350px;
 }
-.bst-helper-dot {
-  display: none !important;
-  position: absolute;
-  top: 38%;
-  left: 28%;
-  width: 24px;
-  height: 24px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10;
-}
-.bst-helper-dot-bottom {
-  display: none !important;
-  position: absolute;
-  bottom: 22%;
-  left: 45%;
-  width: 24px;
-  height: 24px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10;
-}
 .bst-grid-lines {
   position: absolute;
   inset: 0;
@@ -1338,10 +1625,9 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   transform: scale(1.4);
 }
 
-/* REVISI RESPONSIVE: Tata letak teks BST di HP */
 @media (max-width: 1024px) {
   .ball-section-text {
-    max-width: 320px !important;
+    max-width: 240px !important;
     width: auto;
     top: 50% !important;
     transform: translateY(-50%) !important;
@@ -1366,8 +1652,14 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   .bst-stats-wrap, .bst-stats-right-wrap, .bst-bottom-desc, .bst-stat-desc {
     display: none !important;
   }
-  .bst-helper-dot, .bst-helper-dot-bottom, .bst-grid-lines, .bst-curved-bg {
+  .bst-grid-lines, .bst-curved-bg {
     display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .ball-section-text {
+    max-width: 170px !important;
   }
 }
 
@@ -1399,15 +1691,36 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
 }
 @keyframes scrollPulse{0%,100%{opacity:.25; transform:translateY(0)} 50%{opacity:1; transform:translateY(8px)}}
 
-/* ── FAN WALL SECTION ── */
 .fanwall-sec {
   padding: 110px 0;
   background: var(--black);
   position: relative;
   overflow: hidden;
 }
+.fanwall-bg-stadium {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to bottom, rgba(6, 6, 8, 1) 0%, rgba(6, 6, 8, 0.45) 40%, rgba(6, 6, 8, 0.45) 60%, rgba(6, 6, 8, 1) 100%), 
+                    url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.32;
+  filter: blur(2px) grayscale(15%);
+  z-index: 0;
+  pointer-events: none;
+}
+.fanwall-divider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.35), transparent);
+  z-index: 5;
+  pointer-events: none;
+}
 
-/* Neon green scanlines background */
 .fanwall-sec::before {
   content: '';
   position: absolute;
@@ -1431,7 +1744,6 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   z-index: 0;
 }
 
-/* Soft radial neon glow center */
 .fanwall-sec::after {
   content: '';
   position: absolute;
@@ -1582,14 +1894,13 @@ footer{padding:64px 0 28px;border-top:1px solid var(--border);position:relative;
   .fanwall-track { gap: 10px; }
   .fanwall-track-rev { margin-top: 10px; }
 }
-body, a, button, .f-card, .showcase-item, .g-item, .nav-cta, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .val-card, .award-item, .p-btn, .fw-card {
+body, a, button, .f-card, .showcase-item, .g-item, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .val-card, .award-item, .p-btn, .fw-card {
   cursor: auto !important;
 }
-a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .nav-cta, .p-btn {
+a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn-s, .btn-soft, .f-book-btn, #lb-close, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link, .p-btn {
   cursor: pointer !important;
 }
 
-/* BACKGROUND DECORATIONS FOR FILLING SPACE */
 .gallery-sec, .pricing-sec, .values-sec {
   position: relative;
   overflow: hidden;
@@ -1782,6 +2093,10 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 .image-title span {
   color: var(--green);
 }
+.image-title span.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
+}
 
 .image-sep-top,
 .image-sep-bottom {
@@ -1800,9 +2115,585 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   .image-content { padding: 0 24px; }
   .image-title { font-size: clamp(1.8rem, 6vw, 2.6rem); }
 }
+/* PRELOADER SPINNER */
+#site-preloader {
+  position: fixed; inset: 0; background: var(--black); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.hexagon-spinner {
+  width: 56px; height: 56px;
+  animation: spin-preloader 2s linear infinite;
+}
+.hexagon-spinner polygon {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.5;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: drawHexagon 2s ease-in-out infinite;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px var(--green));
+}
+.preloader-label {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--gray);
+  text-transform: uppercase;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes spin-preloader { to { transform: rotate(360deg); } }
+@keyframes drawHexagon {
+  0%,100% { stroke-dashoffset: 160; }
+  50%      { stroke-dashoffset: 0; }
+}
+.preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ── LOCATION SECTION ── */
+.location-sec {
+  padding: 120px 0;
+  background: var(--dark);
+  position: relative;
+  overflow: hidden;
+}
+.location-sec::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+}
+.location-sec::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+}
+/* Scanline layer */
+.loc-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.022) 0px,
+    rgba(0, 255, 136, 0.022) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 50%, black 30%, transparent 100%);
+  animation: scanline-drift 8s linear infinite;
+}
+@keyframes scanline-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 60px; }
+}
+
+
+
+/* Garis dekorasi vertikal di latar */
+.loc-grid-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.35;
+}
+.loc-grid-deco::before,
+.loc-grid-deco::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(0,255,136,0.15), transparent);
+}
+.loc-grid-deco::before { left: 25%; }
+.loc-grid-deco::after  { right: 25%; }
+
+/* Layout 2 kolom */
+.loc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .loc-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Panel kiri: heading + info */
+.loc-left {}
+
+.loc-header {
+  margin-bottom: 40px;
+}
+.loc-sup-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+.loc-sup-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--glow);
+}
+.loc-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.loc-title-bg {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.15);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  line-height: 0.9;
+  pointer-events: none;
+}
+.loc-title-fg {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 0.9;
+  display: inline-flex;
+  align-items: baseline;
+}
+.loc-green-dot {
+  display: inline-block;
+  width: clamp(10px, 1.6vw, 14px);
+  height: clamp(10px, 1.6vw, 14px);
+  background: var(--green);
+  margin-left: 8px;
+  vertical-align: baseline;
+  box-shadow: 0 0 12px var(--glow);
+}
+
+/* Tabs info */
+.loc-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 28px;
+}
+.loc-tab-btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray);
+  background: none;
+  border: none;
+  padding: 10px 20px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.loc-tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.loc-tab-btn.active {
+  color: var(--green);
+}
+.loc-tab-btn.active::after {
+  transform: scaleX(1);
+}
+.loc-tab-btn:hover { color: var(--white); }
+
+/* Tab panels */
+.loc-panel { display: none; }
+.loc-panel.active { display: block; }
+
+/* Info rows */
+.loc-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.loc-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.loc-info-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,255,136,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.loc-info-row:hover {
+  border-color: rgba(0,255,136,0.3);
+  transform: translateX(4px);
+}
+.loc-info-row:hover::before { opacity: 1; }
+.loc-info-icon {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--green);
+  line-height: 1;
+}
+.loc-info-text {}
+.loc-info-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 3px;
+}
+.loc-info-val {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--white);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Jam operasional */
+.loc-hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 400px) {
+  .loc-hours-grid { grid-template-columns: 1fr; }
+}
+.loc-hour-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+}
+.loc-hour-item:hover {
+  border-color: rgba(0,255,136,0.3);
+  background: rgba(0,255,136,0.02);
+  transform: translateY(-3px);
+}
+.loc-hour-day {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray2);
+  margin-bottom: 4px;
+}
+.loc-hour-time {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.loc-hour-badge {
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--green);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+/* Kontak */
+.loc-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.loc-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+}
+.loc-contact-item:hover {
+  border-color: rgba(0,255,136,0.4);
+  background: rgba(0,255,136,0.04);
+  transform: translateX(4px);
+}
+.loc-contact-icon {
+  font-size: 1.15rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--green);
+  line-height: 1;
+  transition: background 0.3s, border-color 0.3s;
+}
+.loc-contact-item:hover .loc-contact-icon {
+  background: rgba(0,255,136,0.15);
+  border-color: rgba(0,255,136,0.45);
+}
+.loc-contact-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 2px;
+}
+.loc-contact-val {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+/* Panel kanan: Map */
+.loc-right {}
+
+.loc-map-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: var(--card);
+  transition: border-color 0.4s, box-shadow 0.4s;
+  height: 480px;
+}
+@media (max-width: 900px) {
+  .loc-map-wrapper { height: 340px; }
+}
+.loc-map-wrapper:hover {
+  border-color: rgba(0,255,136,0.4);
+  box-shadow: 0 20px 50px rgba(0,255,136,0.1);
+}
+
+/* Corner accents */
+.loc-map-corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  pointer-events: none;
+  z-index: 3;
+}
+.loc-map-corner::before,
+.loc-map-corner::after {
+  content: '';
+  position: absolute;
+  background: var(--green);
+  border-radius: 1px;
+}
+.loc-map-corner::before { width: 20px; height: 2px; }
+.loc-map-corner::after  { width: 2px; height: 20px; }
+.loc-map-corner.tl { top: 10px; left: 10px; }
+.loc-map-corner.tr { top: 10px; right: 10px; transform: scaleX(-1); }
+.loc-map-corner.bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+.loc-map-corner.br { bottom: 10px; right: 10px; transform: scale(-1,-1); }
+
+.loc-map-iframe {
+  width: 100%; height: 100%;
+  border: none;
+  display: block;
+  filter: grayscale(0.85) invert(0.92) hue-rotate(160deg) contrast(0.9) brightness(0.75);
+  transition: filter 0.5s ease;
+}
+.loc-map-wrapper:hover .loc-map-iframe {
+  filter: grayscale(0.5) invert(0.85) hue-rotate(160deg) contrast(0.95) brightness(0.85);
+}
+
+/* Overlay label atas map */
+.loc-map-label {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(6,6,8,0.82);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,255,136,0.25);
+  padding: 7px 14px;
+  border-radius: 30px;
+  z-index: 4;
+  pointer-events: none;
+}
+.loc-map-label-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--glow);
+  animation: locPulse 2.2s ease-in-out infinite;
+}
+@keyframes locPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 6px rgba(0,255,136,.5); }
+  50%       { transform: scale(1.4); box-shadow: 0 0 18px rgba(0,255,136,.9), 0 0 32px rgba(0,255,136,.2); }
+}
+.loc-map-label-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+/* CTA bawah map */
+.loc-map-cta {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 4;
+}
+.loc-map-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,255,136,0.9);
+  color: var(--black);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+  box-shadow: 0 4px 16px rgba(0,255,136,0.35);
+}
+.loc-map-open-btn:hover {
+  background: var(--green);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(0,255,136,0.5);
+}
+.loc-map-open-btn svg {
+  flex-shrink: 0;
+}
+
+/* Status bar bawah */
+.loc-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.loc-status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.loc-status-indicator {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(0,255,136,.6);
+  animation: locPulse 2s ease-in-out infinite;
+}
+.loc-status-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--white);
+}
+.loc-status-meta {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+@media (max-width: 480px) {
+  .loc-status-bar { flex-direction: column; align-items: flex-start; }
+  .loc-tabs { overflow-x: auto; }
+  .loc-tab-btn { padding: 10px 14px 12px; font-size: 0.65rem; }
+}
+
+/* Pindahkan hero-location ke hidden — section lokasi menggantikannya */
+.hero-location { display: none !important; }
+
+/* ── WEBGL LIQUID DISTORTION OVERLAY ── */
+#hero-gl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 6;
+  pointer-events: auto;
+  display: block;
+}
+/* hero-content tetap di bawah canvas, tidak perlu pointer-events */
+#hero-content { pointer-events: none; }
+.hero-title { transition: opacity 0.8s ease; }
+
 </style>
 </head>
 <body>
+<!-- PRELOADER SPINNER -->
+<div id="site-preloader">
+  <svg class="hexagon-spinner" viewBox="0 0 60 60">
+    <polygon points="30,4 52.5,17 52.5,43 30,56 7.5,43 7.5,17" />
+  </svg>
+  <p class="preloader-label">Loading&hellip;</p>
+</div>
 <div id="noise"></div>
 <div id="lb"><button id="lb-close">✕</button><img id="lb-img" src="" alt=""></div>
 
@@ -1829,43 +2720,66 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 <canvas id="ball-scroll-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 8; opacity: 1; transition: opacity 0.4s;"></canvas>
 
 <nav id="nav">
-  <a href="#" class="logo">MINI<em>FUT</em></a>
-  <ul class="nav-links" id="nav-links">
-    <li><a href="#lapangan">Lapangan</a></li>
-    <li><a href="#galeri">Galeri</a></li>
-    <li><a href="#fasilitas">Fasilitas</a></li>
-    <li><a href="#harga">Harga</a></li>
-    <li><a href="booking.html">Booking</a></li>
-  </ul>
-  <!-- REVISI: Menggunakan Green Liquid Glass Button Markup -->
-  <a href="booking.html" class="nav-cta">
-    <span class="nav-cta-backdrop"></span>
-    <span style="position: relative; z-index: 2;">Book Sekarang</span>
-  </a>
+  <div class="nav-left">
+    <a href="#" class="logo">MINI<em>FUT</em></a>
+    <span class="nav-slash">/</span>
+    <a href="booking.html" class="nav-booking-link">
+      <span class="nav-booking-orig">BOOK NOW</span>
+      <span class="nav-booking-clone">BOOK NOW</span>
+    </a>
+    <a href="https://instagram.com/minifut.arena" target="_blank" class="nav-instagram-link" title="Instagram MiniFut Arena">
+      <i class="bi bi-instagram"></i>
+    </a>
+    <a href="https://wa.me/628123456789" target="_blank" class="nav-whatsapp-link" title="WhatsApp MiniFut Arena">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+    <a href="https://tiktok.com/@minifut.id" target="_blank" class="nav-tiktok-link" title="TikTok MiniFut Arena">
+      <i class="bi bi-tiktok"></i>
+    </a>
+  </div>
+  
+  <div class="nav-right">
+    <a href="auth/login.php" class="nav-btn-dark">LOGIN</a>
+    <a href="booking.html" class="nav-btn-glow">BOOK NOW</a>
+  </div>
+          </a>
+        <?php endif; ?>
+        
+        <a href="auth/logout.php" onclick="return confirm('Apakah Anda yakin ingin keluar dari MiniFut Arena?')" class="nav-btn-logout">
+          Logout
+        </a>
+      </div>
+    <?php else: ?>
+      <a href="auth/login.php" class="nav-btn-dark">LOGIN</a>
+      <a href="booking.html" class="nav-btn-glow">BOOK NOW</a>
+    <?php endif; ?>
+  </div>
 </nav>
 
 <!-- PINNED SHOWCASE CONTAINER UTAMA (MENCAKUP HERO DAN SECTION 2-4) -->
 <div class="premium-showcase-container">
+  <!-- Stadium Background Overlay for depth -->
+  <div class="showcase-bg-stadium"></div>
   <!-- SECTION 1: HERO (Pindah ke dalam container agar pin terintegrasi) -->
   <section class="premium-scroll-sec hero" id="scroll-sec-hero">
     <!-- CANVAS ANIMATED GLOWING FLUID SHADER (BACKGROUND LAYER) -->
     <canvas id="shader-canvas"></canvas>
     
-    <!-- CANVAS INTERACTIVE SOCCER STADIUM 3D (FOREGROUND LAYER - REVISI: Z-INDEX: 4 SUPAYA DI ATAS GRID & ANIMATION) -->
+    <!-- CANVAS INTERACTIVE SOCCER STADIUM 3D (FOREGROUND LAYER) -->
     <canvas id="three-canvas"></canvas>
     
     <div class="hero-overlay"></div>
     <div class="hero-grid"></div>
+
     <div class="hero-content" id="hero-content">
-      <h1 class="hero-title">
-        <div class="hero-line-wrap"><span class="hero-line hero-line-1">PREMIUM</span></div>
-        <div class="hero-line-wrap"><span class="hero-line hero-line-2">SOCCER</span></div>
-        <div class="hero-line-wrap"><span class="hero-line hero-line-3">ARENA<span class="hero-title-accent">.</span></span></div>
-      </h1>
+      <div class="hero-underline"></div>
     </div>
+    <!-- WebGL liquid distortion canvas — renders over hero-content, captures mouse -->
+    <canvas id="hero-gl-canvas" aria-hidden="true"></canvas>
     <div class="scroll-ind center">
       <span>Scroll Down</span>
       <div class="scroll-bar"></div>
+    </div>
   </section>
 
   <!-- SECTION 2: MINI FUT TEXT -->
@@ -1947,6 +2861,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 
 <!-- ── FAN WALL: DOKUMENTASI CUSTOMER ── -->
 <section class="fanwall-sec">
+  <div class="fanwall-divider"></div>
+  <div class="fanwall-bg-stadium"></div>
   <div class="fanwall-neon-l"></div>
   <div class="fanwall-neon-r"></div>
 
@@ -1961,7 +2877,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <div class="fw-card sz-s"><img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-p"><img src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-l"><img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&q=80" alt="" loading="lazy"></div>
-      <!-- duplikat untuk seamless loop -->
+      
       <div class="fw-card sz-m"><img src="https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-s"><img src="https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=600&q=80" alt="" loading="lazy"></div>
       <div class="fw-card sz-l"><img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&q=80" alt="" loading="lazy"></div>
@@ -2012,7 +2928,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     <div class="fields-grid">
       <div class="f-card reveal">
         <div class="f-card-img">
-          <img src="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=800&q=80" alt="Lapangan 1" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1602432141202-e8b683524997?w=800&auto=format&fit=crop&q=80" alt="Lapangan 1" loading="lazy">
           <div class="f-card-img-overlay"></div>
           <div class="f-card-badge-wrap">
             <div class="f-badge">Rumput Sintetis Pro</div>
@@ -2027,13 +2943,13 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           </div>
           <div class="f-price-row">
             <div><span class="f-price-val">1.000K</span><span class="f-price-unit">/jam</span></div>
-            <a href="booking.html" class="f-book-btn">Book →</a>
+            <a href="booking.html" class="f-book-btn">Book</a>
           </div>
         </div>
       </div>
       <div class="f-card reveal">
         <div class="f-card-img">
-          <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=800&q=80" alt="Lapangan 2" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1502481686408-d428268c24ff?w=800&auto=format&fit=crop&q=80" alt="Lapangan 2" loading="lazy">
           <div class="f-card-img-overlay"></div>
           <div class="f-card-badge-wrap">
             <div class="f-badge">Rumput Sintetis Premium</div>
@@ -2048,13 +2964,13 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           </div>
           <div class="f-price-row">
             <div><span class="f-price-val">1.200K</span><span class="f-price-unit">/jam</span></div>
-            <a href="booking.html" class="f-book-btn">Book →</a>
+            <a href="booking.html" class="f-book-btn">Book</a>
           </div>
         </div>
       </div>
       <div class="f-card reveal">
         <div class="f-card-img">
-          <img src="https://images.unsplash.com/photo-1518604666860-9ed391f76460?w=800&q=80" alt="Lapangan 3" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1638868699118-73af322e79c9?w=800&auto=format&fit=crop&q=80" alt="Lapangan 3" loading="lazy">
           <div class="f-card-img-overlay"></div>
           <div class="f-card-badge-wrap">
             <div class="f-badge">Rumput Sintetis Pro</div>
@@ -2069,7 +2985,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           </div>
           <div class="f-price-row">
             <div><span class="f-price-val">1.000K</span><span class="f-price-unit">/jam</span></div>
-            <a href="booking.html" class="f-book-btn">Book →</a>
+            <a href="booking.html" class="f-book-btn">Book</a>
           </div>
         </div>
       </div>
@@ -2092,17 +3008,17 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
     <div class="g-item" data-full="https://images.unsplash.com/photo-1546717003-caee5f93a9db?w=1400&auto=format&fit=crop&q=90">
       <img src="https://images.unsplash.com/photo-1546717003-caee5f93a9db?w=900&auto=format&fit=crop&q=80" alt="" loading="lazy">
       <div class="g-overlay"><div class="g-zoom">+</div></div>
-      <div class="g-label">Lapangan A</div>
+      <div class="g-label">Lapangan 1</div>
     </div>
     <div class="g-item" data-full="https://images.unsplash.com/photo-1641029185333-7ed62a19d5f0?w=1400&auto=format&fit=crop&q=90">
       <img src="https://images.unsplash.com/photo-1641029185333-7ed62a19d5f0?w=900&auto=format&fit=crop&q=80" alt="" loading="lazy">
       <div class="g-overlay"><div class="g-zoom">+</div></div>
-      <div class="g-label">Lapangan C</div>
+      <div class="g-label">Lapangan 3</div>
     </div>
     <div class="g-item" data-full="assets/izuddin-helmi-adnan-K5ChxJaheKI-unsplash.jpg">
       <img src="assets/izuddin-helmi-adnan-K5ChxJaheKI-unsplash.jpg" alt="" loading="lazy">
       <div class="g-overlay"><div class="g-zoom">+</div></div>
-      <div class="g-label">Lapangan B</div>
+      <div class="g-label">Lapangan 2</div>
     </div>
     <div class="g-item" data-full="assets/tribun.png?w=1400&q=90">
       <img src="assets/tribun.png?w=900&q=80" alt="" loading="lazy">
@@ -2134,8 +3050,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <div class="sc-card-overlay"></div>
         </div>
         <div class="sc-card-body">
-          <h3 class="sc-card-title">Parkir Luas & Aman</h3>
-          <p class="sc-card-desc">Area parkir kendaraan roda dua dan empat yang aman dipantau CCTV.</p>
+          <h3 class="sc-card-title">Large Parking Area</h3>
+          <p class="sc-card-desc">Secure and spacious parking area monitored 24/7 by CCTV.</p>
         </div>
         <div class="sc-card-glow"></div>
       </div>
@@ -2147,7 +3063,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         </div>
         <div class="sc-card-body">
           <h3 class="sc-card-title">Restaurant & Café</h3>
-          <p class="sc-card-desc">Tempat bersantai nyaman untuk menikmati makanan setelah bertanding.</p>
+          <p class="sc-card-desc">Comfortable restaurant area to relax and dine after matches.</p>
         </div>
         <div class="sc-card-glow"></div>
       </div>
@@ -2158,8 +3074,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <div class="sc-card-overlay"></div>
         </div>
         <div class="sc-card-body">
-          <h3 class="sc-card-title">Ruang Ganti & Kamar Mandi</h3>
-          <p class="sc-card-desc">Kamar bilas dan ruang ganti bersih, wangi, dan tertata rapi.</p>
+          <h3 class="sc-card-title">Changing Room</h3>
+          <p class="sc-card-desc">Clean changing rooms and shower facilities kept it clean .</p>
         </div>
         <div class="sc-card-glow"></div>
       </div>
@@ -2170,8 +3086,8 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <div class="sc-card-overlay"></div>
         </div>
         <div class="sc-card-body">
-          <h3 class="sc-card-title">Pencahayaan LED Penuh</h3>
-          <p class="sc-card-desc">Lampu sorot LED berstandar internasional untuk main malam hari.</p>
+          <h3 class="sc-card-title">Full LED Lighting</h3>
+          <p class="sc-card-desc">International standard LED spotlights for optimal night play.</p>
         </div>
         <div class="sc-card-glow"></div>
       </div>
@@ -2187,7 +3103,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   <div class="image-content">
     <div class="image-text-wrap">
       <div class="image-label"><span class="ml-dot"></span>THE GAME NEVER STOPS</div>
-      <h2 class="image-title">PLAY<br><span>BEYOND</span><br>LIMITS</h2>
+      <h2 class="image-title">PLAY<br><span>BEYOND</span><br><span class="outline">LIMITS</span></h2>
     </div>
   </div>
   <div class="image-sep-bottom"></div>
@@ -2209,7 +3125,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       <p class="sec-sub">Tidak ada biaya tersembunyi. Harga sama untuk siang maupun malam.</p>
     </div>
     <div class="pricing-grid">
-      <!-- Card 1 wrapped with ShineBorder equivalent -->
       <div class="p-card-wrapper reveal">
         <div class="shine-border-bg">
           <div class="p-card-shine"></div>
@@ -2234,14 +3149,13 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         </div>
       </div>
       
-      <!-- Card 2 wrapped with ShineBorder equivalent -->
       <div class="p-card-wrapper featured-wrapper reveal">
         <div class="shine-border-bg">
           <div class="p-card-shine featured-shine"></div>
         </div>
         <div class="p-card featured">
           <div class="p-tag">Lapangan 2</div>
-          <div class="p-name">Premium + Tribun</div>
+          <div class="p-name">Premium dan Tribun</div>
           <div class="p-price">
             <span class="p-cur">Rp</span>
             <span class="p-amount">1.200.000</span>
@@ -2262,6 +3176,207 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   </div>
 </section>
 
+<!-- ── LOCATION SECTION ── -->
+<section class="location-sec" id="lokasi">
+  <!-- Dekorasi background -->
+  <div class="loc-scanlines"></div>
+  <div class="loc-grid-deco"></div>
+
+  <div class="container">
+    <div class="loc-layout">
+
+      <!-- KOLOM KIRI: Info -->
+      <div class="loc-left">
+        <div class="loc-header reveal">
+          <div class="loc-sup-label">
+            <span class="loc-sup-dot"></span>
+            Temukan Kami
+          </div>
+          <div class="loc-title-wrap">
+            <span class="loc-title-bg">PINPOINT</span>
+            <span class="loc-title-fg">LOKASI<span class="loc-green-dot"></span></span>
+          </div>
+        </div>
+
+        <!-- Tab navigasi -->
+        <div class="loc-tabs reveal" id="locTabs">
+          <button class="loc-tab-btn active" data-tab="alamat"><i class="bi bi-geo-alt-fill"></i> Alamat</button>
+          <button class="loc-tab-btn" data-tab="jadwal"><i class="bi bi-clock-fill"></i> Jadwal</button>
+          <button class="loc-tab-btn" data-tab="kontak"><i class="bi bi-telephone-fill"></i> Kontak</button>
+        </div>
+
+        <!-- Panel: Alamat -->
+        <div class="loc-panel active reveal" id="tab-alamat">
+          <div class="loc-info-rows">
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Alamat Lengkap</div>
+                <div class="loc-info-val">Jl. Kaliurang Km 7.5, Sinduharjo, Ngaglik, Sleman, Daerah Istimewa Yogyakarta 55581</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-building"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Kota & Provinsi</div>
+                <div class="loc-info-val">Sleman, Daerah Istimewa Yogyakarta</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-compass-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Lokasi Strategis</div>
+                <div class="loc-info-val">Hanya ±8 menit dari UGM dan ±15 menit dari Malioboro</div>
+              </div>
+            </div>
+            <div class="loc-info-row">
+              <div class="loc-info-icon"><i class="bi bi-p-square-fill"></i></div>
+              <div class="loc-info-text">
+                <div class="loc-info-label">Area Parkir</div>
+                <div class="loc-info-val">Parkir Gratis dan Terpantau CCTV 24 jam</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Jadwal -->
+        <div class="loc-panel" id="tab-jadwal">
+          <div class="loc-hours-grid">
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Senin – Jumat</div>
+              <div class="loc-hour-time">08.00 – 24.00</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Sabtu – Minggu</div>
+              <div class="loc-hour-time">08.00 – 24.00</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Hari Libur</div>
+              <div class="loc-hour-time">TUTUP</div>
+            </div>
+            <div class="loc-hour-item">
+              <div class="loc-hour-day">Booking Terakhir</div>
+              <div class="loc-hour-time">Jam 23.00</div>
+            </div>
+          </div>
+          <div class="loc-info-row" style="margin-top:14px;">
+            <div class="loc-info-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div class="loc-info-text">
+              <div class="loc-info-label">Info Operasional</div>
+              <div class="loc-info-val">Buka setiap hari Senin sampai Minggu. Tutup pada Hari Libur Nasional.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: Kontak -->
+        <div class="loc-panel" id="tab-kontak">
+          <div class="loc-contact-list">
+            <a href="https://wa.me/6281234567890" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-whatsapp"></i></div>
+              <div>
+                <div class="loc-contact-label">WhatsApp</div>
+                <div class="loc-contact-val">+62 812-3456-7890</div>
+              </div>
+            </a>
+            <a href="tel:+62274123456" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-telephone-fill"></i></div>
+              <div>
+                <div class="loc-contact-label">Telepon</div>
+                <div class="loc-contact-val">(0274) 123-456</div>
+              </div>
+            </a>
+            <a href="https://instagram.com/minifut.id" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-instagram"></i></div>
+              <div>
+                <div class="loc-contact-label">Instagram</div>
+                <div class="loc-contact-val">@minifut.id</div>
+              </div>
+            </a>
+            <a href="https://tiktok.com/@minifut.id" target="_blank" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-tiktok"></i></div>
+              <div>
+                <div class="loc-contact-label">TikTok</div>
+                <div class="loc-contact-val">@minifut.id</div>
+              </div>
+            </a>
+            <a href="mailto:info@minifut.id" class="loc-contact-item">
+              <div class="loc-contact-icon"><i class="bi bi-envelope-fill"></i></div>
+              <div>
+                <div class="loc-contact-label">Email</div>
+                <div class="loc-contact-val">info@minifut.id</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- KOLOM KANAN: Map -->
+      <div class="loc-right reveal">
+        <div class="loc-map-wrapper">
+          <!-- Corner accents -->
+          <div class="loc-map-corner tl"></div>
+          <div class="loc-map-corner tr"></div>
+          <div class="loc-map-corner bl"></div>
+          <div class="loc-map-corner br"></div>
+
+          <!-- Label overlay -->
+          <div class="loc-map-label">
+            <span class="loc-map-label-dot"></span>
+            <span class="loc-map-label-text">MiniFut · Live</span>
+          </div>
+
+          <!-- Google Maps embed — Jl. Kaliurang Km 7.5 Sleman -->
+          <iframe
+            class="loc-map-iframe"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.4048!2d110.3905!3d-7.7494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59456e6fcc6d%3A0x6ebce4ad8cc92f5b!2sJl.%20Kaliurang%20No.KM.7%2C%20Sinduharjo%2C%20Kec.%20Ngaglik%2C%20Kabupaten%20Sleman%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Lokasi MiniFut Yogyakarta"
+          ></iframe>
+
+          <!-- CTA buka Google Maps -->
+          <div class="loc-map-cta">
+            <a
+              href="https://maps.google.com/?q=Jl.+Kaliurang+Km+7.5+Sinduharjo+Ngaglik+Sleman+Yogyakarta"
+              target="_blank"
+              class="loc-map-open-btn"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              Buka Maps
+            </a>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="loc-status-bar reveal">
+          <div class="loc-status-item">
+            <div class="loc-status-indicator"></div>
+            <div>
+              <div class="loc-status-text">Buka Sekarang</div>
+              <div class="loc-status-meta">08.00 – 24.00 WIB</div>
+            </div>
+          </div>
+          <div class="loc-status-item">
+            <div class="loc-info-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+            <div>
+              <div class="loc-status-text">3 Lapangan Tersedia</div>
+              <div class="loc-status-meta">Sleman, Yogyakarta</div>
+            </div>
+          </div>
+          <a href="booking.html" class="loc-map-open-btn" style="position:static;box-shadow:none;font-size:0.68rem;padding:9px 16px;">
+            Book Sekarang
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- VALUES SECTION -->
 <section class="values-sec">
   <div class="bg-deco-noise"></div>
@@ -2273,7 +3388,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   <div class="container">
     <div style="text-align:center;" class="reveal">
       <div class="sec-label" style="letter-spacing: 5px; font-size: 0.7rem; margin-bottom: 6px;">DNA KAMI</div>
-      <h2 class="sec-title" style="margin-bottom: 48px; font-family: 'Anton', sans-serif; font-size: clamp(2.4rem, 5.5vw, 4.5rem); font-weight: 400; color: var(--white); line-height: 1.1; text-transform: uppercase; letter-spacing: 6px; word-spacing: 14px;">THE CHAMPION</h2>
+      <h2 class="sec-title" style="margin-bottom: 48px; font-family: 'Anton', sans-serif; font-size: clamp(2.4rem, 5.5vw, 4.5rem); font-weight: 400; color: var(--white); line-height: 1.1; text-transform: uppercase; letter-spacing: 6px; word-spacing: 12px;">THE CHAMPION</h2>
     </div>
     <div class="values-hex-grid">
       <div class="val-card reveal">
@@ -2310,10 +3425,10 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
   </div>
 </section>
 
-<!-- REVISI: GREEN-THEMED AWARDS MARQUEE DENGAN KONTEN INFORMATIF TENTANG ARENA -->
+<!-- ── GREEN-THEMED AWARDS MARQUEE DENGAN KONTEN INFORMATIF TENTANG ARENA ── -->
 <section class="awards-sec">
   <div class="awards-track">
-    <div class="award-item"><div><div class="award-name">RUMPUT FIFA GRADE A</div><div class="award-year">Teknologi Sintetis Premium Teruji</div></div></div>
+    <div class="award-item"><div><div class="award-name">RUMPUT FIFA GRADE PRO</div><div class="award-year">Teknologi Sintetis Premium Teruji</div></div></div>
     <div class="award-item"><div><div class="award-name">1200 LUX LED SYSTEM</div><div class="award-year">Sistem Lampu Sorot Tanpa Bayangan</div></div></div>
     <div class="award-item"><div><div class="award-name">EXCLUSIVELY DESIGNED TRIBUN</div><div class="award-year">Area Penonton Nyaman & Luas</div></div></div>
     <div class="award-item"><div><div class="award-name">BOOKING INSTAN ONLINE</div><div class="award-year">Reservasi Cepat & Aman 24/7</div></div></div>
@@ -2352,8 +3467,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
         Book Lapangan<br>Sekarang
       </h2>
       <p class="cta-sub">Jangan tunda lagi. Atur jadwal pertandinganmu dan nikmati pengalaman<br>mini soccer terbaik di Yogyakarta.</p>
-      <!-- REVISI: MENGGUNAKAN TOMBOL SEAKAN-AKAN SANGAT PREMIUM DENGAN SOFTEN EDGE YERDAPAT HOVER EFFECT -->
-      <a href="booking.html" class="btn-soft" style="display:inline-block">Mulai Booking →</a>
+      <a href="booking.html" class="btn-soft" style="display:inline-block">Mulai Booking</a>
     </div>
   </div>
 </section>
@@ -2371,6 +3485,7 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <li><a href="#lapangan">Lapangan</a></li>
           <li><a href="#fasilitas">Fasilitas</a></li>
           <li><a href="#harga">Harga</a></li>
+          <li><a href="#lokasi">Lokasi</a></li>
           <li><a href="booking.html">Booking Lapangan</a></li>
         </ul>
       </div>
@@ -2380,7 +3495,9 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
           <li><strong>Buka Setiap Hari:</strong></li>
           <li>08.00 – 24.00 WIB</li>
           <li style="margin-top:8px"><strong>Lokasi:</strong></li>
-          <li>Yogyakarta, DIY</li>
+          <li>Jl. Kaliurang Km 7.5, RT 04/RW 12</li>
+          <li>Sinduharjo, Ngaglik, Sleman</li>
+          <li>D.I. Yogyakarta 55581</li>
         </ul>
       </div>
       <div>
@@ -2394,10 +3511,11 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 MiniFut — All Rights Reserved</div>
+      <div class="footer-copy">© 2026 MiniFut</div>
       <div class="f-links" style="flex-direction:row; gap:20px;">
         <a href="https://instagram.com/minifut.id" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="https://tiktok.com/@minifut.id" target="_blank" rel="noopener noreferrer">TikTok</a>
       </div>
     </div>
   </div>
@@ -2411,7 +3529,6 @@ a, button, [role="button"], input[type="submit"], select, textarea, .btn-p, .btn
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
-// --- SHADER SOCCER PANEL DEFINISI GLOBAL ---
 const ballVertS = `
   varying vec3 vNormal;varying vec3 vPos;varying vec3 vWorldPos;
   void main(){
@@ -2422,44 +3539,106 @@ const ballVertS = `
   }`;
     
 const ballFragS = `
-  uniform float uTime;varying vec3 vNormal;varying vec3 vPos;varying vec3 vWorldPos;
-  
-  float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-  float noise(vec2 p){
-    vec2 i=floor(p),f=fract(p);
-    vec2 u=f*f*(3.-2.*f);
-    return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
-  }
-  float fbm(vec2 p){
-    float v=0.;float a=.5;
-    for(int i=0;i<4;i++){v+=a*noise(p);p*=2.2;a*=.5;}return v;
+  uniform float uTime;
+  varying vec3 vNormal;
+  varying vec3 vPos;
+  varying vec3 vWorldPos;
+
+  // 3D hash for noise
+  float hash3(vec3 p) {
+    p = fract(p * vec3(127.1, 311.7, 74.7));
+    return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
   }
 
-  float soccerPanel(vec3 p){
-    float t=atan(p.z,p.x)*3.;
-    float ph=asin(clamp(p.y,-1.,1.))*3.;
-    vec2 uv=vec2(t,ph);
-    float h=smoothstep(.35,.32,abs(sin(uv.x*3.14159)*sin(uv.y*3.14159)));
-    h+=smoothstep(.35,.32,abs(cos((uv.x+uv.y)*3.14159*.5)));
-    return clamp(h,0.,1.);
+  // 3D value noise
+  float noise3(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    vec3 u = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(
+        mix(hash3(i + vec3(0.0,0.0,0.0)), hash3(i + vec3(1.0,0.0,0.0)), u.x),
+        mix(hash3(i + vec3(0.0,1.0,0.0)), hash3(i + vec3(1.0,1.0,0.0)), u.x),
+        u.y
+      ),
+      mix(
+        mix(hash3(i + vec3(0.0,0.0,1.0)), hash3(i + vec3(1.0,0.0,1.0)), u.x),
+        mix(hash3(i + vec3(0.0,1.0,1.0)), hash3(i + vec3(1.0,1.0,1.0)), u.x),
+        u.y
+      ),
+      u.z
+    );
   }
 
-  void main(){
-    vec3 N=normalize(vNormal);vec3 pos=normalize(vPos);
+  // Generates curved panel lines/grooves (FIFA star/curved geometry style)
+  float getSoccerSeams(vec3 p) {
+    float val1 = abs(sin(p.x * 3.14 + sin(p.y * 2.0)) * cos(p.z * 3.14));
+    float val2 = abs(cos(p.y * 3.14 + sin(p.z * 2.0)) * sin(p.x * 3.14));
+    float val3 = abs(sin(p.z * 3.14 + sin(p.x * 2.0)) * cos(p.y * 3.14));
     
-    float panel=soccerPanel(pos);
-    vec3 bc=mix(vec3(.92,.9,.86), vec3(.05,.05,.04), panel);
+    float combined = val1 * val2 + val2 * val3 + val3 * val1;
+    float seam = smoothstep(0.09, 0.04, combined);
     
-    vec3 viewDir=normalize(-vWorldPos+vec3(0.,0.,10.));
-    float rim=pow(1.-max(dot(N,viewDir),0.),3.);
-    vec3 lightDir=normalize(vec3(2.,3.,4.));
-    float diff=max(dot(N,lightDir),0.);
+    float micro = smoothstep(0.03, 0.0, abs(sin(p.x * 8.0) * sin(p.y * 8.0) * sin(p.z * 8.0)) - 0.02);
+    return clamp(seam + micro * 0.4, 0.0, 1.0);
+  }
+
+  // Modern FIFA sweeping graphics (neon green, dark teal, and black)
+  vec3 getGraphics(vec3 p) {
+    float angle = atan(p.y, p.x) + p.z * 1.5;
+    float sweep1 = smoothstep(0.12, 0.0, abs(sin(angle * 2.0) - 0.35));
+    float sweep2 = smoothstep(0.07, 0.0, abs(sin(angle * 2.0 + 1.5) - 0.65));
     
-    vec3 finalColor=bc*vec3(0.,.06,.03)*2.+bc*vec3(.9,.9,.85)*diff*1.1+vec3(0.,.9,.55)*rim*.25;
-    finalColor=pow(finalColor,vec3(.85));
+    vec3 neonGreen = vec3(0.0, 1.0, 0.53);
+    vec3 darkTeal = vec3(0.0, 0.35, 0.45);
     
-    gl_FragColor=vec4(finalColor,1.0);
-  }`;
+    return mix(vec3(0.0), neonGreen * sweep1 + darkTeal * sweep2, clamp(sweep1 + sweep2, 0.0, 1.0));
+  }
+
+  void main() {
+    vec3 N = normalize(vNormal);
+    vec3 pos = normalize(vPos);
+
+    // 1. High-Frequency Pebbled Leather surface (noise-based bump)
+    float pebbleCoord = 800.0;
+    float pebble = noise3(pos * pebbleCoord);
+    
+    pebble += 0.5 * noise3(pos * (pebbleCoord * 2.0));
+    pebble += 0.25 * noise3(pos * (pebbleCoord * 4.0));
+    pebble = pebble / 1.75;
+    
+    vec3 perturbedN = normalize(N + (pebble - 0.5) * 0.07 * N);
+
+    // 2. Seams mask (grooves)
+    float seams = getSoccerSeams(pos);
+
+    // 3. Base Leather color (Pearl White)
+    vec3 baseLeather = vec3(0.96, 0.95, 0.92);
+
+    // 4. FIFA sweeping graphic stripes
+    vec3 graphics = getGraphics(pos);
+    
+    vec3 color = mix(baseLeather, graphics, clamp(length(graphics) * 0.85, 0.0, 1.0));
+    color = mix(color, vec3(0.15, 0.15, 0.15), seams);
+
+    // 5. Lighting calculations
+    vec3 viewDir = normalize(-vWorldPos + vec3(0.0, 0.0, 10.0));
+    vec3 lightDir = normalize(vec3(3.0, 5.0, 6.0));
+    vec3 halfDir = normalize(lightDir + viewDir);
+
+    float diff = max(dot(perturbedN, lightDir), 0.0);
+    float spec = pow(max(dot(perturbedN, halfDir), 0.0), 55.0) * 0.6;
+    float rim = pow(1.0 - max(dot(N, viewDir), 0.0), 3.0) * 0.4;
+
+    vec3 finalColor = color * 0.22                           // Ambient
+                    + color * vec3(1.0, 0.98, 0.95) * diff * 0.95 // Diffuse
+                    + vec3(1.0) * spec                           // Specular
+                    + vec3(0.0, 1.0, 0.55) * rim;                // Branding green rim glow
+
+    finalColor = pow(finalColor, vec3(0.9));
+    gl_FragColor = vec4(finalColor, 1.0);
+  }
+`;
 
 // --- SINKRONISASI PROGRESS SCROLL GSAP KE THREEJS ---
 let heroScrollProgress = 0;
@@ -2467,7 +3646,7 @@ let targetHeroScrollProgress = 0;
 
 gsap.registerPlugin(ScrollTrigger);
 
-document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta').forEach(btn => {
+document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta, .nav-btn-dark, .nav-btn-glow, .nav-btn-logout, .nav-instagram-link, .nav-whatsapp-link, .nav-tiktok-link').forEach(btn => {
   btn.addEventListener('mousemove', e => {
     const rect = btn.getBoundingClientRect();
     const relX = e.clientX - (rect.left + rect.width / 2);
@@ -2479,7 +3658,6 @@ document.querySelectorAll('.btn-p, .btn-s, .btn-soft, .nav-cta').forEach(btn => 
   });
 });
 
-// ── REVISI NAV DYNAMIC TRANSITION (MEMENDEK SAAT DI LUAR HERO SECTION) ──
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('nav');
   const showcase = document.querySelector('.premium-showcase-container');
@@ -2512,26 +3690,43 @@ ScrollTrigger.batch(".reveal", {
 
 /* ══════════════════════════════════════════════
    HERO CONTENT — ENTRANCE ANIMATION
-   Stagger per-line reveal (slide up from overflow:hidden wrappers)
+   Eyebrow fade-in → title cinematic flip-up + blur-to-focus (stagger per kata)
+   → garis aksen menyala dari tengah
    Delay: 0.5s (memberi ruang shader & stadium 3D untuk init)
    ══════════════════════════════════════════════ */
 (function initHeroEntrance() {
-  // Set initial transform states
-  gsap.set(".hero-line",  { yPercent: 110 });      // Tersembunyi di bawah overflow:hidden wrapper
+  window.heroTextState = [
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+    { opacity: 0, y: 110, rotateX: -55, blur: 10 }
+  ];
+  window.triggerHeroTextUpdate = true;
+
+  gsap.set(".hero-underline", { scaleX: 0 });
 
   const heroEnterTl = gsap.timeline({ delay: 0.5 });
   heroEnterTl
-    // Title lines: slide-up stagger reveal dari bawah wrapper
-    .to(".hero-line", {
-      yPercent: 0,
-      duration: 1.15,
+    .to(window.heroTextState, {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      blur: 0,
+      duration: 1.2,
       ease: "power4.out",
-      stagger: 0.1
-    });
+      stagger: 0.12,
+      onUpdate: () => {
+        window.triggerHeroTextUpdate = true;
+      }
+    })
+    .to(".hero-underline", {
+      opacity: 1,
+      scaleX: 1,
+      duration: 0.9,
+      ease: "power3.out"
+    }, "-=0.5");
 })();
 /* ══ END HERO ENTRANCE ══ */
 
-/* --- LOGIKA SC-CARD TILT & GLOW --- */
 /* ── IMAGE-SEC: Parallax image + text fade ── */
 gsap.to(".image-img", {
   scrollTrigger: {
@@ -2561,6 +3756,195 @@ tlImage.fromTo(".image-label",
   "-=0.5"
 );
 
+/* ══════════════════════════════════════════════
+   LOCATION SECTION — GSAP ANIMATIONS
+   ══════════════════════════════════════════════ */
+(function initLocationSection() {
+
+  /* 1. Title PINPOINT: teks outline masuk dari kiri, teks solid dari kanan */
+  const locTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".location-sec",
+      start: "top 75%",
+      toggleActions: "play none none none"
+    }
+  });
+
+  locTl
+    .fromTo(".loc-title-bg",
+      { x: -60, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" }
+    )
+    .fromTo(".loc-title-fg",
+      { x: 60, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
+      "-=0.7"
+    )
+    .fromTo(".loc-sup-label",
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+      "<"
+    );
+
+  /* 2. Info rows: stagger masuk dari bawah */
+  ScrollTrigger.create({
+    trigger: ".location-sec",
+    start: "top 65%",
+    once: true,
+    onEnter: () => {
+      gsap.fromTo(".loc-info-row",
+        { y: 32, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out", stagger: 0.1 }
+      );
+      gsap.fromTo(".loc-hour-item",
+        { y: 28, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, ease: "power2.out", stagger: 0.08 }
+      );
+      gsap.fromTo(".loc-contact-item",
+        { x: -30, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.55, ease: "power2.out", stagger: 0.09 }
+      );
+    }
+  });
+
+  /* 3. Map wrapper: scale + fade masuk */
+  gsap.fromTo(".loc-map-wrapper",
+    { scale: 0.94, opacity: 0 },
+    {
+      scale: 1, opacity: 1,
+      duration: 1.1, ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".loc-map-wrapper",
+        start: "top 80%",
+        toggleActions: "play none none none"
+      }
+    }
+  );
+
+  /* 4. Corner accents: stagger masuk */
+  gsap.fromTo(".loc-map-corner",
+    { scale: 0, opacity: 0 },
+    {
+      scale: 1, opacity: 1,
+      duration: 0.5, ease: "back.out(2)", stagger: 0.07,
+      scrollTrigger: {
+        trigger: ".loc-map-wrapper",
+        start: "top 78%"
+      }
+    }
+  );
+
+  /* 5. Status bar slide dari bawah */
+  gsap.fromTo(".loc-status-bar",
+    { y: 30, opacity: 0 },
+    {
+      y: 0, opacity: 1,
+      duration: 0.8, ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".loc-status-bar",
+        start: "top 88%"
+      }
+    }
+  );
+
+  /* 6. Ambient glow parallax */
+  gsap.to(".loc-ambient",
+    {
+      y: -60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".location-sec",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5
+      }
+    }
+  );
+  gsap.to(".loc-ambient-r",
+    {
+      y: 60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".location-sec",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 2
+      }
+    }
+  );
+
+  /* 7. Mouse-hover radial glow pada info-row */
+  document.querySelectorAll('.loc-info-row').forEach(row => {
+    row.addEventListener('mousemove', e => {
+      const rect = row.getBoundingClientRect();
+      row.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+      row.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+    });
+  });
+
+})();
+
+/* ── TAB SWITCHING LOGIC untuk Location Section ── */
+(function initLocTabs() {
+  const tabs = document.querySelectorAll('.loc-tab-btn');
+  if (!tabs.length) return;
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      // Update active tab button
+      tabs.forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Animate out current panel
+      const currentPanel = document.querySelector('.loc-panel.active');
+      if (currentPanel) {
+        gsap.to(currentPanel, {
+          y: -12, opacity: 0, duration: 0.22, ease: "power2.in",
+          onComplete: () => {
+            currentPanel.classList.remove('active');
+            currentPanel.style.display = 'none';
+
+            // Animate in new panel
+            const nextPanel = document.getElementById('tab-' + target);
+            if (nextPanel) {
+              nextPanel.style.display = 'block';
+              nextPanel.classList.add('active');
+              gsap.fromTo(nextPanel,
+                { y: 16, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }
+              );
+              // Re-trigger stagger for newly shown rows
+              if (target === 'alamat') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-info-row'),
+                  { y: 20, opacity: 0 },
+                  { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              } else if (target === 'jadwal') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-hour-item, .loc-info-row'),
+                  { y: 20, opacity: 0 },
+                  { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              } else if (target === 'kontak') {
+                gsap.fromTo(nextPanel.querySelectorAll('.loc-contact-item'),
+                  { x: -24, opacity: 0 },
+                  { x: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.07 }
+                );
+              }
+            }
+          }
+        });
+      }
+    });
+  });
+})();
+
+/* ── FIX: Semua loc-panel non-active dimulai tersembunyi ── */
+document.querySelectorAll('.loc-panel:not(.active)').forEach(p => {
+  p.style.display = 'none';
+});
+
 document.querySelectorAll('.sc-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
@@ -2587,18 +3971,22 @@ document.querySelectorAll('.sc-card').forEach(card => {
 /* GALLERY LIGHTBOX LOGIC */
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img');
 document.querySelectorAll('.g-item').forEach(item=>{
-  item.addEventListener('click',()=>{lbImg.src=item.dataset.full;lb.classList.add('open');});
+  item.addEventListener('click',()=>{
+    lbImg.src=item.dataset.full;
+    const label=item.querySelector('.g-label');
+    lbImg.alt=label?label.textContent:'Gallery Image';
+    lb.classList.add('open');
+  });
 });
 document.getElementById('lb-close').onclick=()=>lb.classList.remove('open');
 lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&lb.classList.contains('open'))lb.classList.remove('open');});
 
-/* REVISI COUNTERS LOGIC: START DARI DATA-START (500) HINGGA DATA-TARGET (999) DENGAN KECEPATAN LEBIH LAMBAT */
 const co=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;
   const el=e.target,target=+el.dataset.target,suffix=el.dataset.suffix||'';
   const startVal=el.dataset.start ? +el.dataset.start : 0;
   let v=startVal;
-  // Memperlambat laju konter (Spread over 2500ms / 2.5 seconds)
   const duration = 2500;
   const step=Math.max(1, (target-startVal)/(duration/16));
   const t=setInterval(()=>{
@@ -2610,7 +3998,7 @@ const co=new IntersectionObserver(es=>es.forEach(e=>{
     el.textContent=Math.floor(v)+suffix;
   },16);
   co.unobserve(el);
-}),{threshold:1});
+}),{threshold:0.5});
 document.querySelectorAll('.counter').forEach(el=>co.observe(el));
 
 /* PARTICLES CTA LOGIC */
@@ -2634,7 +4022,6 @@ if(typeof particlesJS !== 'undefined') {
   });
 }
 
-/* ─── VALUES CARDS REACTIVE GLOW ─── */
 document.querySelectorAll('.val-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
@@ -2672,7 +4059,6 @@ document.querySelectorAll('.val-card').forEach(card => {
     }
   `;
 
-  // ADAPTASI HIJAU PREMIUM DARI FRAGMENT SHADER LIQUID WAVES
   const fragmentShader = `
     uniform vec2 resolution;
     uniform float time;
@@ -2693,10 +4079,9 @@ document.querySelectorAll('.val-card').forEach(card => {
       float w2 = 0.05 / abs(p.y + sin((gx + time) * xScale) * yScale);
       float w3 = 0.05 / abs(p.y + sin((bx + time) * xScale) * yScale);
       
-      // Mengonversi gelombang RGB asli menjadi paduan warna Hijau Emerald / Neon Premium
-      vec3 col1 = vec3(0.0, w1 * 0.5, w1 * 0.15);     // Gelombang hijau tua/teal
-      vec3 col2 = vec3(w2 * 0.15, w2 * 0.95, w2 * 0.3); // Gelombang utama neon lime-green
-      vec3 col3 = vec3(0.0, w3 * 0.7, w3 * 0.5);       // Gelombang cyan-green elektrik
+      vec3 col1 = vec3(0.0, w1 * 0.5, w1 * 0.15);
+      vec3 col2 = vec3(w2 * 0.15, w2 * 0.95, w2 * 0.3);
+      vec3 col3 = vec3(0.0, w3 * 0.7, w3 * 0.5);
       
       vec3 finalColor = col1 + col2 + col3;
       
@@ -2853,7 +4238,6 @@ document.querySelectorAll('.val-card').forEach(card => {
     if (!_heroVisible) return;
     t += 0.01;
 
-    // Interpolasi halus scroll progress dengan efek buttery smooth damping
     heroScrollProgress += (targetHeroScrollProgress - heroScrollProgress) * 0.1;
 
     camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
@@ -2890,13 +4274,11 @@ document.querySelectorAll('.val-card').forEach(card => {
   window.addEventListener('resize', resizeS);
   resizeS();
 
-  // Menggunakan shared shader ballVertS dan ballFragS global agar konsisten
   const _ballSegs = window.innerWidth <= 768 ? 32 : 48;
   const ballSGeo = new THREE.SphereGeometry(1.6, _ballSegs, _ballSegs);
   const ballSMat = new THREE.ShaderMaterial({ vertexShader: ballVertS, fragmentShader: ballFragS, uniforms: { uTime: { value: 0 } } });
   const scrollBall = new THREE.Mesh(ballSGeo, ballSMat);
   
-  // Posisi awal bola classic
   scrollBall.position.set(0, 0, 0);
   scrollBall.scale.setScalar(1.0);
   sceneS.add(scrollBall);
@@ -2906,7 +4288,7 @@ document.querySelectorAll('.val-card').forEach(card => {
   dlS.position.set(3, 5, 6);
   sceneS.add(dlS);
 
-  // ── INTEGRASI INTERAKSI DRAG: KLIK & PUTAR BOLA SECARA INTERAKTIF ──
+  // ── INTEGRASI INTERAKSI DRAG BOLA SECARA INTERAKTIF ──
   let isDragging = false;
   let previousMousePosition = { x: 0, y: 0 };
   let targetRotation = { x: 0, y: 0 };
@@ -2918,8 +4300,6 @@ document.querySelectorAll('.val-card').forEach(card => {
   let targetRotX = 0;
   let targetRotY = 0;
   let targetRotZ = 0;
-  let prevX = 0;
-  let prevY = 0.8;
 
   function lerpAngle(current, target, speed) {
     let diff = target - current;
@@ -2930,7 +4310,6 @@ document.querySelectorAll('.val-card').forEach(card => {
   const containerShowcase = document.querySelector('.premium-showcase-container');
 
   containerShowcase.addEventListener('mousedown', e => {
-    // e.preventDefault() ditambahkan agar klik drag tidak memicu blokir teks bawaan browser
     e.preventDefault();
     isDragging = true;
     previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -2945,7 +4324,6 @@ document.querySelectorAll('.val-card').forEach(card => {
       y: e.clientY - previousMousePosition.y
     };
     
-    // Mengurangi sensitivitas geser (dari 0.008 menjadi 0.005) agar terasa sangat halus & smooth
     targetRotation.y += deltaMove.x * 0.005;
     targetRotation.x += deltaMove.y * 0.005;
     previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -2953,17 +4331,15 @@ document.querySelectorAll('.val-card').forEach(card => {
 
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Touch drag listener untuk device handphone
   containerShowcase.addEventListener('touchstart', e => {
     if (e.touches.length > 0) {
-      // e.preventDefault() mencegah drag seleksi teks & viewport freeze di browser HP
       e.preventDefault();
       isDragging = true;
       previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       targetRotation.x = scrollBall.rotation.x;
       targetRotation.y = scrollBall.rotation.y;
     }
-  }, { passive: false }); // passive: false wajib agar preventDefault() disetujui browser mobile
+  }, { passive: false });
 
   window.addEventListener('touchmove', e => {
     if (!isDragging || e.touches.length === 0) return;
@@ -2972,7 +4348,6 @@ document.querySelectorAll('.val-card').forEach(card => {
       y: e.touches[0].clientY - previousMousePosition.y
     };
     
-    // Mengurangi sensitivitas sentuhan HP (dari 0.008 menjadi 0.005)
     targetRotation.y += deltaMove.x * 0.005;
     targetRotation.x += deltaMove.y * 0.005;
     previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -2980,54 +4355,50 @@ document.querySelectorAll('.val-card').forEach(card => {
 
   window.addEventListener('touchend', () => { isDragging = false; });
 
-  // ── REVISI GSAP SCROLL: BOLA MULAI BERGERAK DARI TENGAH LAPANGAN HERO SECARA SEAMLESS KE SECTION 2, 3, 4 ──
-  
-  // Stacking seluruh section agar bisa di-pin dan bertransisi fade silang di atas satu sama lain
-  gsap.set(".premium-scroll-sec", { position: "absolute", inset: 0, opacity: 0, autoAlpha: 0 });
-  gsap.set("#scroll-sec-hero", { opacity: 1, autoAlpha: 1 }); // Hero stadium tampil pertama di layar
+  function getResponsiveParams() {
+    const w = window.innerWidth;
+    if (w <= 600) {
+      return { hero: 0.11, sec2: 0.75, sec3: 0.95, sec4: 0.95, xOffset: 0.45 };
+    } else if (w <= 1024) {
+      return { hero: 0.12, sec2: 0.80, sec3: 1.3, sec4: 1.3, xOffset: 0.95 };
+    } else if (w <= 1280) {
+      return { hero: 0.13, sec2: 0.85, sec3: 2.2, sec4: 2.2, xOffset: 1.1 };
+    } else {
+      return { hero: 0.15, sec2: 0.95, sec3: 3.0, sec4: 3.0, xOffset: 1.3 };
+    }
+  }
 
-  // Inisialisasi posisi teks spec (tersembunyi sebelum bola tiba)
-  gsap.set("#bst-left", { opacity: 0, yPercent: -50, y: 35 });
-  gsap.set("#bst-right", { opacity: 0, yPercent: -50, y: 35 });
-
-  // Definisikan state bola awal (bola duduk pas di atas center circle stadium lapangan)
+  // Status variabel pergerakan fisik bola
+  let initParams = getResponsiveParams();
   const ballState = {
     x: 0,
-    y: 0.8,      // Posisi y melayang tipis di tengah lingkaran lapangan
-    scale: 0.15,  // REVISI: Ukuran mikro (0.15) agar pas dengan perspektif 3D stadion di belakangnya
+    y: 0.8,
+    scale: initParams.hero,
     opacity: 1,
     rx: 0,
     ry: 0,
     rz: 0
   };
 
-  // REVISI RESPONSIVE: Penyetelan skala & batas translasi horizontal bola secara adaptif di Mobile & Desktop
-  let isMobile = window.innerWidth <= 768;
   let responsiveScale = {
-    hero: isMobile ? 0.15 : 0.15,
-    sec2: isMobile ? 0.6 : 0.9,
-    sec3: isMobile ? 1.4 : 3.2,
-    sec4: isMobile ? 1.4 : 3.2
+    hero: initParams.hero,
+    sec2: initParams.sec2,
+    sec3: initParams.sec3,
+    sec4: initParams.sec4
   };
 
   let targetX = 3.5;
   function updateTargetX() {
-    isMobile = window.innerWidth <= 768;
-    responsiveScale.hero = isMobile ? 0.15 : 0.15;
-    responsiveScale.sec2 = isMobile ? 0.6 : 0.9;
-    responsiveScale.sec3 = isMobile ? 1.4 : 3.2;
-    responsiveScale.sec4 = isMobile ? 1.4 : 3.2;
+    let params = getResponsiveParams();
+    responsiveScale.hero = params.hero;
+    responsiveScale.sec2 = params.sec2;
+    responsiveScale.sec3 = params.sec3;
+    responsiveScale.sec4 = params.sec4;
 
     const aspect = window.innerWidth / window.innerHeight;
     const visibleWidth = 2.0 * Math.tan((50 * Math.PI) / 360) * 10 * aspect;
     
-    if (isMobile) {
-      // Pada mobile/portrait, bola digeser ke pinggir kanan/kiri luar viewport tapi disisakan radiusnya
-      // targetX diletakkan tepat di pinggir agar separuh bola bersembunyi (Slam Dunk Store Style)
-      targetX = (visibleWidth / 2);
-    } else {
-      targetX = (visibleWidth / 2) - 0.25; // Potongan tepi presisi untuk layar desktop
-    }
+    targetX = (visibleWidth / 2) - params.xOffset;
   }
   
   window.addEventListener('resize', () => {
@@ -3036,178 +4407,253 @@ document.querySelectorAll('.val-card').forEach(card => {
   });
   updateTargetX();
 
-  // Frame border & Pitch outline disembunyikan awalnya, muncul saat scroll masuk Slide 2
   gsap.set(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 0 });
   gsap.set(".bst-curved-bg", { clipPath: "inset(0% 0% 0% 100%)" });
 
-  // Scrubbing Timeline Utama dengan Pinning total diperpanjang ke 700% (memberikan efek scroll yang sangat lambat, megah, dan buttery smooth)
+  // Mengatur seksi absolut dalam tumpukan vertikal reel kontinu (Reel)
+  gsap.set(".premium-scroll-sec", { position: "absolute", inset: 0, opacity: 1, autoAlpha: 1 });
+  gsap.set("#scroll-sec-hero", { yPercent: 0 });
+  gsap.set("#scroll-sec-1", { yPercent: 100 });
+  gsap.set("#scroll-sec-2", { yPercent: 200 });
+  gsap.set("#scroll-sec-3", { yPercent: 300 });
+
+  // Inisialisasi awal koordinat teks specs
+  gsap.set("#bst-left", { opacity: 0, yPercent: -50, y: 35 });
+  gsap.set("#bst-right", { opacity: 0, yPercent: -50, y: 35 });
+
+  // Timeline GSAP Pinning dengan transisi sliding vertikal bertumpuk
   const ballScrollTl = gsap.timeline({
     scrollTrigger: {
       trigger: ".premium-showcase-container",
       start: "top top",
-      end: "+=700%",  
-      scrub: 2.5,     
+      end: "+=800%",
+      scrub: 1.2,
       pin: true,
       anticipatePin: 1,
       onUpdate: (self) => {
         // Hubungkan scroll progress awal (0% s/d 25%) langsung ke kemiringan / fade stadium Hero Section
         targetHeroScrollProgress = Math.min(1.0, self.progress * 4.0);
+        // Pastikan canvas terlihat saat animasi aktif
+        if (self.progress > 0 && self.progress < 1) {
+          canvasScroll.style.display = 'block';
+        }
+      },
+      onLeave: () => {
+        // Force-hide bola saat scroll melewati section (scroll ke bawah)
+        canvasScroll.style.opacity = '0';
+        ballState.opacity = 0;
+        setTimeout(() => { canvasScroll.style.display = 'none'; }, 400);
+      },
+      onLeaveBack: () => {
+        // Force-hide bola saat scroll balik ke atas melewati section
+        canvasScroll.style.opacity = '0';
+        ballState.opacity = 0;
+        setTimeout(() => { canvasScroll.style.display = 'none'; }, 400);
+      },
+      onEnter: () => {
+        canvasScroll.style.display = 'block';
+        canvasScroll.style.opacity = '1';
+        ballState.opacity = 1;
+      },
+      onEnterBack: () => {
+        canvasScroll.style.display = 'block';
       }
     }
   });
 
   ballScrollTl
-    // Jeda diam awal di Hero Section agar user bisa membaca / melihat pantulan bola sebelum menggelinding
+    // ── JEDA DIAM AWAL: Hero tampil, bola diam melayang ──
     .to({}, { duration: 1.0 })
-    // 1. TRANSISI SEAMLESS HERO -> SECTION 2 (MINI FUT)
-    // Sembunyikan heading dan scroll indicator smooth saat hero mulai transisi
-    .to("#hero-content", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" })
-    // REVISI: Sembunyikan scroll indicator tengah bawah secara smooth
-    .to(".scroll-ind.center", { opacity: 0, y: 15, duration: 0.5, ease: "power1.in" }, "<")
-    // Lapangan stadium 3D & background shader air di belakang memudar halus ke hitam
-    .to("#scroll-sec-hero", { opacity: 0, autoAlpha: 0, duration: 1.5, ease: "power2.inOut" }, "<")
-    // Slide Section 2 (MINI FUT) memudar masuk
-    .to("#scroll-sec-1", { opacity: 1, autoAlpha: 1, duration: 1.5, ease: "power2.inOut" }, "<")
-    // Munculkan outline lapangan taktis putih & bingkai hijau overlay
-    .to(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 1, duration: 1.5, ease: "power2.out" }, "<")
-    // Bola menggelinding maju (Y: 0.8 -> 0) dan membesar secara buttery smooth sesuai skala responsive
-    .to(ballState, { 
+
+    // ── [1] HERO → SECTION 2 (MINI FUT) ──
+    // Sembunyikan heading (zoom-out + blur) dan scroll indicator smooth saat hero mulai transisi
+    .to(["#hero-content", "#hero-gl-canvas"], { opacity: 0, y: -40, scale: 0.94, filter: "blur(10px)", duration: 0.6, ease: "power2.in" })
+    .to(".scroll-ind.center", { opacity: 0, y: 12, duration: 0.4, ease: "power2.in" }, "<")
+
+    // Geser seluruh tumpukan seksi ke atas secara sinkron (Reel Effect)
+    .to("#scroll-sec-hero", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-1", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-2", { yPercent: 100, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-3", { yPercent: 200, duration: 2.0, ease: "power2.inOut" }, "<")
+    // Border frame & pitch lines muncul organik
+    .to(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 1, duration: 1.8, ease: "sine.out" }, "<0.2")
+    // Bola menggelinding masuk ke tengah, membesar alami (tepat 1 putaran maju)
+    .to(ballState, {
       x: 0,
-      y: 0, 
-      scale: () => responsiveScale.sec2, 
-      rx: 2 * Math.PI,
-      duration: 1.8, 
-      ease: "power2.inOut" 
-    }, "<")
-    
-    // Jeda diam di Section 2 (MINI FUT)
-    .to({}, { duration: 1.5 })
-    
-    // 2. TRANSISI SECTION 2 -> SECTION 3 (RUMPUT PREMIUM)
-    .to("#scroll-sec-1", { opacity: 0, autoAlpha: 0, duration: 1.5, ease: "power2.inOut" })
-    .to("#scroll-sec-2", { opacity: 1, autoAlpha: 1, duration: 1.5, ease: "power2.inOut" }, "<")
-    // Bola bergeser ke kanan & membesar ke mode macro close-up (di HP bergeser ke tepi menyisakan area legibilitas teks kiri)
-    .to(ballState, { 
-      x: () => targetX, 
-      scale: () => responsiveScale.sec3, 
-      rz: -2 * Math.PI,
-      duration: 2.2, 
-      ease: "power3.inOut" 
-    }, "<")
-    // Teks deskripsi rumput meluncur masuk
-    .to("#bst-left", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" })
-    
-    // Jeda diam di Section 3 (Premium Synthetic Turf)
+      y: 0,
+      scale: () => responsiveScale.sec2,
+      rx: 2.0 * Math.PI,
+      duration: 2.0,
+      ease: "power2.out"
+    }, "<0.1")
+
+    // JEDA DIAM DI SECTION 2
     .to({}, { duration: 1.8 })
-    
-    // 3. TRANSISI SECTION 3 -> SECTION 4 (BOLA PREMIUM)
-    .to("#scroll-sec-2", { opacity: 0, autoAlpha: 0, duration: 1.5, ease: "power2.inOut" })
-    .to("#scroll-sec-3", { opacity: 1, autoAlpha: 1, duration: 1.5, ease: "power2.inOut" }, "<")
-    // Bola bergeser meluncur dari kanan ke kiri secara seamless
-    .to(ballState, { 
-      x: () => -targetX, 
-      scale: () => responsiveScale.sec4, 
+
+    // ── [2] SECTION 2 → SECTION 3 (RUMPUT PREMIUM) ──
+    // Geser reel seksi berikutnya ke atas
+    .to("#scroll-sec-hero", { yPercent: -200, duration: 2.0, ease: "power2.inOut" })
+    .to("#scroll-sec-1", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-2", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-3", { yPercent: 100, duration: 2.0, ease: "power2.inOut" }, "<")
+    // Bola menggelinding secara horizontal ke sisi kanan (tepat 1 putaran ke kanan)
+    .to(ballState, {
+      x: () => targetX,
+      y: 0,
+      scale: () => responsiveScale.sec3,
+      rx: 2.5 * Math.PI,
+      rz: -2.0 * Math.PI,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, "<")
+    // Tampilkan teks spesifikasi kiri
+    .to("#bst-left", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" }, "-=0.4")
+
+    // JEDA DIAM DI SECTION 3
+    .to({}, { duration: 2.0 })
+
+    // ── [3] SECTION 3 → SECTION 4 (BOLA PREMIUM) ──
+    // Sembunyikan teks kiri secara halus
+    .to("#bst-left", { opacity: 0, y: -20, yPercent: -50, duration: 0.8, ease: "power2.in" })
+    // Geser reel seksi terakhir ke atas
+    .to("#scroll-sec-hero", { yPercent: -300, duration: 2.0, ease: "power2.inOut" }, "<0.2")
+    .to("#scroll-sec-1", { yPercent: -200, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-2", { yPercent: -100, duration: 2.0, ease: "power2.inOut" }, "<")
+    .to("#scroll-sec-3", { yPercent: 0, duration: 2.0, ease: "power2.inOut" }, "<")
+    // Bola menggelinding melintasi layar horizontal dari kanan ke kiri (tepat 1 putaran balik ke kiri)
+    .to(ballState, {
+      x: () => -targetX,
+      y: 0,
+      scale: () => responsiveScale.sec4,
+      rx: 3.0 * Math.PI,
       rz: 0,
-      duration: 2.2, 
-      ease: "power3.inOut" 
+      duration: 2.0,
+      ease: "power2.inOut"
     }, "<")
     // Animasi garis putus-putus muncul dari kanan ke kiri mengikuti transisi bola
     .to(".bst-curved-bg", {
       clipPath: "inset(0% 0% 0% 0%)",
-      duration: 2.2,
-      ease: "power3.inOut"
+      duration: 2.0,
+      ease: "power2.inOut"
     }, "<")
-    // Teks fasilitas masuk
-    .to("#bst-right", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" })
-    
-    // Jeda diam di Section 4 (Perfect Flight)
-    .to({}, { duration: 2.0 })
-    
-    // 4. TRANSISI KELUAR (EXIT OUTRO)
-    // Memudarkan Section 4, border frame, dan pitch bg secara total ke hitam
-    .to("#scroll-sec-3", { opacity: 0, autoAlpha: 0, duration: 1.5, ease: "power2.in" })
-    .to(["#premium-border-frame", "#premium-pitch-bg"], { opacity: 0, duration: 1.5, ease: "power2.in" }, "<")
-    // Bola menggelinding keluar ke arah bawah melewati batas bingkai secara natural
-    .to(ballState, { 
-      opacity: 0, 
-      scale: 1.5, 
-      y: -5, 
-      rx: 4 * Math.PI,
-      duration: 1.5, 
-      ease: "power2.in" 
-    }, "<")
-    .to("#bst-right", { opacity: 0, y: 35, yPercent: -50, duration: 1.5, ease: "power2.in" }, "<");
+    // Tampilkan teks spesifikasi kanan
+    .to("#bst-right", { opacity: 1, y: 0, yPercent: -50, duration: 1.0, ease: "power2.out" }, "-=0.5")
+
+    // JEDA DIAM DI SECTION 4
+    .to({}, { duration: 2.2 })
+
+    // ── [4] EXIT OUTRO ──
+    .to("#bst-right", { opacity: 0, y: -30, yPercent: -50, duration: 1.0, ease: "power2.in" })
+    .to("#scroll-sec-3", { yPercent: -100, duration: 1.5, ease: "power2.in" }, "<0.2")
+    .to(["#premium-border-frame", "#premium-pitch-bg", ".showcase-bg-stadium"], { opacity: 0, duration: 1.5, ease: "power2.in" }, "<")
+    // Bola menggelinding keluar ke arah bawah panggung halaman secara perlahan
+    .to(ballState, {
+      opacity: 0,
+      scale: () => window.innerWidth <= 768 ? 1.8 : 2.2,
+      y: () => window.innerWidth <= 768 ? -4.5 : -5.5,
+      rx: 5.0 * Math.PI,
+      rz: -1.0 * Math.PI,
+      duration: 1.4,
+      ease: "power2.in"
+    }, "<");
 
   // Loop Render Animasi
   let timeS = 0;
+  let rotVelX = 0, rotVelY = 0, rotVelZ = 0;
 
   let _ballVisible = true;
-  const _ballObs = new IntersectionObserver(([entry]) => { _ballVisible = entry.isIntersecting; }, { threshold: 0 });
+  let _ballExitFrames = 0; // Counter frame ekstra agar bola selesai exit sebelum render berhenti
+  const _ballObs = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      _ballVisible = true;
+      _ballExitFrames = 0;
+    } else {
+      // Beri 60 frame ekstra untuk menyelesaikan animasi exit
+      _ballVisible = false;
+      _ballExitFrames = 60;
+    }
+  }, { threshold: 0 });
   _ballObs.observe(containerShowcase);
 
   function renderScrollBall() {
     requestAnimationFrame(renderScrollBall);
-    if (!_ballVisible) return;
+    // Lanjutkan render jika visible ATAU masih ada frame ekstra untuk exit
+    if (!_ballVisible) {
+      if (_ballExitFrames > 0) {
+        _ballExitFrames--;
+      } else {
+        return;
+      }
+    }
     timeS += 0.01;
 
-    // Kalkulasi efek memantul (bounce) bola saat diam di Hero Section (Scroll progress paling atas)
     let bounceY = 0;
-    if (targetHeroScrollProgress < 0.9) {
-      // Pantulan meredup seiring ditariknya scroll ke bawah
-      let bounceAmp = Math.max(0, 1.0 - targetHeroScrollProgress * 1.5);
-      bounceY = Math.sin(timeS * 2.5) * 0.18 * bounceAmp; 
+    if (targetHeroScrollProgress < 0.85) {
+      let bounceAmp = Math.max(0, 1.0 - targetHeroScrollProgress * 1.8);
+      bounceY = (Math.sin(timeS * 2.2) * 0.14 + Math.sin(timeS * 3.7) * 0.04) * bounceAmp;
     }
 
-    // Hitung delta rotasi dari progress scroll GSAP
     let deltaRx = ballState.rx - lastRx;
     let deltaRy = ballState.ry - lastRy;
     let deltaRz = ballState.rz - lastRz;
-    
+
     lastRx = ballState.rx;
     lastRy = ballState.ry;
     lastRz = ballState.rz;
 
-    // Rotasi otomatis saat tidak di-drag pengguna
+    rotVelX = rotVelX * 0.82 + deltaRx * 0.18;
+    rotVelZ = rotVelZ * 0.82 + deltaRz * 0.18;
+
     if (!isDragging) {
-      targetRotX += deltaRx;
+      targetRotX += rotVelX;
       targetRotY += deltaRy;
-      targetRotZ += deltaRz;
-      
-      // Jika tidak ada perubahan scroll aktif (delta mendekati nol), tambahkan putaran idle perlahan
-      if (Math.abs(deltaRx) < 0.0001 && Math.abs(deltaRz) < 0.0001) {
-        targetRotX += 0.008;
-        targetRotY += 0.006;
+      targetRotZ += rotVelZ;
+
+      let isIdle = Math.abs(deltaRx) < 0.0001 && Math.abs(deltaRz) < 0.0001;
+      if (isIdle) {
+        targetRotX += 0.007 + Math.sin(timeS * 0.3) * 0.002;
+        targetRotY += 0.005 + Math.cos(timeS * 0.2) * 0.002;
       }
-      
-      // Interpolasi lerp yang halus dan mulus
-      currentRotation.x = lerpAngle(currentRotation.x, targetRotX, 0.15);
-      currentRotation.y = lerpAngle(currentRotation.y, targetRotY, 0.15);
-      currentRotation.z = lerpAngle(currentRotation.z, targetRotZ, 0.15);
-      
+
+      let lerpSpeed = isIdle ? 0.10 : 0.16;
+      currentRotation.x = lerpAngle(currentRotation.x, targetRotX, lerpSpeed);
+      currentRotation.y = lerpAngle(currentRotation.y, targetRotY, lerpSpeed);
+      currentRotation.z = lerpAngle(currentRotation.z, targetRotZ, lerpSpeed);
+
       scrollBall.rotation.x = currentRotation.x;
       scrollBall.rotation.y = currentRotation.y;
       scrollBall.rotation.z = currentRotation.z;
     } else {
-      // Jika di-drag, redaman lerp diatur ke 0.05 untuk efek inersia drag yang sangat berbobot & premium
-      scrollBall.rotation.x += (targetRotation.x - scrollBall.rotation.x) * 0.05;
-      scrollBall.rotation.y += (targetRotation.y - scrollBall.rotation.y) * 0.05;
-      
-      // Sinkronkan currentRotation dan targetRot agar tidak melompat ketika drag dilepas
+      scrollBall.rotation.x += (targetRotation.x - scrollBall.rotation.x) * 0.055;
+      scrollBall.rotation.y += (targetRotation.y - scrollBall.rotation.y) * 0.055;
+
       currentRotation.x = scrollBall.rotation.x;
       currentRotation.y = scrollBall.rotation.y;
       currentRotation.z = scrollBall.rotation.z;
-      
       targetRotX = scrollBall.rotation.x;
       targetRotY = scrollBall.rotation.y;
       targetRotZ = scrollBall.rotation.z;
     }
 
-    // Sinkronisasi posisi data state GSAP ke mesh 3D & CSS overlay
-    scrollBall.position.x = ballState.x;
-    scrollBall.position.y = ballState.y + bounceY; // Gabungkan posisi y animasi dengan bounceY lapangan
-    scrollBall.scale.setScalar(ballState.scale);
+    // Adaptive lerp: semakin jauh jarak ke target, semakin cepat konvergen
+    // Ini mencegah bola "menempel" saat scroll cepat
+    let distX = Math.abs(ballState.x - scrollBall.position.x);
+    let distY = Math.abs((ballState.y + bounceY) - scrollBall.position.y);
+    let distScale = Math.abs(ballState.scale - scrollBall.scale.x);
+    let posLerp = 0.18 + Math.min(0.72, (distX + distY) * 0.15 + distScale * 0.3);
+
+    let smoothX = scrollBall.position.x + (ballState.x - scrollBall.position.x) * posLerp;
+    let targetPosY = ballState.y + bounceY;
+    let smoothY = scrollBall.position.y + (targetPosY - scrollBall.position.y) * posLerp;
+
+    scrollBall.position.x = smoothX;
+    scrollBall.position.y = smoothY;
+    // Adaptive scale lerp untuk respons cepat
+    let scaleLerp = 0.18 + Math.min(0.72, distScale * 0.5);
+    let smoothScale = scrollBall.scale.x + (ballState.scale - scrollBall.scale.x) * scaleLerp;
+    scrollBall.scale.setScalar(smoothScale);
     canvasScroll.style.opacity = ballState.opacity;
-    
+
     ballSMat.uniforms.uTime.value = timeS;
     rendererS.render(sceneS, cameraS);
   }
@@ -3226,7 +4672,6 @@ document.querySelectorAll('.val-card').forEach(card => {
       height="100%"
       color-interpolation-filters="sRGB"
     >
-      <!-- Generate turbulent noise for distortion -->
       <feTurbulence
         type="fractalNoise"
         baseFrequency="0.05 0.05"
@@ -3234,9 +4679,7 @@ document.querySelectorAll('.val-card').forEach(card => {
         seed="1"
         result="turbulence"
       />
-      <!-- Blur the turbulence pattern slightly -->
       <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
-      <!-- Displace the source graphic with the noise -->
       <feDisplacementMap
         in="SourceGraphic"
         in2="blurredNoise"
@@ -3245,12 +4688,452 @@ document.querySelectorAll('.val-card').forEach(card => {
         yChannelSelector="B"
         result="displaced"
       />
-      <!-- Apply overall blur on the final result -->
       <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
-      <!-- Output the result -->
       <feComposite in="finalBlur" in2="finalBlur" operator="over" />
     </filter>
   </defs>
 </svg>
+<script>
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('site-preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('preloader-hidden');
+      setTimeout(() => preloader.remove(), 500);
+    }, 1000);
+  }
+});
+</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   HERO WEBGL LIQUID DISTORTION + GREEN CHROMATIC ABERRATION
+   ─────────────────────────────────────────────────────────────────
+   Pipeline:
+     1. Render teks hero (PREMIUM / SOCCER / ARENA.) ke offscreen 2D canvas
+        dengan gaya persis sama: outline-only, solid white, neon-green gradient
+     2. Upload sebagai WebGL texture
+     3. Full-screen quad dengan vertex + fragment shader custom:
+        • fBm turbulence (4-octave value noise) → fluid displacement field
+        • Sinusoidal ripple dari posisi mouse → gelombang memancar
+        • Chromatic aberration: R geser kiri, G tidak digeser, B geser kanan
+        • Green channel boost pada area aktif → neon glow effect
+        • Smooth radial falloff dari kursor
+     4. Lerp activity in/out ketika mouse masuk/keluar
+   ════════════════════════════════════════════════════════════════════ */
+(function initHeroWebGL() {
+
+  /* ── Config ─────────────────────────────────────────────────────── */
+  const CFG = {
+    distortRadius:   0.24,   // radius pengaruh mouse (fraksi lebar canvas)
+    distortStrength: 0.048,  // besaran maksimal displacement UV
+    chromaticShift:  0.010,  // offset chromatic aberration (UV space)
+    relaxSpeed:      0.048,  // kecepatan fade-out saat mouse pergi
+    enterSpeed:      0.12,   // kecepatan fade-in saat mouse masuk
+    initDelay:       900,    // ms – beri GSAP entrance selesai dulu
+  };
+
+  /* ── Vertex Shader ───────────────────────────────────────────────── */
+  const VERT_SRC = `
+attribute vec2 a_pos;
+varying   vec2 v_uv;
+void main(){
+  v_uv        = a_pos * 0.5 + 0.5;
+  gl_Position = vec4(a_pos, 0.0, 1.0);
+}`;
+
+  /* ── Fragment Shader ─────────────────────────────────────────────── */
+  const FRAG_SRC = `
+precision highp float;
+
+uniform sampler2D u_tex;       /* hero-text texture                    */
+uniform vec2      u_mouse;     /* mouse UV (0..1), Y dibalik           */
+uniform float     u_radius;    /* influence radius                     */
+uniform float     u_strength;  /* displacement magnitude               */
+uniform float     u_chroma;    /* chromatic aberration amount          */
+uniform float     u_time;      /* elapsed seconds                      */
+uniform float     u_active;    /* 0..1, lerped smoothly               */
+uniform vec2      u_res;       /* canvas size in pixels                */
+
+varying vec2 v_uv;
+
+/* ── Deterministic pseudo-random ── */
+float hash21(vec2 p){
+  p = fract(p * vec2(127.1, 311.7));
+  p += dot(p, p + 19.19);
+  return fract(p.x * p.y);
+}
+
+/* ── Value noise dengan cubic hermite ── */
+float vnoise(vec2 p){
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  /* Hermite smoothstep */
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i);
+  float b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0));
+  float d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+/* ── fBm: 4-octave fractal Brownian motion → displacement vec2 ── */
+vec2 fbm2(vec2 p, float t){
+  vec2  d   = vec2(0.0);
+  float amp = 0.50;
+  float frq = 1.00;
+  for(int i = 0; i < 4; i++){
+    /* Dua channel independen dengan phase offset berbeda */
+    d.x += (vnoise(p * frq + vec2(t * 0.31,  1.70)) * 2.0 - 1.0) * amp;
+    d.y += (vnoise(p * frq + vec2(5.20, t * 0.29 + 3.14)) * 2.0 - 1.0) * amp;
+    amp *= 0.48;
+    frq *= 2.10;
+  }
+  return d;
+}
+
+void main(){
+  vec2 uv = v_uv;
+
+  /* Koreksi aspek rasio untuk perhitungan jarak yang benar */
+  float aspect = u_res.x / u_res.y;
+  vec2 uvA    = vec2(uv.x  * aspect, uv.y);
+  vec2 mA     = vec2(u_mouse.x * aspect, u_mouse.y);
+
+  float dist  = length(uvA - mA);
+
+  /* Falloff: smooth dari 0 di radius hingga 1 di pusat mouse */
+  float falloff = smoothstep(u_radius, u_radius * 0.05, dist);
+  falloff *= u_active;
+
+  /* ── Fluid turbulence displacement ── */
+  vec2 turb = fbm2(uv * 3.2, u_time * 0.9);
+  vec2 disp = turb * u_strength * falloff;
+
+  /* ── Ripple: gelombang sinus yang memancar dari mouse ── */
+  float ripplePhase = dist * 32.0 - u_time * 4.2;
+  float ripple      = sin(ripplePhase) * 0.5 + 0.5;
+  /* Arah menjauhi mouse (normalize), dikali ripple & falloff */
+  vec2  rippleDir = (uvA - mA + 0.0001);
+  /* Ubah kembali ke UV space (bagi x dengan aspect) */
+  rippleDir = normalize(rippleDir) / vec2(aspect, 1.0);
+  disp += rippleDir * ripple * u_strength * 0.40 * falloff;
+
+  /* ── Chromatic Aberration (Green axis) ── */
+  /* R geser ke kiri, G tetap (reference), B geser ke kanan */
+  float ca    = u_chroma * falloff;
+  vec2  offR  = disp + vec2(-ca,  0.0);
+  vec2  offG  = disp;                     /* Green: no lateral shift */
+  vec2  offB  = disp + vec2( ca,  0.0);
+
+  /* Sample tiap channel secara terpisah */
+  float r = texture2D(u_tex, clamp(uv + offR, 0.001, 0.999)).r;
+  float g = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).g;
+  float b = texture2D(u_tex, clamp(uv + offB, 0.001, 0.999)).b;
+  float a = texture2D(u_tex, clamp(uv + offG, 0.001, 0.999)).a;
+
+  /* Green channel boost pada area aktif → neon glow khas MiniFut */
+  g = mix(g, min(g * 1.35 + 0.05 * falloff, 1.0), falloff * 0.65);
+
+  /* Slight vignette agar tepi chromatic tidak terlihat hard-clip */
+  float vign = smoothstep(0.0, 0.15, min(uv.x, 1.0 - uv.x))
+             * smoothstep(0.0, 0.12, min(uv.y, 1.0 - uv.y));
+
+  gl_FragColor = vec4(r, g, b, a * vign);
+}`;
+
+  /* ── Helper: compile shader ─────────────────────────────────────── */
+  function compileShader(gl, type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.warn('[HeroGL] Shader error:', gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+
+  /* ── Helper: link program ───────────────────────────────────────── */
+  function makeProgram(gl, vs_src, fs_src) {
+    const vs   = compileShader(gl, gl.VERTEX_SHADER,   vs_src);
+    const fs   = compileShader(gl, gl.FRAGMENT_SHADER, fs_src);
+    if (!vs || !fs) return null;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.warn('[HeroGL] Link error:', gl.getProgramInfoLog(prog));
+      return null;
+    }
+    return prog;
+  }
+
+  /* ── Render hero text ke offscreen 2D canvas ────────────────────── */
+  function buildTextTexture(gl, W, H) {
+
+    /* --- Offscreen canvas dengan resolusi sama --- */
+    const off = document.createElement('canvas');
+    off.width  = W;
+    off.height = H;
+    const ctx  = off.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+
+    const isMobile = W <= 600;
+
+    const basePx = isMobile
+      ? Math.min(W * 0.12, H * 0.08, 48)
+      : Math.min(W * 0.07, H * 0.09, 64);
+
+    const targetY = isMobile
+      ? Math.max(110, Math.min(H * 0.18, 160)) + 40
+      : Math.max(164, Math.min(H * 0.16 + 52, 216)) + 28;
+
+    const words = [
+      { text: 'PREMIUM', style: 'outline' },
+      { text: 'SOCCER',  style: 'solid'   },
+      { text: 'ARENA.',  style: 'green'   }
+    ];
+
+    ctx.font         = `400 ${basePx}px Anton, Impact, sans-serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Measure widths
+    const widths = words.map(w => ctx.measureText(w.text).width);
+    const gap = isMobile ? 10 : 18;
+    const totalW = widths.reduce((sum, w) => sum + w, 0) + gap * (words.length - 1);
+
+    let currentX = (W - totalW) / 2;
+
+    // Initialize default states if not present
+    if (!window.heroTextState) {
+      window.heroTextState = [
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 },
+        { opacity: 0, y: 110, rotateX: -55, blur: 10 }
+      ];
+    }
+
+    words.forEach((w, i) => {
+      const state = window.heroTextState[i] || { opacity: 1, y: 0, rotateX: 0, blur: 0 };
+      const wordW = widths[i];
+      
+      let x, y;
+      if (isMobile) {
+        x = W / 2;
+        // Stack words vertically centered around targetY
+        const baseWordY = targetY + (i - 1) * (basePx * 1.15);
+        y = baseWordY + (state.y / 100) * basePx;
+      } else {
+        x = currentX + wordW / 2;
+        y = targetY + (state.y / 100) * basePx;
+      }
+
+      ctx.save();
+
+      // Apply opacity
+      ctx.globalAlpha = state.opacity;
+
+      // Apply blur filter if supported and value is significant
+      if (state.blur > 0.05) {
+        ctx.filter = `blur(${state.blur}px)`;
+      } else {
+        ctx.filter = 'none';
+      }
+
+      // Apply 3D tilt (rotateX) via Y-scale compression
+      const rad = (state.rotateX * Math.PI) / 180;
+      const scaleY = Math.cos(rad);
+      ctx.translate(x, y + basePx * 0.4);
+      ctx.scale(1, Math.max(0, scaleY));
+      ctx.translate(-x, -(y + basePx * 0.4));
+
+      if (w.style === 'outline') {
+        ctx.strokeStyle = 'rgba(255,255,255,0.26)';
+        ctx.lineWidth   = isMobile ? 2.0 : 2.5;
+        ctx.strokeText(w.text, x, y);
+
+      } else if (w.style === 'solid') {
+        ctx.fillStyle = '#eceef2';
+        ctx.fillText(w.text, x, y);
+
+      } else {
+        /* green gradient shine */
+        const grd = ctx.createLinearGradient(x - wordW / 2, y, x + wordW / 2, y);
+        grd.addColorStop(0,    '#00ff88');
+        grd.addColorStop(0.45, '#d4ffec');
+        grd.addColorStop(1,    '#00ff88');
+        ctx.fillStyle = grd;
+        ctx.fillText(w.text, x, y);
+      }
+
+      ctx.restore();
+      currentX += wordW + gap;
+    });
+
+    /* Upload ke GPU */
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S,     gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T,     gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); // Flip Y to fix upside-down (terbalik) issue
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off);
+
+    return tex;
+  }
+
+  /* ── Main init (delayed) ────────────────────────────────────────── */
+  setTimeout(function () {
+
+    const canvas = document.getElementById('hero-gl-canvas');
+    if (!canvas) return;
+
+    /* Try WebGL (dengan fallback ke experimental-webgl) */
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false })
+            || canvas.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: false });
+    if (!gl) {
+      console.warn('[HeroGL] WebGL tidak tersedia di browser ini.');
+      canvas.style.display = 'none';
+      return;
+    }
+
+    /* Compile & link shaders */
+    const prog = makeProgram(gl, VERT_SRC, FRAG_SRC);
+    if (!prog) { canvas.style.display = 'none'; return; }
+
+    /* Full-screen quad buffer */
+    const quadBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1,-1,  1,-1,  -1,1,  1,1]),
+      gl.STATIC_DRAW);
+
+    const posLoc = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    /* Uniform locations */
+    gl.useProgram(prog);
+    const uTex      = gl.getUniformLocation(prog, 'u_tex');
+    const uMouse    = gl.getUniformLocation(prog, 'u_mouse');
+    const uRadius   = gl.getUniformLocation(prog, 'u_radius');
+    const uStrength = gl.getUniformLocation(prog, 'u_strength');
+    const uChroma   = gl.getUniformLocation(prog, 'u_chroma');
+    const uTime     = gl.getUniformLocation(prog, 'u_time');
+    const uActive   = gl.getUniformLocation(prog, 'u_active');
+    const uRes      = gl.getUniformLocation(prog, 'u_res');
+
+    /* State */
+    let mouse      = { x: 0.5, y: 0.5 };
+    let active     = 0.0;   /* current lerped value        */
+    let targetAct  = 0.0;   /* target: 1 = mouse inside    */
+    let texDirty   = true;
+    let tex        = null;
+
+    /* Blend */
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); /* premultiplied output */
+
+    /* ── Resize ── */
+    function resize() {
+      const hero = document.getElementById('scroll-sec-hero');
+      const rect  = hero ? hero.getBoundingClientRect() : {};
+      canvas.width  = rect.width  || window.innerWidth;
+      canvas.height = rect.height || window.innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      texDirty = true; /* regenerate texture on resize */
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    /* ── Mouse / Touch tracking ── */
+    function updateMouse(clientX, clientY) {
+      const r  = canvas.getBoundingClientRect();
+      mouse.x  = (clientX - r.left)  / r.width;
+      mouse.y  = 1.0 - (clientY - r.top) / r.height;  /* flip Y untuk WebGL */
+      targetAct = 1.0;
+    }
+
+    canvas.addEventListener('mousemove',  e => updateMouse(e.clientX, e.clientY), { passive: true });
+    canvas.addEventListener('mouseleave', () => { targetAct = 0.0; },              { passive: true });
+    canvas.addEventListener('touchmove',  e => {
+      e.preventDefault();
+      updateMouse(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    canvas.addEventListener('touchend',   () => { targetAct = 0.0; },              { passive: true });
+
+    /* ── Visibility observer (hemat GPU saat hero tidak terlihat) ── */
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisible = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    /* ── Render loop ── */
+    let rafId = null;
+
+    function render(ms) {
+      rafId = requestAnimationFrame(render);
+
+      /* Skip render jika hero tidak di viewport */
+      if (!isVisible) return;
+
+      const t = ms * 0.001;
+
+      /* Rebuild texture jika perlu (pertama kali, setelah resize, atau saat update animasi) */
+      if (texDirty || window.triggerHeroTextUpdate) {
+        if (tex) gl.deleteTexture(tex);
+        tex = buildTextTexture(gl, canvas.width, canvas.height);
+        texDirty = false;
+        window.triggerHeroTextUpdate = false;
+      }
+
+      /* Lerp activity: cepat masuk, lambat keluar (efek liquid melambat) */
+      const speed  = targetAct > active ? CFG.enterSpeed : CFG.relaxSpeed;
+      active      += (targetAct - active) * speed;
+
+      /* Clear */
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      /* Draw */
+      gl.useProgram(prog);
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1i(uTex,      0);
+      gl.uniform2f(uMouse,    mouse.x, mouse.y);
+      gl.uniform1f(uRadius,   CFG.distortRadius);
+      gl.uniform1f(uStrength, CFG.distortStrength);
+      gl.uniform1f(uChroma,   CFG.chromaticShift);
+      gl.uniform1f(uTime,     t);
+      gl.uniform1f(uActive,   active);
+      gl.uniform2f(uRes,      canvas.width, canvas.height);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+
+    // Fade in canvas, fade out original title
+    canvas.style.opacity = '1';
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      heroTitle.style.opacity = '0';
+    }
+
+    requestAnimationFrame(render);
+
+  }, CFG.initDelay);
+
+})();
+</script>
 </body>
 </html>

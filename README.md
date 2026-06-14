@@ -1,298 +1,175 @@
-# MiniFut — Panduan Setup & Penggunaan
+# MiniFut — Dokumentasi Sistem dan Panduan Instalasi
 
-> **MiniFut** adalah sistem manajemen arena mini soccer (futsal) premium berbasis web.  
-> Dibangun dengan PHP native + MySQL + desain UI/UX dark-mode premium bertema hijau neon.
+**MiniFut** adalah sistem informasi manajemen penyewaan lapangan mini soccer (futsal) berbasis web. Sistem ini dirancang menggunakan PHP Native dan MySQL, dengan fokus pada pengalaman pengguna (UX) yang modern, antarmuka (UI) bertema gelap (dark-mode), serta keamanan data yang tangguh.
 
 ---
 
-## Struktur Folder
+## 1. Struktur Direktori dan Kegunaan File
 
-```
+Berikut adalah peta struktur dari direktori utama sistem beserta penjelasan fungsinya masing-masing:
+
+```text
 ProyekAkhirPPW/
-├── index.php              ← Landing page (dilindungi auth login pelanggan)
-├── index.html             ← Landing page versi statis (HTML murni, tanpa auth)
-├── booking.php            ← Halaman booking + API back-end (5 tabel, validasi lengkap)
-├── booking.html           ← Halaman booking versi statis (HTML murni, demo frontend)
-├── profile.php            ← Halaman profil pelanggan (edit info, foto, password, riwayat)
-├── config.php             ← Konfigurasi DB, session, auth, upload & helper functions
-├── migration.sql          ← SQL migrasi kolom baru (jalankan 1x setelah DDL utama)
-├── .htaccess              ← Keamanan akses file sensitif
+├── index.php              : Halaman utama (Landing Page) yang dilindungi oleh autentikasi pelanggan.
+├── index.html             : Halaman utama versi statis (HTML murni) untuk keperluan demonstrasi antarmuka.
+├── booking.php            : Modul pemesanan lapangan dinamis beserta API back-end (terintegrasi dengan 5 tabel).
+├── booking.html           : Halaman pemesanan versi statis.
+├── profile.php            : Halaman manajemen profil pelanggan (ubah informasi, kata sandi, foto, dan riwayat).
+├── config.php             : Berkas konfigurasi basis data, manajemen sesi, fungsi keamanan, dan utilitas.
+├── database/
+│   ├── minifut_db.sql     : Berkas ekspor basis data lengkap (mencakup DDL, relasi, dan data sampel).
+│   └── query_kompleks.sql : Berkas kumpulan objek basis data (View, Function, Procedure, Trigger) untuk kebutuhan evaluasi.
+├── .htaccess              : Aturan keamanan server Apache untuk memblokir akses ke berkas sensitif.
 │
-├── assets/                ← Aset gambar statis (foto fasilitas, dll)
-│   ├── bruno.jpeg
-│   ├── cafe.png
-│   ├── fasilitas.png
-│   ├── parkir.png
-│   ├── ronaldo.jpeg
-│   └── tribun.png
+├── assets/                : Direktori penyimpanan aset statis seperti gambar fasilitas.
 │
 ├── auth/
-│   ├── login.php          ← Login pelanggan (email + password, shader background)
-│   ├── register.php       ← Registrasi pelanggan baru (validasi lengkap)
-│   └── logout.php         ← Logout pelanggan
+│   ├── login.php          : Modul masuk (login) untuk pelanggan.
+│   ├── register.php       : Modul pendaftaran akun pelanggan baru dengan validasi berlapis.
+│   └── logout.php         : Modul keluar sesi (logout) pelanggan.
 │
-└── admin/
-    ├── login.php          ← Login admin (shader background, gold accent)
-    ├── logout.php         ← Logout admin
-    ├── dashboard.php      ← Dashboard statistik
-    ├── lapangan.php       ← CRUD lapangan + upload foto lapangan
-    ├── pelanggan.php      ← CRUD pelanggan + upload foto profil
-    ├── booking.php        ← CRUD booking + search + pagination
-    ├── jadwal.php         ← CRUD jadwal + search + pagination
-    ├── pembayaran.php     ← CRUD & konfirmasi pembayaran
-    ├── _header.php        ← Shared layout header + sidebar
-    ├── _footer.php        ← Shared layout footer
-    └── uploads/           ← Folder upload foto (auto-created)
-        └── .htaccess      ← Blokir eksekusi PHP di folder upload
+└── admin/                 : Direktori panel kendali administrator.
+    ├── login.php          : Modul masuk khusus administrator.
+    ├── logout.php         : Modul keluar sesi administrator.
+    ├── dashboard.php      : Dasbor utama menampilkan ringkasan statistik.
+    ├── lapangan.php       : Modul CRUD untuk data lapangan beserta fitur unggah foto.
+    ├── pelanggan.php      : Modul CRUD untuk mengelola data pelanggan.
+    ├── booking.php        : Modul manajemen data pemesanan, pencarian, dan paginasi.
+    ├── jadwal.php         : Modul manajemen ketersediaan jadwal operasional.
+    ├── pembayaran.php     : Modul konfirmasi dan verifikasi bukti pembayaran.
+    ├── _header.php        : Komponen tata letak (layout) bagian atas dan navigasi sisi panel admin.
+    ├── _footer.php        : Komponen tata letak (layout) bagian bawah panel admin.
+    └── uploads/           : Direktori tempat menyimpan berkas foto yang diunggah pengguna.
+        └── .htaccess      : Keamanan tambahan untuk mencegah eksekusi skrip PHP di dalam direktori unggahan.
 ```
 
 ---
 
-## Langkah Setup
+## 2. Panduan Instalasi dan Setup Basis Data
 
-### 1. Tempatkan Folder
-Letakkan folder `ProyekAkhirPPW/` di dalam `htdocs/` (XAMPP) atau `www/` (WAMP).
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi pada lingkungan pengembangan lokal (localhost).
 
-```
-C:\xampp\htdocs\ProyekAkhirPPW\
-```
+### Tahap 1: Penempatan Direktori
+Pindahkan seluruh direktori `ProyekAkhirPPW/` ke dalam direktori server lokal Anda, seperti `htdocs/` untuk XAMPP atau `www/` untuk WAMP.
+Jalur direktori yang diharapkan: `C:\xampp\htdocs\ProyekAkhirPPW\`
 
-### 2. Buat Database
-Buka **phpMyAdmin** → buat database `minifut_db` → jalankan DDL utama dari tugas:
+### Tahap 2: Import Basis Data Utama
+Berkas `minifut_db.sql` sudah mencakup seluruh struktur tabel (DDL), relasi antar tabel (Foreign Keys), dan data sampel (DML) yang dibutuhkan agar aplikasi langsung dapat berfungsi.
 
-```sql
-CREATE DATABASE minifut_db;
-USE minifut_db;
--- (paste DDL tabel Lapangan, Pelanggan, Jadwal, Booking, Pembayaran + INSERT data lapangan)
-```
+1. Buka antarmuka pengelolaan basis data (misalnya: phpMyAdmin).
+2. Buat basis data baru dengan nama: `minifut_db`.
+3. Buka basis data tersebut, lalu navigasikan ke tab **Import**.
+4. Pilih berkas `minifut_db.sql` yang berada di akar (root) direktori proyek, lalu eksekusi (klik **Go**).
 
-### 3. Jalankan Migration SQL
-Setelah database dibuat, jalankan `migration.sql` di phpMyAdmin untuk menambahkan kolom baru:
+### Tahap 3: Import Objek Basis Data Lanjutan (Khusus Evaluasi)
+Berkas `database/query_kompleks.sql` memuat implementasi tingkat lanjut seperti `View`, `Function`, `Procedure`, dan `Trigger`. Langkah ini bersifat kondisional dan umumnya digunakan untuk membuktikan penerapan kaidah basis data yang kompleks.
 
-```sql
--- Buka tab SQL di phpMyAdmin, paste isi migration.sql dan klik Go
-```
+1. Pastikan Anda masih berada di dalam basis data `minifut_db`.
+2. Navigasikan ke tab **SQL**.
+3. Salin seluruh isi dari berkas `database/query_kompleks.sql`, tempel pada area kueri, lalu eksekusi (klik **Go**).
 
-Kolom yang ditambahkan oleh migrasi:
-- `Lapangan.FOTO` — nama file foto lapangan
-- `Pelanggan.FOTO_PROFIL` — nama file foto profil
-- `Booking.TEAM_NAME` — nama tim yang booking
-- `Booking.NOTES` — catatan tambahan pelanggan
-- `Pembayaran.STATUS_PEMBAYARAN` — default `PENDING`
-
-> ℹ️ Kolom sosial media (`SOSMED_INSTAGRAM`, `SOSMED_TWITTER`, dll.) pada tabel Pelanggan dibuat otomatis saat pertama kali membuka halaman profil.
-
-### 4. Konfigurasi Database (jika perlu)
-Edit `config.php` sesuai konfigurasi MySQL Anda:
-
+### Tahap 4: Konfigurasi Koneksi (Opsional)
+Apabila kredensial server MySQL Anda berbeda dari bawaan default, sesuaikan konfigurasi pada berkas `config.php`:
 ```php
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'minifut_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');         
+define('DB_USER', 'root'); // Ubah jika menggunakan nama pengguna berbeda
+define('DB_PASS', '');     // Masukkan kata sandi jika ada
 ```
 
-### 5. Buat Folder Upload
-Folder `admin/uploads/` akan dibuat otomatis saat pertama kali upload foto.  
-Pastikan XAMPP/PHP memiliki izin tulis ke folder tersebut.
+---
+
+## 3. Rincian URL dan Kredensial Akses
+
+### Daftar Tautan Akses Aplikasi
+- Landing Page: `http://localhost/ProyekAkhirPPW/index.php`
+- Pemesanan (Booking): `http://localhost/ProyekAkhirPPW/booking.php`
+- Profil Pelanggan: `http://localhost/ProyekAkhirPPW/profile.php`
+- Login Pelanggan: `http://localhost/ProyekAkhirPPW/auth/login.php`
+- Registrasi Pelanggan: `http://localhost/ProyekAkhirPPW/auth/register.php`
+- Login Administrator: `http://localhost/ProyekAkhirPPW/admin/login.php`
+- Dasbor Administrator: `http://localhost/ProyekAkhirPPW/admin/dashboard.php`
+
+Catatan: Berkas berekstensi `.html` dapat diakses untuk melihat tata letak antarmuka secara statis tanpa melibatkan proses dari server maupun basis data.
+
+### Kredensial Default Administrator
+- **Username:** `Khayr`
+- **Password:** `minifut107`
 
 ---
 
-## Akses Website
+## 4. Fitur dan Fungsionalitas Utama
 
-| Halaman | URL |
-|---|---|
-| Landing Page (PHP) | `http://localhost/ProyekAkhirPPW/index.php` |
-| Landing Page (HTML) | `http://localhost/ProyekAkhirPPW/index.html` |
-| Halaman Booking (PHP) | `http://localhost/ProyekAkhirPPW/booking.php` |
-| Halaman Booking (HTML) | `http://localhost/ProyekAkhirPPW/booking.html` |
-| Profil Pelanggan | `http://localhost/ProyekAkhirPPW/profile.php` |
-| Login Pelanggan | `http://localhost/ProyekAkhirPPW/auth/login.php` |
-| Daftar Akun Baru | `http://localhost/ProyekAkhirPPW/auth/register.php` |
-| Login Admin | `http://localhost/ProyekAkhirPPW/admin/login.php` |
-| Dashboard Admin | `http://localhost/ProyekAkhirPPW/admin/dashboard.php` |
+### 4.1. Autentikasi dan Keamanan Akses
+- Terdapat pemisahan sesi antara akses Administrator dan Pelanggan.
+- Sandi pengguna dilindungi menggunakan metode hashing modern (`password_hash()`).
+- Setiap halaman fungsional dilindungi oleh lapisan validasi hak akses untuk mencegah penerobosan URL.
 
-> 💡 Versi `.html` adalah frontend statis tanpa koneksi database (untuk demo/presentasi). Versi `.php` adalah versi fungsional penuh.
+### 4.2. Halaman Utama (Landing Page)
+- Menyajikan antarmuka visual dinamis memanfaatkan WebGL dan animasi Three.js.
+- Menampilkan fasilitas lapangan, ulasan, serta pilihan harga operasional yang dikemas secara interaktif.
+- Optimalisasi navigasi yang responsif untuk berbagai ukuran perangkat (desktop, tablet, mobile).
 
----
+### 4.3. Modul Pemesanan (Booking 4 Langkah)
+Modul ini merangkum proses pemesanan ke dalam 4 tahapan yang mulus:
+1. Pemilihan Lapangan berdasarkan ketersediaan.
+2. Pemilihan Tanggal operasional.
+3. Pemilihan Slot Jam (diambil secara langsung dari basis data; slot yang terisi akan secara otomatis terkunci).
+4. Pengisian Detail Pelanggan beserta pilihan jenis pembayaran (Lunas atau DP).
 
-## Kredensial Default
+### 4.4. Manajemen Profil Pengguna
+- Pelanggan yang telah masuk dapat memperbarui data personal, termasuk mengunggah pasfoto profil.
+- Terdapat integrasi informasi profil sosial media.
+- Pelanggan dapat mengubah kata sandi dengan verifikasi keamanan tambahan.
+- Menyediakan riwayat lengkap transaksi pemesanan beserta status pembayarannya.
 
-### Admin
-| Field | Value |
-|---|---|
-| Username | `Khayr` |
-| Password | `minifut107` |
-
-> ⚠️ **Ganti password admin** di file `admin/login.php` baris `$ADMIN_PASS`.
-
-### Pelanggan
-Daftar akun baru melalui halaman **Register** (`auth/register.php`).
-
----
-
-## Fitur Lengkap
-
-### ✅ 1. Autentikasi (Login/Register/Logout)
-- **Pelanggan**: login dengan email + password, harus login untuk akses `index.php`, `booking.php`, `profile.php`
-- **Admin**: panel terpisah dengan login khusus di `/admin/login.php`
-- Session aman dengan `session_regenerate_id()` dan cookie `httponly`, `samesite=Strict`
-- Halaman login/register dilengkapi **WebGL shader background** animasi
-
-### ✅ 2. Landing Page Premium (`index.html` / `index.php`)
-- Hero section dengan **Three.js 3D soccer ball** interaktif
-- Shrinking navbar saat scroll
-- Showcase fasilitas dengan auto-slide + progress bar
-- Grid gallery dengan lightbox
-- Pricing cards dengan **rotating shine border** (conic-gradient)
-- Fan Wall / awards marquee scroll
-- SEO lengkap (meta title, description, Open Graph, Twitter Card)
-- Custom cursor hijau neon (hidden di mobile/touch)
-- Scroll-driven animations (GSAP ScrollTrigger)
-
-### ✅ 3. Halaman Booking 4-Step (`booking.php`)
-- **Step 1**: Pilih lapangan (3D tilt card + glare effect)
-- **Step 2**: Pilih tanggal (custom calendar, disable tanggal lampau)
-- **Step 3**: Pilih jam sesi (multi-select, **real-time dari database**, slot yang sudah dipesan ditandai)
-- **Step 4**: Data diri (nama, email, telepon, tim, catatan, tipe pembayaran DP/Lunas)
-- Sidebar ringkasan harga real-time
-- Success overlay dengan kode booking, instruksi pembayaran, & countdown timer 5 menit
-
-### ✅ 4. Halaman Profil Pelanggan (`profile.php`)
-- **Tab Profil**: edit nama, email, telepon
-- **Tab Foto**: upload/hapus foto profil (file lama otomatis dihapus dari server)
-- **Tab Social Media**: isi link Instagram, Twitter, TikTok, Facebook, YouTube
-- **Tab Password**: ubah password (validasi password lama, min 8 karakter + kapital + angka)
-- **Tab Riwayat Booking**: daftar semua booking dengan status, harga, dan badge warna
-- Sidebar statistik (total booking, lunas, proses)
-- UI premium dark-mode dengan animasi, custom cursor, dan WebGL floating lines
-
-### ✅ 5. Upload Foto
-- **Foto Lapangan**: upload di halaman Admin → Lapangan (format JPG/PNG/WebP/GIF, maks 5MB)
-- **Foto Profil Pelanggan**: upload di Admin → Pelanggan, atau self-service di `profile.php`
-- File disimpan di `admin/uploads/` dengan nama unik `uniqid()` (anti-collision)
-- File lama otomatis dihapus saat foto baru di-upload (pembersihan storage)
-
-### ✅ 6. Pencarian Data (Search)
-- **Lapangan**: cari berdasarkan nama, jenis, status
-- **Pelanggan**: cari berdasarkan nama, email, nomor telepon
-- **Booking**: cari berdasarkan kode booking, nama, email, nama lapangan; filter by status
-- **Jadwal**: cari berdasarkan nama lapangan, tanggal, status
-- **Pembayaran**: cari berdasarkan kode booking, nama, metode; filter by status
-
-### ✅ 7. Pagination
-- Semua tabel admin: 10 data per halaman
-- Navigasi Prev/Next + nomor halaman
-- Info jumlah data ditampilkan
-
-### ✅ 8. Validasi Data Lengkap (Front-End & Back-End)
-
-#### Validasi Back-End (`booking.php` API):
-- **Lapangan**: cek ID valid, cek lapangan ada di database
-- **Tanggal**: format YYYY-MM-DD, tanggal valid, tidak di masa lalu
-- **Slot jam**: array tidak kosong, setiap slot antara 08–23, maks 16 slot, unik
-- **Nama**: wajib, min 2 karakter, maks 100, hanya huruf/spasi/titik/tanda hubung
-- **Email**: wajib, format valid (FILTER_VALIDATE_EMAIL), maks 150 karakter
-- **Telepon**: wajib, format Indonesia (+62/62/08), 8–13 digit setelah prefix
-- **Tipe pembayaran**: harus `dp` atau `lunas`
-- **Race condition**: cek ulang slot sebelum insert (dalam transaksi)
-- Semua error dikembalikan dalam `errors` object (field-specific)
-
-#### Validasi Front-End (`booking.php` form):
-- Real-time validation per field dengan visual error/success state
-- Pesan error inline per input (icon ⚠ + animasi)
-- Checkbox terms wajib dicentang
-- Tombol submit disabled sampai semua validasi pass
-
-#### Validasi Register (`auth/register.php`):
-- Nama min 3 karakter
-- Email valid + cek duplikat
-- Telepon 8–20 digit
-- Password min 8 karakter + huruf kapital + angka + konfirmasi cocok
-
-#### Validasi Admin CRUD:
-- Wajib isi semua field required
-- Format email valid + cek duplikat
-- Cek relasi foreign key sebelum hapus data
-
-#### Validasi Upload:
-- Tipe file: image only (JPEG, PNG, WebP, GIF)
-- Ukuran max 5MB
-- Ekstensi aman
-
-### ✅ 9. Harga dari Database
-- Harga per jam **diambil langsung dari tabel Lapangan** (`HARGA_PER_JAM`), bukan hardcoded
-- Kalkulasi total di back-end: `HARGA_PER_JAM × jumlah slot`
-- Harga aktual dikembalikan ke front-end via response JSON (`actual_price`)
-
-### ✅ 10. Transaksi Database Aman
-- Seluruh proses booking (5 tabel) dibungkus dalam `PDO::beginTransaction()` + `commit()`
-- Jika gagal di tengah jalan → `rollBack()` otomatis, tidak ada data parsial
-- Urutan insert: Pelanggan → Jadwal → Booking → Pembayaran
+### 4.5. Panel Administrator
+- Dasbor dengan metrik analitik pemesanan terkini.
+- Pengelolaan master data lapangan, pelanggan, jadwal, dan transaksi.
+- Fasilitas konfirmasi pembayaran secara manual untuk memverifikasi pesanan pelanggan.
+- Seluruh tabel dilengkapi dengan fitur pencarian spesifik dan paginasi (10 entri per halaman) guna menunjang kinerja pemuatan data.
 
 ---
 
-## Keamanan
+## 5. Implementasi Validasi dan Keamanan Basis Data
 
-- ✅ Password di-hash dengan `password_hash()` (bcrypt)
-- ✅ Semua query pakai **Prepared Statements** (anti SQL Injection)
-- ✅ Output di-escape dengan `htmlspecialchars()` via helper `e()` (anti XSS)
-- ✅ Session cookie: `httponly`, `samesite=Strict`, lifetime 2 jam
-- ✅ Folder `uploads/` diproteksi `.htaccess` (PHP tidak bisa dieksekusi)
-- ✅ File sensitif (`config.php`) diblokir akses langsung via `.htaccess`
-- ✅ Delay 1 detik pada login admin gagal (anti brute-force)
-- ✅ `session_regenerate_id(true)` setelah login berhasil (anti session fixation)
-- ✅ Auth helpers tersentralisasi di `config.php` (`isLoggedIn()`, `isAdmin()`, `isPelanggan()`, `requireLogin()`, `requireAdmin()`)
+### Perlindungan Terhadap Serangan
+- **SQL Injection:** Seluruh operasi yang berinteraksi dengan basis data menggunakan metode `Prepared Statements` (PDO).
+- **Cross-Site Scripting (XSS):** Semua data yang dicetak ke layar HTML melalui proses penyaringan karakter khusus (`htmlspecialchars()`).
+- **Session Hijacking:** Mengimplementasikan perlakuan khusus pada sesi dengan flag `HttpOnly`, `SameSite=Strict`, serta pembaruan ID sesi `session_regenerate_id()`.
 
----
+### Integritas Data Operasional
+- Transaksi pemesanan melibatkan penyisipan (insert) pada beberapa tabel secara sekuensial. Proses ini dibungkus di dalam blok `PDO::beginTransaction()`. Kegagalan pada salah satu tahap akan otomatis membatalkan seluruh operasi (`rollBack()`) guna mencegah kerusakan relasi data.
+- Kalkulasi harga dan waktu sepenuhnya dieksekusi pada level server (Back-End) untuk menghindari manipulasi pada level klien (Inspect Element).
 
-## Tech Stack & Libraries
-
-| Komponen | Teknologi |
-|---|---|
-| Back-End | PHP 8+ (native, tanpa framework) |
-| Database | MySQL / MariaDB via PDO |
-| Front-End | HTML5, CSS3 (vanilla), JavaScript (vanilla) |
-| 3D / WebGL | Three.js r128 (bola 3D, shader backgrounds) |
-| Animasi | GSAP + ScrollTrigger |
-| Font | Google Fonts (Orbitron, Rajdhani, Barlow) |
-| Icon | Bootstrap Icons |
-| Server | XAMPP / WAMP |
+### Pengelolaan Berkas Unggahan
+- Mekanisme penyaringan tipe ekstensi (hanya memperbolehkan berkas gambar).
+- Pembatasan batas maksimal ukuran berkas (5MB).
+- Pengubahan nama berkas dengan ID unik untuk mencegah timpaan berkas ber-nama sama secara tidak sengaja.
+- Penambahan kontrol ekstensi `.htaccess` dalam direktori unggahan untuk mencegah penyusupan dan eksekusi skrip berbahaya.
 
 ---
 
-## Desain & UI/UX
+## 6. Teknologi yang Digunakan
 
-- **Dark mode** tema hitam pekat dengan aksen **hijau neon** (`#00ff88`)
-- **Custom cursor** hijau neon (otomatis hidden di perangkat touch/mobile)
-- **Noise overlay** SVG untuk tekstur premium
-- **WebGL shader background** pada halaman login (pelanggan & admin)
-- **Three.js 3D soccer ball** interaktif di hero section
-- **Glassmorphism** pada navbar dan tombol CTA
-- **3D tilt** + **glare effect** pada kartu booking
-- **Micro-animations** di seluruh halaman (fade-in, slide-up, hover glow)
-- **Responsive** — layout menyesuaikan untuk desktop, tablet, dan mobile
+- **Bahasa Sisi Server:** PHP 8+ (Metodologi Native)
+- **Basis Data:** MySQL/MariaDB terintegrasi via PHP Data Objects (PDO)
+- **Struktur Antarmuka:** HTML5 dan CSS3 (Vanilla)
+- **Interaktivitas Sisi Klien:** JavaScript (Vanilla)
+- **Pustaka Visual Khusus:** Three.js (Grafik 3D), GSAP (Animasi interaktif), Bootstrap Icons (Tipografi ikonografis)
 
 ---
 
-## Troubleshooting
+## 7. Penanganan Kendala (Troubleshooting)
 
-**Tidak bisa upload foto?**  
-→ Pastikan folder `admin/uploads/` ada dan PHP punya izin write.  
-→ Di Windows XAMPP biasanya tidak perlu setting ekstra.
+**Proses unggah foto tidak berhasil disimpan**
+Pastikan direktori `admin/uploads/` telah tersedia dan perizinan tulis (write permission) pada layanan server telah diizinkan. 
 
-**Login gagal padahal password benar?**  
-→ Pastikan database sudah diisi data pelanggan dengan password yang di-hash `password_hash()`.  
-→ Data lama dari booking.php menggunakan password `password123` (hash otomatis saat booking pertama).
+**Kegagalan saat proses login meski kata sandi benar**
+Pastikan data pengguna di dalam tabel telah menggunakan mekanisme *hash*. Sandi dasar yang tersimpan dalam format plaintext (teks biasa) tidak akan dikenali oleh sistem autentikasi modern aplikasi ini.
 
-**Error "Kolom FOTO tidak ditemukan"?**  
-→ Jalankan `migration.sql` terlebih dahulu.
+**Pesan error mengenai kolom yang tidak tersedia (Misal: FOTO_PROFIL tidak ditemukan)**
+Hal ini menandakan basis data belum di-impor secara lengkap. Silakan lakukan proses impor ulang menggunakan berkas `minifut_db.sql` yang telah disediakan, yang mana sudah memuat rancangan lengkap seluruh kolom terkait tanpa butuh migrasi tambahan.
 
-**Session tidak tersimpan?**  
-→ Pastikan `session.save_path` di `php.ini` sudah dikonfigurasi, atau coba restart XAMPP.
-
-**Kolom sosial media error?**  
-→ Kolom sosial media dibuat otomatis saat pertama kali membuka halaman `profile.php`. Buka halaman profil minimal sekali setelah migrasi.
-
-**Halaman profil tidak bisa diakses?**  
-→ Pastikan sudah login sebagai pelanggan terlebih dahulu. Halaman profil dilindungi oleh auth.
+**Akses langsung pada halaman profil tertolak**
+Halaman `profile.php` dikhususkan bagi pengguna yang telah terautentikasi. Lakukan proses login pada rute `auth/login.php` terlebih dahulu untuk membuka akses.
